@@ -1,0 +1,305 @@
+
+<%- include('../layouts/user/header',{title:"Royal Times"}) %>
+
+	<!-- start banner Area -->
+	<section class="banner-area">
+		<div class="container">
+			<div class="row fullscreen align-items-center justify-content-start">
+				<div class="col-lg-12">
+					<div class="active-banner-slider owl-carousel">
+						<!-- single-slide -->
+						<div class="row single-slide align-items-center d-flex">
+							<div class="col-lg-5 col-md-6">
+								<div class="banner-content">
+									<h1> <br>Collection!</h1>
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+									<div class="add-bag d-flex align-items-center">
+										<a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
+										<span class="add-text text-uppercase">Add to Bag</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-7">
+								<div class="banner-img">
+									<img class="img-fluid" src="/img/banner/maxresdefault.jpg" alt="">
+								</div>
+							</div>
+						</div>
+						<!-- single-slide -->
+						<div class="row single-slide">
+							<div class="col-lg-5">
+								<div class="banner-content">
+									<h1>Nike New <br>Collection!</h1>
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+									<div class="add-bag d-flex align-items-center">
+										<a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
+										<span class="add-text text-uppercase">Add to Bag</span>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-7">
+								<div class="banner-img">
+									<img class="img-fluid" src="/img/banner/banner-img.png" alt="">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End banner Area -->
+
+	<!-- start features Area -->
+	<section class="features-area section_gap">
+		<div class="container">
+			<div class="row features-inner">
+				<!-- single features -->
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="single-features">
+						<div class="f-icon">
+							<img src="/img/features/f-icon1.png" alt="">
+						</div>
+						<h6>Free Delivery</h6>
+						<p>Free Shipping on all order</p>
+					</div>
+				</div>
+				<!-- single features -->
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="single-features">
+						<div class="f-icon">
+							<img src="/img/features/f-icon2.png" alt="">
+						</div>
+						<h6>Return Policy</h6>
+						<p>Free Shipping on all order</p>
+					</div>
+				</div>
+				<!-- single features -->
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="single-features">
+						<div class="f-icon">
+							<img src="/img/features/f-icon3.png" alt="">
+						</div>
+						<h6>24/7 Support</h6>
+						<p>Free Shipping on all order</p>
+					</div>
+				</div>
+				<!-- single features -->
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="single-features">
+						<div class="f-icon">
+							<img src="/img/features/f-icon4.png" alt="">
+						</div>
+						<h6>Secure Payment</h6>
+						<p>Free Shipping on all order</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- end features Area -->
+
+<!-- Dynamically render product details -->
+<div id="productContainer" class="container">
+    <div class="row">
+		<% if (Array.isArray(products)) { %>
+        <% products.forEach(product => { %>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 product-card">
+					<a href="/user/product/<%= product._id %>"> <!-- Link to product details page -->
+                    <img src="<%= product.images[0].replace('/public','') %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
+					</a>
+                    <div class="card-body">
+                        <h5 class="card-title"><%= product.productName %></h5>
+						<h5 class="card-title"><%= product.brand.name %></h5>
+                        <p class="card-text">Price: $<%= product.price %></p>
+                        <!-- <a href="/user/cart" class="btn btn-primary">Add to Cart</a> -->
+						<form action="/user/cart" method="POST">
+							<input type="hidden" name="productId" value="<%= product._id %>">
+							<button class="primary-btn" type="submit">Add to Cart</button>
+						</form>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+	</div>
+	<div class="text-right">
+		<a href="/user/category" class="btn btn-success see-more-btn">See More</a>
+	</div>
+</div>
+<style>
+	/* styles.css */
+.see-more-btn {
+    background-color: rgb(220, 118, 24);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.see-more-btn:hover {
+    background-color: rgb(210, 109, 32); /* Optional: Change color on hover */
+}
+
+.text-right {
+    text-align: right;
+}
+
+</style>
+		<% } else { %>
+			<p>No products found.</p>
+		<% } %>
+    </div>
+</div>
+
+
+
+	<!--end of dynamically render product details -->
+
+	<!-- Start brand Area -->
+	<section class="brand-area section_gap">
+		<div class="container">
+			<div class="row">
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/1.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/2.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/3.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/4.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/5.png" alt="">
+				</a>
+			</div>
+		</div>
+	</section>
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+
+		// Assuming you have a function to fetch product data from your backend
+function fetchProducts() {
+    // Fetch products data from backend API
+    fetch('/user/home') // Assuming this is the correct API endpoint to fetch products
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parse response as JSON
+        })
+        .then(products => renderProducts(products)) // Pass products to renderProducts function
+        .catch(error => console.error('Error fetching products:', error));
+}
+
+
+function renderProducts(products) {
+    const productContainer = document.getElementById('productContainer');
+    // Clear previous content
+    productContainer.innerHTML = '';
+
+    products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+
+        // Create elements for product details (name, image, price, etc.)
+        const productName = document.createElement('h4');
+        productName.textContent = product.productName;
+
+        const productImage = document.createElement('img');
+        productImage.src = product.images[0];
+        productImage.alt = product.productName;
+
+        const productPrice = document.createElement('p');
+        productPrice.textContent = `Price: $${product.price}`;
+
+        // Append elements to productCard
+        productCard.appendChild(productName);
+        productCard.appendChild(productImage);
+        productCard.appendChild(productPrice);
+
+
+        // Append productCard to productContainer
+        productContainer.appendChild(productCard);
+    });
+}
+ // Fetch and render products when the page loads
+ document.addEventListener('DOMContentLoaded', () => {
+        const productContainer = document.getElementById('productContainer');
+
+        productContainer.addEventListener('click', (event) => {
+            const clickedElement = event.target;
+            if (clickedElement.tagName === 'IMG' && clickedElement.dataset.productId) {
+                const productId = clickedElement.dataset.productId;
+                window.location.href = `/user/product/${productId}`;
+            }
+        });
+
+        fetchProducts(); // Call fetchProducts to load products initially
+    });
+
+	</script>
+	
+<!-- 
+	<script>
+
+		// Assuming you have a function to fetch product data from your backend
+function fetchProducts() {
+    // Fetch products data from backend API
+    fetch('/user/home') // Assuming this is the correct API endpoint to fetch products
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parse response as JSON
+        })
+        .then(products => renderProducts(products)) // Pass products to renderProducts function
+        .catch(error => console.error('Error fetching products:', error));
+}
+
+
+function renderProducts(products) {
+    const productContainer = document.getElementById('productContainer');
+    // Clear previous content
+    productContainer.innerHTML = '';
+
+    products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+
+        // Create elements for product details (name, image, price, etc.)
+        const productName = document.createElement('h4');
+        productName.textContent = product.productName;
+
+        const productImage = document.createElement('img');
+        productImage.src = product.images[0];
+        productImage.alt = product.productName;
+
+        const productPrice = document.createElement('p');
+        productPrice.textContent = `Price: $${product.price}`;
+
+        // Append elements to productCard
+        productCard.appendChild(productName);
+        productCard.appendChild(productImage);
+        productCard.appendChild(productPrice);
+
+
+        // Append productCard to productContainer
+        productContainer.appendChild(productCard);
+    });
+}
+
+// Fetch and render products when the page loads
+document.addEventListener('DOMContentLoaded', fetchProducts);
+
+	</script> -->
+	<%- include('../layouts/user/footer') %>

@@ -1,0 +1,113 @@
+<%- include('../layouts/admin/header',{title:"manage categories"}) %>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container ">
+        <div class="row">
+        
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="main-content">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1>Manage Categories</h1>
+                    </div>
+                        
+        <% if(successMessage && successMessage.length >0) { %>
+            <div class="alert alert-success"><%= successMessage %></div>
+        <% } %>
+        <% if(errorMessage && errorMessage.length > 0) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
+                    <!-- Category List -->
+                    <div class="category-list">
+                        <h4>Categories</h4>
+                        <ul class="list-group">
+                            <% locals.category.forEach((row, index) => { %>
+                            <!-- List of categories will be dynamically generated here -->
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <%= row.name %>
+                                <div class="btn-group" role="group">
+                                   <a href="/admin/editCategory/<%= row._id %>"> <button type="button" class="btn btn-primary btn-sm edit-btn">Edit</button></a>
+                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-type="category" data-id="<%= row._id %>">Delete</button>
+                                </div>
+                            </li>
+                            <% }) %>
+                         
+                            <!-- Add more categories dynamically -->
+                        </ul>
+                    </div>
+                    <!-- Add/Edit Category Form -->
+                    <div class="category-form">
+                        <br>
+                        <h4>Add Category</h4>
+                        <form id="categoryForm" action="/admin/categoryAdd" method="post">
+                            <div class="form-group">
+                                <label for="categoryName">Category Name:</label>
+                                <input type="text" class="form-control" id="categoryName" name="name" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+
+                    <!-- brands -->
+                    <div class="category-list">
+                        <h4>Brands</h4>
+                        <ul class="list-group">
+                            <% locals.brand.forEach((row, index) => { %>
+                            <!-- List of categories will be dynamically generated here -->
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                 <%= row.name %>
+                                <div class="btn-group" role="group">
+                                    <a href="/admin/editBrand/<%= row._id %>"><button type="button" class="btn btn-primary btn-sm edit-btn">Edit</button></a>
+                                    <button type="button" class="btn btn-danger btn-sm delete-btn" data-type="brand" data-id="<%= row._id %>">Delete</button>
+                                </div>
+                            </li>
+                            <% }) %>
+                          
+                            <!-- Add more categories dynamically -->
+                        </ul>
+                    </div>
+                    <!-- Add/Edit Category Form -->
+                    <div class="category-form">
+                        <br>
+                        <h4>Add Brands</h4>
+                        <form id="categoryForm" action="/admin/brandAdd" method="post">
+                            <div class="form-group">
+                                <label for="categoryName">Brand Name:</label>
+                                <input type="text" class="form-control" id="categoryName" name="name"  required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Your custom JavaScript -->
+    <script>
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const type = this.dataset.type;
+                const id = this.dataset.id;
+                const confirmation = confirm(`Are you sure you want to delete this ${type}?`);
+                if (confirmation) {
+                    window.location.href = `/admin/delete${type.charAt(0).toUpperCase() + type.slice(1)}/${id}`;
+                }
+            });
+        });
+    </script>
+
+<%- include('../layouts/admin/adminFooter') %>

@@ -1,0 +1,85 @@
+<%- include('../layouts/admin/header',{title:"Customers List"}) %>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>User List - Admin Panel</h2>
+        <!-- Search Bar -->
+        <% if(successMessage && successMessage.length >0) { %>
+            <div class="alert alert-success"><%= successMessage %></div>
+        <% } %>
+        <% if(errorMessage && errorMessage.length > 0) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
+
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search by name" aria-label="Search by name">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button">Search</button>
+            </div>
+        </div>
+        <!-- User Table -->
+       
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">Customer Name</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Orders</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Created Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dummy Data (Replace with EJS loop) -->
+                <% locals.users.forEach((row, index) => { %>
+                <tr>
+                    <th scope="row"><%= index+1 %></th>
+                    <td><%= row.name %></td>
+                    <td></td>
+                    <td></td>
+                    <!-- <td><span class="badge badge-success">Active</span></td> -->
+                   <td><span class="badge <%= row.isActive?'badge-success' : 'badge-danger' %>">
+                    <%= row.isActive? 'Active':'Blocked' %>
+                   </span></td>
+                    <td><%= row.date %></td>
+                    <td>
+                        <!-- Delete Icon (Replace with actual delete functionality) -->
+                      
+                        <a href="/admin/block/<%= row._id %>"><button class="btn btn-danger">BLOCK</button></a>
+                        <a href="/admin/unblock/<%= row._id %>"><button class="btn btn-success">UNBLOCK</button></a>
+                    </td>
+                </tr>
+                <% }) %>
+                <!-- More rows here -->
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<%- include('../layouts/admin/adminFooter') %>

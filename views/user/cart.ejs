@@ -1,0 +1,312 @@
+<%- include('../layouts/user/header',{title:"cart-Page"}) %>
+
+    <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Shopping Cart</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="/user/home">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="category.html">Cart</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+
+    <!--================Cart Area =================-->
+    <section class="cart_area">
+        <div class="container">
+            <div class="cart_inner">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(cartItems && cartItems.products.length>0) { %>
+                                <% cartItems.products.forEach(item=> { %>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="<%= item.productId.images[0].replace('/public','') %>"
+                                                        alt="<%= item.productId.productName %>" class="img-thumbnail"
+                                                        style="width: 50px;">
+                                                </div>
+                                                <div class="media-body">
+                                                    <p>
+                                                        <%= item.productId.productName %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h5>$<%= item.productId.price %>.00 </h5>
+                                        </td>
+                                        <!-- <td>
+                                <div class="product_count">
+                                    <input type="text" name="qty" id="sst" maxlength="12" value="1"  title="Quantity:"
+                                        class="input-text qty">
+                                    <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                        class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+                                    <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                        class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+                                </div>
+                            </td> -->
+                                        <td>
+                                            <div class="product_count">
+                                                <input type="text" name="qty" id="qty-<%= item.productId._id %>"
+                                                    maxlength="12" value="<%= item.quantity %>" title="Quantity:"
+                                                    class="input-text qty">
+                                                <button
+                                                    onclick="changeQuantity('<%= item.productId._id %>', 1,'<%= item.productId.price %>')"
+                                                    class="increase items-count" type="button"><i
+                                                        class="lnr lnr-chevron-up"></i></button>
+                                                <button
+                                                    onclick="changeQuantity('<%= item.productId._id %>', -1,'<%= item.productId.price %>')"
+                                                    class="reduced items-count" type="button"><i
+                                                        class="lnr lnr-chevron-down"></i></button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h5><strong id="totalAmount<%-item.productId._id%>">$<%= item.quantity
+                                                        *item.productId.price %></strong></h5>
+                                        </td>
+                                        <td>
+                                        <td><button type="button" class="btn primary-btn btn-sm delete-btn"
+                                                data-type="product" data-id="<%= item._id %>">Delete</button></td>
+                                        </td>
+
+                                        <% }) %>
+                                    </tr>
+                                    <% }else{ %>
+                                        <tr>
+                                            <td colspan="6">
+                                                <h3>No products found.</h3>
+                                            </td>
+
+
+                                        </tr>
+                                        <% } %>
+
+                                            <tr class="bottom_button">
+                                                <td>
+                                                    <a class="gray_btn" href="/user/category">Update Cart</a>
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <div class="cupon_text d-flex align-items-center">
+                                                        <input type="text" placeholder="Coupon Code">
+                                                        <a class="primary-btn" href="#">Apply</a>
+                                                        <a class="gray_btn" href="#">Close Coupon</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <h5>Subtotal</h5>
+                                                </td>
+                                                <td>
+                                                    <h5>$2160.00</h5>
+                                                </td>
+                                            </tr>
+                                            <tr class="shipping_area">
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <h5>Shipping</h5>
+                                                </td>
+                                                <td>
+                                                    <div class="shipping_box">
+                                                        <ul class="list">
+                                                            <li><a href="#">Flat Rate: $5.00</a></li>
+                                                            <li><a href="#">Free Shipping</a></li>
+                                                            <li><a href="#">Flat Rate: $10.00</a></li>
+                                                            <li class="active"><a href="#">Local Delivery: $2.00</a>
+                                                            </li>
+                                                        </ul>
+                                                        <h6>Calculate Shipping <i class="fa fa-caret-down"
+                                                                aria-hidden="true"></i></h6>
+                                                        <select class="shipping_select">
+                                                            <option value="1">Bangladesh</option>
+                                                            <option value="2">India</option>
+                                                            <option value="4">Pakistan</option>
+                                                        </select>
+                                                        <select class="shipping_select">
+                                                            <option value="1">Select a State</option>
+                                                            <option value="2">Select a State</option>
+                                                            <option value="4">Select a State</option>
+                                                        </select>
+                                                        <input type="text" placeholder="Postcode/Zipcode">
+                                                        <a class="gray_btn" href="#">Update Details</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr class="out_button_area">
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <div class="checkout_btn_inner d-flex align-items-center">
+                                                        <a class="gray_btn" href="#">Continue Shopping</a>
+                                                        <a class="primary-btn" href="/user/checkout">Proceed to
+                                                            checkout</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- <h1>AJAX Example</h1>
+    <input type="text" id="inputfiled">
+    <button id="fetchButton">Fetch Data</button>
+    <div id="result"></div> -->
+
+    <!-- Include SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        //to show confirmation message while deleting product in cart list
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const type = this.dataset.type;
+                const id = this.dataset.id;
+                alert(type)
+                const confirmation = confirm(`Are you sure you want to delete this ${type} from the cart list?`);
+                if (confirmation) {
+                    window.location.href = `/user/deleteCart/${id}`;
+                }
+            })
+        });
+    </script>
+
+    <!-- <script>
+        async function changeQuantity(productId, change, price) {
+            const input = document.getElementById('qty-' + productId);
+            let quantity = parseInt(input.value);
+            let totalAmount = document.getElementById(`totalAmount${productId}`)
+            const currentContent = totalAmount.textContent
+
+
+            if (!isNaN(quantity)) {
+                quantity += change; // Increase or decrease the quantity based on the change value
+                if (quantity < 1) quantity = 1; // Ensure the quantity does not go below 1
+                input.value = quantity;
+                alert(input.value)
+                totalAmount.textContent = `$${Number(price) * Number(input.value)}`
+
+
+                // Update the quantity in the database via fetch API
+                try {
+                    const response = await fetch('/user/updateQuantity', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId, quantity })
+                    });
+
+                    if (!response.ok) {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: result.error || 'An error occurred',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        const result = await response.json();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: result.message || 'Operation successful',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        console.log('data from the backen', result.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to update quantity');
+                }
+            }
+        }
+
+    </script> -->
+   
+    <!-- ajax calling -->
+   <script>
+    function changeQuantity(productId,count,price ){
+        $.ajax({
+            url:'/user/getData',
+            data : {
+                proid : productId,
+                count : count,
+                price : price
+            },
+            method :'post',
+            success : (response) => {
+                alert(response)
+            }
+        })
+    }
+   </script>
+   <!-- <script>
+    $(document).ready(function() {
+            $('#fetchButton').click(function() {
+                const inupdata = $('#inputfiled').val();
+                alert(inupdata)
+                $.ajax({
+                    url: '/user/getData',
+                    type: 'post',
+                    data: {input:inupdata},
+                    success: (response) => {
+
+                        $('#result').html(response);
+                    },
+                    error: function(error) {
+                        $('#result').html('An error occurred');
+                    }
+                });
+            });
+        });
+   </script> -->
+    <!--================End Cart Area =================-->
+    <%- include('../layouts/user/footer') %>

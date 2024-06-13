@@ -1,0 +1,140 @@
+<%- include('../layouts/admin/header',{title: editMode ? 'Edit Product' : 'Add Product'}) %>
+
+<!-- Bootstrap CSS -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- Cropper CSS for image cropping -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h1 class="mb-4"><%= editMode ? 'Edit Product' : 'Add Product' %></h1>
+    <% if (typeof successMessage !== 'undefined' && successMessage.length > 0) { %>
+      <div class="alert alert-success">
+          <%= successMessage %>
+      </div>
+  <% } %>
+
+  <% if (typeof errorMessage !== 'undefined' && errorMessage.length > 0) { %>
+      <div class="alert alert-danger">
+          <ul>
+              <% errorMessage.forEach(error => { %>
+                  <li><%= error %></li>
+              <% }); %>
+          </ul>
+      </div>
+  <% } %>
+    <form action="<%= editMode ? `/admin/product/editProduct/${product._id}` : '/admin/product/addProduct' %> " method="post" id="upload-form" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="productName">Product Name</label>
+        <input type="text" class="form-control" id="productName" placeholder="Enter product name" name="productName" value="<%= editMode ? product.productName  :'' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="productPrice">Product Price</label>
+        <input type="number" class="form-control" id="productPrice" placeholder="Enter product price" name="price" value="<%= editMode ? product.price  :'' %>"  required>
+      </div>
+      <div class="form-group">
+        <label for="productStock">Stock</label>
+        <input type="number" class="form-control" id="productStock" placeholder="Enter stock quantity" name="stock" value="<%= editMode ? product.stock : '' %>"  required>
+      </div>
+      <div class="form-group">
+        <label for="productWarranty">Warranty (year)</label>
+        <input type="number" class="form-control" id="productWarranty" placeholder="Enter warranty duration" name="warranty" value="<%= editMode ? product.warranty : '' %>"  required>
+      </div>
+      <div class="form-group">
+        <label for="productRating">Rating</label>
+        <input type="number" class="form-control" id="productRating" placeholder="Enter product rating" name="rating" value="<%= editMode ? product.rating : '' %>"  required>
+      </div>
+
+      <!-- new -->
+      <div class="form-group">
+        <label for="productName">Watch Type</label>
+        <input type="text" class="form-control" id="watchType" placeholder="Enter product watchType" name="watchType" value="<%= editMode ? product.watchType  :'' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="productName">Case Material</label>
+        <input type="text" class="form-control" id="CaseMaterial" placeholder="Enter product CaseMaterial" name="CaseMaterial" value="<%= editMode ? product.CaseMaterial  :'' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="productName">Dial Colour</label>
+        <input type="text" class="form-control" id="dialColour" placeholder="Enter product dialColour" name="dialColour" value="<%= editMode ? product.dialColour  :'' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="productName">Strap Material</label>
+        <input type="text" class="form-control" id="strapMaterial" placeholder="Enter product strapMaterial" name="strapMaterial" value="<%= editMode ? product.strapMaterial  :'' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="productName">Model Number</label>
+        <input type="text" class="form-control" id="ModelNumber" placeholder="Enter product ModelNumber" name="ModelNumber" value="<%= editMode ? product.ModelNumber  :'' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="productName">Features</label>
+        <input type="text" class="form-control" id="features" placeholder="Enter product features" name="features" value="<%= editMode ? product.features  :'' %>" required>
+      </div>
+      <div class="form-group">
+        <label for="productBrand">Brand</label>
+        <select class="form-control" id="productBrand" name="brand" required>
+          <% brands.forEach(brand => { %>
+            <option value="<%= brand.name %>"><%= brand.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="productCategory">Category</label>
+        <select class="form-control" id="productCategory" name="category" required>
+          <% categories.forEach(category => { %>
+            <option value="<%= category.name %>"><%= category.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <!-- first image -->
+      <!-- <div class="form-group">
+        <label for="productImage">Product Image</label>
+        <input type="file" id="image-input" accept="image/*" class="form-control" required>
+      </div>
+      <div id="crop-container" class="mb-3" style="display:none;">
+        <div class="mb-2">Crop Image</div>
+      </div>
+      <br>
+      <div id="image-preview-container" class="d-flex flex-wrap"></div> -->
+      
+      
+      <h2>Select Three Images</h2>
+  <input type="file" accept="image/*" name="images" multiple onchange="previewImages(event)">
+  <div id="preview"></div>
+      <br>
+      <br>
+      <button type="submit" class="btn btn-primary"><%= editMode ? 'Update Product' : 'Add Product' %></button>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+  <script>
+    function previewImages(event) {
+      var preview = document.getElementById('preview');
+      preview.innerHTML = '';
+      
+      var files = event.target.files;
+      
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+          var img = document.createElement('img');
+          img.src = event.target.result;
+          img.style.width = '200px';
+          img.style.height = 'auto';
+          preview.appendChild(img);
+        };
+
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+  
+<%- include('../layouts/admin/adminFooter') %>

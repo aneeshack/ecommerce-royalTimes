@@ -1,0 +1,60 @@
+<%- include('../layouts/admin/header', { title: editMode ? "Edit Coupon" : "Add Coupon" }) %>
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><%= editMode ? "Edit Coupon" : "Add Coupon" %></h1>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <form action="<%= editMode ? `/admin/editCoupon/${coupon._id}` : '/admin/addCoupon' %>" method="post">
+                    <div class="form-group">
+                        <label for="couponDescription">Coupon Description</label>
+                        <input type="text" class="form-control" id="couponDescription" name="description" placeholder="Enter coupon description" required value="<%= coupon.description || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="couponCode">Coupon Code</label>
+                        <input type="text" class="form-control" id="couponCode" name="code" placeholder="Enter coupon code" required value="<%= coupon.code || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="active" <%= coupon.status === 'active' ? 'selected' : '' %>>Active</option>
+                            <option value="expired" <%= coupon.status === 'expired' ? 'selected' : '' %>>Expired</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxDiscount">Maximum Discount Amount</label>
+                        <input type="number" class="form-control" id="maxDiscount" name="maxDiscount" placeholder="Enter maximum discount amount" required value="<%= coupon.maxDiscount || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="usageLimitPerUser">Usage Limit Per User</label>
+                        <input type="number" class="form-control" id="usageLimitPerUser" name="usageLimitPerUser" placeholder="Enter usage per user" required value="<%= coupon.usageLimitPerUser || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="maxCount">Max Count</label>
+                        <input type="number" class="form-control" id="maxCount" name="maxCount" placeholder="Enter max count" required value="<%= coupon.maxCount || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="expiryDate">Expiry Date</label>
+                        <input type="date" class="form-control" id="expiryDate" name="expiryDate" required value="<%= coupon.expiryDate ? coupon.expiryDate.toISOString().slice(0, 10) : '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="discountPercentage">Maximum Discount Percentage</label>
+                        <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" placeholder="Enter discount percentage" required value="<%= coupon.discountPercentage || '' %>">
+                    </div>
+                    <button type="submit" class="btn btn-primary"><%= editMode ? "Update Coupon" : "Add Coupon" %></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <%- include('../layouts/admin/adminFooter') %>
+</body>
+</html>
