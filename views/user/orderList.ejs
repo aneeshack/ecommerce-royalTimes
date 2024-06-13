@@ -38,6 +38,25 @@
                             <th scope="col">Actions</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        <% cartItems.forEach(item => { %>
+                        <tr>
+                            <td>
+                                <img src="<%= item.imageUrl %>" alt="Product Image" class="img-fluid" style="max-width: 100px;">
+                            </td>
+                            <td><%= item.productName %></td>
+                            <td>
+                                <input type="number" value="<%= item.quantity %>" class="form-control" min="1" data-product-id="<%= item.productId %>">
+                            </td>
+                            <td>$<%= item.price.toFixed(2) %></td>
+                            <td>$<%= (item.price * item.quantity).toFixed(2) %></td>
+                            <td>
+                                <button class="btn btn-danger" data-product-id="<%= item.productId %>">Remove</button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                    
                 
                     </table>
             </div>

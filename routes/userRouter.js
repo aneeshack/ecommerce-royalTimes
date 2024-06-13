@@ -6,6 +6,7 @@ const addressController = require('../controller/addressController');
 const categoryController = require('../controller/categoryController');
 const userProfileController = require('../controller/userProfileController');
 const cartController = require('../controller/cartController');
+const checkoutController = require('../controller/checkoutController');
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
 const upload = require('../helpers/userMulter')
@@ -40,31 +41,32 @@ userRouter.get('/api/products',categoryController.brandFilter);
 userRouter.get('/api/productCategory',categoryController.categoryFilter);
 
 //user profile details
-userRouter.get('/profile',userProfileController.profilePage);
+userRouter.get('/profile',valid.isLogout,userProfileController.profilePage);
 userRouter.post('/profile/:id',upload.single('profileImage'),userProfileController.profileUpdate);
-userRouter.get('/password',userProfileController.changePasswordPage);
-userRouter.post('/password/:id',userProfileController.changePass);
+userRouter.get('/password',valid.isLogout,userProfileController.changePasswordPage);
+userRouter.post('/password/:id',valid.isLogout,userProfileController.changePass);
 
 
 //address controller routes
-userRouter.get('/address',addressController.addressManage);
+userRouter.get('/address',valid.isLogout,addressController.addressManage);
 userRouter.post('/address/:id',addressController.addAddress);
-userRouter.get('/address/edit/:id',addressController.addressEditpage);
+userRouter.get('/address/edit/:id',valid.isLogout,addressController.addressEditpage);
 userRouter.post('/address/edit/:id',addressController.updateAddress);
-userRouter.get('/address/delete/:id',addressController.deleteAddress);
+userRouter.get('/address/delete/:id',valid.isLogout,addressController.deleteAddress);
 
 
 //cart controller routes
 userRouter.post('/cart',cartController.addToCart);
-userRouter.get('/cart',cartController.cartPage);
-userRouter.get('/deleteCart/:id',cartController.deleteCart);
+userRouter.get('/cart',valid.isLogout,cartController.cartPage);
+userRouter.get('/deleteCart/:id',valid.isLogout,cartController.deleteCart);
 userRouter.post('/updateQuantity',cartController.updateQuantity);
-userRouter.post('/getData',cartController.getData)
+// userRouter.post('/getData',cartController.getData);
 
+//chekout order and payment controller routes
+userRouter.get('/checkout',valid.isLogout,checkoutController.checkoutPage);
+// userRouter.post('/order',checkoutController.orderAction);
+userRouter.get('/confirmation',valid.isLogout,checkoutController.confirmation);
+userRouter.get('/orders',valid.isLogout,checkoutController.orderList);
 
-userRouter.get('/checkout',userController.checkoutPage);
-userRouter.get('/confirmation',userController.confirmation);
-
-userRouter.get('/orders',userController.orderList);
 module.exports =userRouter
     

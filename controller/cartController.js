@@ -109,14 +109,14 @@ const deleteCart = async (req, res) => {
     }
 }
 
-const getData = (req,res)=>{
-    const {productId,} = req.body.input
-    res.send(`Hello, ${user}`);
-}
+// const getData = (req,res)=>{
+//     const {productId,} = req.body.input
+//     res.send(`Hello, ${user}`);
+// }
 module.exports = {
     addToCart,
     cartPage,
     updateQuantity,
     deleteCart,
-    getData
+
 }

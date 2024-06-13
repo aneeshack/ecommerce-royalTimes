@@ -19,7 +19,7 @@ const cart = require('../models/cart');
 const homePage = async (req, res) => {
     try {
         const products = await product.find({ isActive: true }).populate('brand');
-        const userId = req.session.userId;
+     
         const user = req.session.isUser;
         // const cart = await cartModel.findOne({ userId: userId });
         // let count = cart.products.length;
@@ -256,9 +256,6 @@ const loginAction = async (req, res) => {
             if (check.isActive === true) {
                 const passwordMatch = await bcrypt.compare(password, check.password);
                 if (passwordMatch) {
-                    const cart = await cartModel.findOne({ userId: userId });
-                    let count = cart.products.length;
-                    req.session.countCart = count
                     req.session.userId = check._id
                     req.session.isUser = check.name;
                     res.redirect('/user/home')
@@ -291,18 +288,6 @@ const logout = (req, res) => {
 }
 
 
-const checkoutPage = async (req, res) => {
-    res.render('user/checkoutPage')
-}
-
-const confirmation = async (req, res) => {
-    res.render('user/confirmation');
-}
-
-const orderList = async (req, res) => {
-    res.render('user/orderList')
-}
-
 module.exports = {
     login,
     signupAction,
@@ -311,8 +296,5 @@ module.exports = {
     signup,
     resendOtp,
     verifyOtp,
-    logout,
-    orderList,
-    checkoutPage,
-    confirmation,
+    logout
 }
