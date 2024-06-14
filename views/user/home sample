@@ -1,18 +1,25 @@
-//user order list ejs rendering 
+//user order list ejs rendering
 
 <tbody>
     <% cart.forEach(function(item) { %>
         <tr>
-            <td><img src="<%= item.product.image %>" alt="<%= item.product.name %>" class="img-fluid" style="width: 50px; height: 50px;"></td>
-            <td><%= item.product.name %></td>
-            <td><%= item.quantity %></td>
-            <td>$<%= item.product.price.toFixed(2) %></td>
-            <td>$<%= (item.product.price * item.quantity).toFixed(2) %></td>
+            <td><img src="<%= item.product.image %>" alt="<%= item.product.name %>" class="img-fluid"
+                    style="width: 50px; height: 50px;"></td>
+            <td>
+                <%= item.product.name %>
+            </td>
+            <td>
+                <%= item.quantity %>
+            </td>
+            <td>$<%= item.product.price.toFixed(2) %>
+            </td>
+            <td>$<%= (item.product.price * item.quantity).toFixed(2) %>
+            </td>
             <td>
                 <a href="/cart/remove/<%= item.product._id %>" class="btn btn-danger btn-sm">Remove</a>
             </td>
         </tr>
-    <% }); %>
+        <% }); %>
 </tbody>
 
 
@@ -21,232 +28,262 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-</head>
-<body>
-<!-- Start Banner Area -->
-<section class="banner-area organic-breadcrumb">
-    <div class="container">
-        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-            <div class="col-first">
-                <h1>User Profile</h1>
-                <nav class="d-flex align-items-center">
-                    <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="#">User<span class="lnr lnr-arrow-right"></span></a>
-                    <a href="profile.html">Profile</a>
-                </nav>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- End Banner Area -->
-       
-<div class="container_fluid mt-5 mb-5 mr-5 ml-5">
-    <div class="row">      
-        <%- include('../layouts/userProfile/profileSidebar') %>
-        <div class="col-md-9">
-            <h2>My Cart</h2>
-            <% if(successMessage && successMessage.length >0) { %>
-                <div class="alert alert-success"><%= successMessage %></div>
-            <% } %>
-            <% if(errorMessage && errorMessage.length > 0) { %>
-                <div class="alert alert-danger"><%= errorMessage %></div>
-            <% } %>
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">Image</th>
-                            <!-- <th scope="col">Product Name</th> -->
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if(cartItems && cartItems.length>0) { %>
-                        <% cartItems.forEach(item => { %>
-                        <tr>
-                            <td>
-                                <!-- Small image before product name -->
-                                <img src="<%= item.images[0] %>" alt="<%= item.productName %>" class="img-thumbnail" style="width: 50px;">
-                                <span><%= item.productName %></span>
-                            </td>
-                            <!-- <td><img src="product1.jpg" alt="Product 1"></td> -->
-                            <!-- <td></td> -->
-                            <td>
-                                <div class="quantity-selector"> 
-                                     <button class="quantity-btn minus">-</button> 
-                                    <input type="number" class="quantity-input" value="1" min="1" data-price="<%= item.price %>"> 
-                                    <button class="quantity-btn plus">+</button> 
-                                </div>                               
-                            </td>
-                            <td>$<%= item.price %>.00 </td>
-                            <td class="total-price">$<%= item.price %>.00 </td>
-                            <!-- <td><button class="btn btn-danger">Remove</button></td> -->
-                            <td><button type="button" class="btn btn-danger btn-sm delete-btn" data-type="product" data-id="<%= item._id %>">Delete</button></td>
-                        </tr>
-                        <% }) %>
-                    </tbody>
-                    <% }else{ %>
-                        <tr>
-                            <td colspan="6">no products found.
-                                <br>
-                                <a href="/user/category">add product to cart list.</a>
-                            </td>
-                        </tr>
-                        <% } %>
-                </table>
-                
-            </div>
-         
-            
-            <div class="coupon">
-                <label for="coupon">Coupon Code:</label>
-                <input type="text" id="coupon" name="coupon">
-                <button class="btn btn-primary" onclick="applyCoupon()">Apply Coupon</button>
-            </div>
-            <br>
-            <div class="cart-summary-box">
-                <div class="cart-summary">
-                    <h4>Subtotal: $35</h4> <!-- Update with actual subtotal using JavaScript -->
-                    <hr>
-                    <h4>Shipping: $5</h4> <!-- Update with actual shipping charge -->
-                    <hr>
-                    <h4>Total: $40</h4> <!-- Update with actual total using JavaScript -->
+    </head>
+
+    <body>
+        <!-- Start Banner Area -->
+        <section class="banner-area organic-breadcrumb">
+            <div class="container">
+                <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                    <div class="col-first">
+                        <h1>User Profile</h1>
+                        <nav class="d-flex align-items-center">
+                            <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
+                            <a href="#">User<span class="lnr lnr-arrow-right"></span></a>
+                            <a href="profile.html">Profile</a>
+                        </nav>
+                    </div>
                 </div>
-                <button class="btn btn-primary">Proceed to Checkout</button>
+            </div>
+        </section>
+        <!-- End Banner Area -->
+
+        <div class="container_fluid mt-5 mb-5 mr-5 ml-5">
+            <div class="row">
+                <%- include('../layouts/userProfile/profileSidebar') %>
+                    <div class="col-md-9">
+                        <h2>My Cart</h2>
+                        <% if(successMessage && successMessage.length>0) { %>
+                            <div class="alert alert-success">
+                                <%= successMessage %>
+                            </div>
+                            <% } %>
+                                <% if(errorMessage && errorMessage.length> 0) { %>
+                                    <div class="alert alert-danger">
+                                        <%= errorMessage %>
+                                    </div>
+                                    <% } %>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th scope="col">Image</th>
+                                                        <!-- <th scope="col">Product Name</th> -->
+                                                        <th scope="col">Quantity</th>
+                                                        <th scope="col">Price</th>
+                                                        <th scope="col">Total</th>
+                                                        <th scope="col">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% if(cartItems && cartItems.length>0) { %>
+                                                        <% cartItems.forEach(item=> { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <!-- Small image before product name -->
+                                                                    <img src="<%= item.images[0] %>"
+                                                                        alt="<%= item.productName %>"
+                                                                        class="img-thumbnail" style="width: 50px;">
+                                                                    <span>
+                                                                        <%= item.productName %>
+                                                                    </span>
+                                                                </td>
+                                                                <!-- <td><img src="product1.jpg" alt="Product 1"></td> -->
+                                                                <!-- <td></td> -->
+                                                                <td>
+                                                                    <div class="quantity-selector">
+                                                                        <button class="quantity-btn minus">-</button>
+                                                                        <input type="number" class="quantity-input"
+                                                                            value="1" min="1"
+                                                                            data-price="<%= item.price %>">
+                                                                        <button class="quantity-btn plus">+</button>
+                                                                    </div>
+                                                                </td>
+                                                                <td>$<%= item.price %>.00 </td>
+                                                                <td class="total-price">$<%= item.price %>.00 </td>
+                                                                <!-- <td><button class="btn btn-danger">Remove</button></td> -->
+                                                                <td><button type="button"
+                                                                        class="btn btn-danger btn-sm delete-btn"
+                                                                        data-type="product"
+                                                                        data-id="<%= item._id %>">Delete</button></td>
+                                                            </tr>
+                                                            <% }) %>
+                                                </tbody>
+                                                <% }else{ %>
+                                                    <tr>
+                                                        <td colspan="6">no products found.
+                                                            <br>
+                                                            <a href="/user/category">add product to cart list.</a>
+                                                        </td>
+                                                    </tr>
+                                                    <% } %>
+                                            </table>
+
+                                        </div>
+
+
+                                        <div class="coupon">
+                                            <label for="coupon">Coupon Code:</label>
+                                            <input type="text" id="coupon" name="coupon">
+                                            <button class="btn btn-primary" onclick="applyCoupon()">Apply
+                                                Coupon</button>
+                                        </div>
+                                        <br>
+                                        <div class="cart-summary-box">
+                                            <div class="cart-summary">
+                                                <h4>Subtotal: $35</h4>
+                                                <!-- Update with actual subtotal using JavaScript -->
+                                                <hr>
+                                                <h4>Shipping: $5</h4> <!-- Update with actual shipping charge -->
+                                                <hr>
+                                                <h4>Total: $40</h4> <!-- Update with actual total using JavaScript -->
+                                            </div>
+                                            <button class="btn btn-primary">Proceed to Checkout</button>
+                                        </div>
+                    </div>
             </div>
         </div>
-    </div>
-</div>
-                    
-    </div>
-</div>
+
+        </div>
+        </div>
 
 
-<style>
-    .profile-image-container {
-position: relative;
-width: 150px; /* Adjust the width as needed */
-height: 150px; /* Adjust the height as needed */
-overflow: hidden;
-border-radius: 50%; /* Makes the image round */
-}
-
-.profile-image {
-width: 100%;
-height: 100%;
-object-fit: cover; /* Ensures the image covers the entire container */
-}
-.cart-summary-box {
-    border: 1px solid #ccc;
-    width: 50%;
-    border-radius: 5px;
-    padding: 15px;
-    margin-top: 20px;
-}
-
-.cart-summary {
-    margin-bottom: 15px;
-}
-
-.cart-summary h4 {
-    margin-bottom: 10px;
-}
-.quantity-popup {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    display: none;
-}
-
-</style>
-<script>
-    
-    //to show confirmation message while deleting product in cart list
-    document.querySelector('.delete-btn').addEventListener('click', function() {
-        const type = this.dataset.type;
-        const id = this.dataset.id;
-        const confirmation = confirm(`Are you sure you want to delete this ${type} from the cart list?`);
-        if (confirmation) {
-            window.location.href = `/user/deleteCart/${id}`;
-        }
-    });
-</script>
-<script>
-    // Calculate cart total
-    $(document).ready(function() {
-        let total = 0;
-        $('.table tbody tr').each(function() {
-            const price = parseFloat($(this).find('td:nth-child(4)').text().replace('$', ''));
-            const quantity = parseInt($(this).find('td:nth-child(3)').text());
-            total += price * quantity;
-        });
-        $('.cart-total h4').text('Total: $' + total.toFixed(2)); // Update total in the cart
-    });
-    
-</script>
-<script>
-    
-    document.querySelectorAll('.quantity-selector').forEach(selector => {
-    const input = selector.querySelector('.quantity-input');
-    const minusBtn = selector.querySelector('.minus');
-    const plusBtn = selector.querySelector('.plus');
-
-    minusBtn.addEventListener('click', () => {
-        let value = parseInt(input.value);
-        value = value > 1 ? value - 1 : 1; // Ensure quantity doesn't go below 1
-        input.value = value;
-    });
-
-    plusBtn.addEventListener('click', () => {
-        let value = parseInt(input.value);
-        value += 1;
-        input.value = value;
-    });
-});
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const quantityInputs = document.querySelectorAll('.quantity-input');
-
-    quantityInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            const price = parseFloat(input.getAttribute('data-price'));
-            const quantity = parseInt(input.value);
-            const totalPriceElement = input.closest('tr').querySelector('.total-price');
-
-            if (quantity > 0) {
-                const totalPrice = price * quantity;
-                totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+        <style>
+            .profile-image-container {
+                position: relative;
+                width: 150px;
+                /* Adjust the width as needed */
+                height: 150px;
+                /* Adjust the height as needed */
+                overflow: hidden;
+                border-radius: 50%;
+                /* Makes the image round */
             }
-        });
-    });
-});
 
-</script>
+            .profile-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                /* Ensures the image covers the entire container */
+            }
 
-<script>
-    // Apply coupon code
-    function applyCoupon() {
-        const couponCode = $('#coupon').val(); // Get the coupon code from input
-        // Add logic to apply the coupon code and update prices accordingly
-        // For example, you can make an AJAX request to validate the coupon code and update the prices
-        // Update subtotal, shipping charge, and total accordingly
-        $('.cart-summary h4:eq(0)').text('Subtotal: $30'); // Update subtotal
-        $('.cart-summary h4:eq(1)').text('Shipping: $5'); // Update shipping charge
-        $('.cart-summary h4:eq(2)').text('Total: $35'); // Update total
-    }
-</script>
+            .cart-summary-box {
+                border: 1px solid #ccc;
+                width: 50%;
+                border-radius: 5px;
+                padding: 15px;
+                margin-top: 20px;
+            }
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            .cart-summary {
+                margin-bottom: 15px;
+            }
 
-<%- include('../layouts/user/footer') %>
+            .cart-summary h4 {
+                margin-bottom: 10px;
+            }
+
+            .quantity-popup {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #333;
+                color: #fff;
+                padding: 10px 20px;
+                border-radius: 5px;
+                display: none;
+            }
+        </style>
+        <script>
+
+            //to show confirmation message while deleting product in cart list
+            document.querySelector('.delete-btn').addEventListener('click', function () {
+                const type = this.dataset.type;
+                const id = this.dataset.id;
+                const confirmation = confirm(`Are you sure you want to delete this ${type} from the cart list?`);
+                if (confirmation) {
+                    window.location.href = `/user/deleteCart/${id}`;
+                }
+            });
+        </script>
+        <script>
+            // Calculate cart total
+            $(document).ready(function () {
+                let total = 0;
+                $('.table tbody tr').each(function () {
+                    const price = parseFloat($(this).find('td:nth-child(4)').text().replace('$', ''));
+                    const quantity = parseInt($(this).find('td:nth-child(3)').text());
+                    total += price * quantity;
+                });
+                $('.cart-total h4').text('Total: $' + total.toFixed(2)); // Update total in the cart
+            });
+
+        </script>
+        <script>
+
+            document.querySelectorAll('.quantity-selector').forEach(selector => {
+                const input = selector.querySelector('.quantity-input');
+                const minusBtn = selector.querySelector('.minus');
+                const plusBtn = selector.querySelector('.plus');
+
+                minusBtn.addEventListener('click', () => {
+                    let value = parseInt(input.value);
+                    value = value > 1 ? value - 1 : 1; // Ensure quantity doesn't go below 1
+                    input.value = value;
+                });
+
+                plusBtn.addEventListener('click', () => {
+                    let value = parseInt(input.value);
+                    value += 1;
+                    input.value = value;
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const quantityInputs = document.querySelectorAll('.quantity-input');
+
+                quantityInputs.forEach(input => {
+                    input.addEventListener('input', function () {
+                        const price = parseFloat(input.getAttribute('data-price'));
+                        const quantity = parseInt(input.value);
+                        const totalPriceElement = input.closest('tr').querySelector('.total-price');
+
+                        if (quantity > 0) {
+                            const totalPrice = price * quantity;
+                            totalPriceElement.textContent = `$${totalPrice.toFixed(2)}`;
+                        }
+                    });
+                });
+            });
+
+        </script>
+
+        <script>
+            // Apply coupon code
+            function applyCoupon() {
+                const couponCode = $('#coupon').val(); // Get the coupon code from input
+                // Add logic to apply the coupon code and update prices accordingly
+                // For example, you can make an AJAX request to validate the coupon code and update the prices
+                // Update subtotal, shipping charge, and total accordingly
+                $('.cart-summary h4:eq(0)').text('Subtotal: $30'); // Update subtotal
+                $('.cart-summary h4:eq(1)').text('Shipping: $5'); // Update shipping charge
+                $('.cart-summary h4:eq(2)').text('Total: $35'); // Update total
+            }
+        </script>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <%- include('../layouts/user/footer') %>
+
+
+        <div class="cupon_area">
+            <div class="check_title">
+                <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
+            </div>
+            <input type="text" placeholder="Enter coupon code">
+            <a class="tp_btn" href="#">Apply Coupon</a>
+        </div>

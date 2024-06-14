@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">E-Commerce Site</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Cart</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Order List Section -->
+    <div class="container mt-5">
+        <h2 class="mb-4">My Orders</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample Order Data -->
+                    <tr>
+                        <td>#12345</td>
+                        <td>2023-06-14</td>
+                        <td>Shipped</td>
+                        <td>$150.00</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#orderDetails12345" aria-expanded="false" aria-controls="orderDetails12345">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <div class="collapse" id="orderDetails12345">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Image</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Sample Product Data -->
+                                        <tr>
+                                            <td>Product 1</td>
+                                            <td><img src="https://via.placeholder.com/50" alt="Product 1"></td>
+                                            <td>2</td>
+                                            <td>$50.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Product 2</td>
+                                            <td><img src="https://via.placeholder.com/50" alt="Product 2"></td>
+                                            <td>1</td>
+                                            <td>$50.00</td>
+                                        </tr>
+                                        <!-- Add more products as needed -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>#12346</td>
+                        <td>2023-06-13</td>
+                        <td>Processing</td>
+                        <td>$200.00</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#orderDetails12346" aria-expanded="false" aria-controls="orderDetails12346">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <div class="collapse" id="orderDetails12346">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Image</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Sample Product Data -->
+                                        <tr>
+                                            <td>Product 3</td>
+                                            <td><img src="" alt="Product 3"></td>
+                                            <td>1</td>
+                                            <td>$100.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Product 4</td>
+                                            <td><img src="/public/images/newphoto.jpg" alt="Product 4"></td>
+                                            <td>1</td>
+                                            <td>$100.00</td>
+                                        </tr>
+                                        <!-- Add more products as needed -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Add more orders as needed -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
