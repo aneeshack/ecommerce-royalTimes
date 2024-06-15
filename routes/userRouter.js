@@ -60,7 +60,6 @@ userRouter.post('/cart',cartController.addToCart);
 userRouter.get('/cart',valid.isLogout,cartController.cartPage);
 userRouter.get('/deleteCart/:id',valid.isLogout,cartController.deleteCart);
 userRouter.post('/updateQuantity',cartController.updateQuantity);
-// userRouter.post('/getData',cartController.getData);
 
 //chekout order and payment controller routes
 userRouter.get('/checkout',valid.isLogout,checkoutController.checkoutPage);

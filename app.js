@@ -37,6 +37,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(checkUser);
 
+
+
 //bodyparser
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))

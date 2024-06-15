@@ -1,50 +1,57 @@
-const mongoose =require('mongoose');
+const mongoose = require('mongoose');
 
 const addressSchema = new mongoose.Schema({
-    street:String,
+    street: String,
     city: String,
     state: String,
-    pinCode : String,
-    country:String
+    pinCode: String,
+    country: String
 })
 
 
 const loginSchema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
+    name: {
+        type: String,
+        required: true
     },
-    email:{
-        type:String,
-        required:true
+    email: {
+        type: String,
+        required: true
     },
-    mobileNumber:{
-        type:String,
-        required:false,
+    mobileNumber: {
+        type: String,
+        required: false,
     },
     gender: {
         type: String,
         required: false
     },
     profileImage: {
-        type:String,
-        required:false
+        type: String,
+        required: false
     },
-    password:{
-        type:String,
-        required:true
+    password: {
+        type: String,
+        required: false
     },
-    date:{
-        type:Date,
-        default:Date.now
+    date: {
+        type: Date,
+        default: Date.now
     },
-    isActive:{
-        type:Boolean,
-        default:true
+    googleId: {
+        type: String
     },
-    address:[addressSchema]
+    isGoogleUser: {
+        type: Boolean,
+        default: false
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    address: [addressSchema]
 })
 
 
 
-module.exports = mongoose.model('userLogin',loginSchema)
+module.exports = mongoose.model('userLogin', loginSchema)
