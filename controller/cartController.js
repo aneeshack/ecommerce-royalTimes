@@ -76,6 +76,8 @@ const updateQuantity = async (req, res) => {
             if (product) {
                 product.quantity = quantity;
                 await cart.save();
+                
+           
                 res.json({ message: 'Quantity updated successfully.' });
 
             } else {

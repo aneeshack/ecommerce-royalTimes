@@ -43,8 +43,8 @@
                                     </label>
 
                                     <p>
-                                        <%= addr.street %>, <%= addr.city %>, <%= addr.state %>, 
-                                        <%= addr.country %>,<%= addr.pinCode %>,
+                                        <%= addr.street %>, <%= addr.city %>, <%= addr.state %>,
+                                                    <%= addr.country %>,<%= addr.pinCode %>,
                                     </p>
                                 </li>
                                 <% }) %>
@@ -56,7 +56,7 @@
                 <!-- modal used for showing to add address -->
                 <button id="openModalBtn" class="primary-btn mt-5">Add Shipping Address</button>
                 <div id="myModal" class="modal">
-                    <div class="modal-content"> 
+                    <div class="modal-content">
                         <span class="close">&times;</span>
                         <!-- <p>This is a modal!</p> -->
                         <div class="col-lg-8">
@@ -104,29 +104,59 @@
                 <!-- <div class="col-lg-4"> -->
                 <div class="order_box">
                     <h2>Your Order</h2>
-                    <ul class="list">
-                        <li><a href="#">Product <span>Total</span></a></li>
-                        <% if (cartItems && cartItems.length>0) { %>
-                         <% cartItems.forEach(items => { %>
-                          <% items.products.forEach(product => { %>
-                            
-                            <li><a href="#"><%= product.productId.productName%> <span class="middle">x <%= product.quantity  %></span> <span class="last"><%= totalAmount %></span></a></li>
-                        
-                    </ul>
-                    <% }) %>
-                    <% }) %>
-                    <% } %>
-                    <div class="payment_item-event">
+                    <table class="table">
+                        <!-- <caption>Your Order</caption> -->
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 60%;">product</th>
+                                <th scope="col" style="width: 60%;">quantity</th>
+                                <th scope="col" style="width: 60%;">total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (cartItems && cartItems.length>0) { %>
+                                <% cartItems.forEach(items=> { %>
+                                    <% items.products.forEach(product=> { %>
+                                        <tr>
+                                            <td scope="row" style="width: 60%;">
+                                                <%= product.productId.productName%>
+                                            </td>
+                                            <td style="width: 60%;"> X <%= product.quantity %>
+                                            </td>
+                                            <td style="width: 60%;">
+                                                <%= product.productId.price * product.quantity %>
+                                            </td>
+                                        </tr>
+
+                                        <% }) %>
+                                            <% }) %>
+                                                <% } %>
+                                                    <tr>
+                                                        <td style="width: 60%;">
+                                                            <h4>Sub Total</h4>
+                                                        </td>
+                                                        <td style="width: 60%;"></td>
+                                                        <td style="width: 60%;">
+                                                            <h4>
+                                                                <%= totalAmount %>
+                                                            </h4>
+                                                        </td>
+                                                    </tr>
+                        </tbody>
+                    </table>
+                    
+
+                    <div class="payment_item-event bg-white">
                         <div class="radion_btn">
-                            <input type="radio" id="cash" name="selector">
-                            <label for="cash">Cash On Delivery</label>
+                            <input type="radio" id="f-option4" name="selector">
+                            <label for="f-option4">Cash On Delivery</label>
                             <div class="check"></div>
                         </div>
-                        <p>Please send a check to Store Name, Store Street, Store Town, Store State /
-                            County,
-                            Store Postcode.</p>
+                        <p>To use this payment method, simply select "Cash On Delivery" at checkout. Once your order is
+                            confirmed, our delivery team will handle the rest.</p>
+                        </p>
                     </div>
-                    <div class="payment_item">
+                    <!-- <div class="payment_item">
                         <div class="radion_btn">
                             <input type="radio" id="f-option5" name="selector">
                             <label for="f-option5">Check payments</label>
@@ -140,18 +170,18 @@
                         <div class="radion_btn">
                             <input type="radio" id="f-option6" name="selector">
                             <label for="f-option6">Paypal </label>
-                            <img src="img/product/card.jpg" alt="">
+                            <img src="/img/product/card.jpg" alt="">
                             <div class="check"></div>
                         </div>
                         <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
                             account.</p>
-                    </div>
+                    </div> -->
                     <div class="creat_account">
                         <input type="checkbox" id="f-option4" name="selector">
                         <label for="f-option4">I’ve read and accept the </label>
                         <a href="#">terms & conditions*</a>
                     </div>
-                    <a class="primary-btn" href="#">Proceed to Paypal</a>
+                    <a class="primary-btn" href="/user/confirmation">Place Order</a>
                 </div>
                 <br>
             </div>
@@ -167,7 +197,7 @@
             /* Hidden by default */
             position: fixed;
             /* Stay in place */
-            
+
             z-index: 1;
             /* Sit on top */
             left: 0;
@@ -238,14 +268,6 @@
     </script>
 
 
-    <!-- <script>
-        const price = document.getElementById(`${product.productId.price}`)
-        const quantity = document.getElementById('quantity')
-        const total = document.getElementById('total')
-
-        total.innerHTML = `${Number(price)} * ${Number(quantity)}`
-
-    </script> -->
     <!--================End Checkout Area =================-->
 
 
