@@ -1,5 +1,5 @@
-const cartModel = require('../models/cart');
-const userModel = require('../models/userModel');
+const cartModel = require('../../models/cart');
+const userModel = require('../../models/userModel');
 
 //To retrieve checkout page
 const checkoutPage = async (req, res) => {

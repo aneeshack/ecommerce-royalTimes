@@ -1,6 +1,6 @@
 require('express');
-const productModel = require('../models/product');
-const cartModel = require('../models/cart')
+const productModel = require('../../models/product');
+const cartModel = require('../../models/cart')
 
 
 //adding products to the cart list

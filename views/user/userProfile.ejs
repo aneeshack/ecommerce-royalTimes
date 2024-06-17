@@ -36,7 +36,7 @@
                         <span id="messageShow" class=" text-danger"></span>
 
                         <div class="profile-image-container">
-                            <img src="/images/userProfile/<%= userData.profileImage %>" alt="profile-image" id="profile-image"  class="profile-image">
+                            <img src="<%= userData && userData.profileImage ? '/images/userProfile/'+userData.profileImage : '/images/male.png' %>" alt="profile-image" id="profile-image"  class="profile-image">
                         </div>
                         <input type="file" name="profileImage"  onchange="previewImage(event)">
                         <br>

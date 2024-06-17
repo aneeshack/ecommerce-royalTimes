@@ -1,4 +1,4 @@
-const userModel = require('../models/userModel')
+const userModel = require('../../models/userModel')
 
 //to render user profile
 const profilePage = async (req, res) => {

@@ -1,6 +1,6 @@
-const productModel = require('../models/product')
-const brandModel =  require('../models/brand');
-const categoryModel = require('../models/category');
+const productModel = require('../../models/product')
+const brandModel =  require('../../models/brand');
+const categoryModel = require('../../models/category');
 
 // render the page containing all the products 
 const categoryPage = async (req, res) => {

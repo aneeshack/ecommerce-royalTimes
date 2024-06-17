@@ -1,6 +1,6 @@
 const express = require('express');
 const productRouter = express.Router();
-const adminProductController = require('../controller/adminProductController');
+const adminProductController = require('../controller/adminController/adminProductController');
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
 const upload = require('../helpers/productMulter')

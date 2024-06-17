@@ -1,8 +1,5 @@
 require('express');
-const product = require('../models/product');
-const categoryModel = require('../models/category');
-const brandModel = require('../models/brand')
-const upload = require('../helpers/productMulter')
+const product = require('../../models/product');
 const mongoose = require('mongoose');
 
 //product detail showing page

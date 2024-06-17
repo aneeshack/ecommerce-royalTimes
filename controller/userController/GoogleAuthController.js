@@ -1,8 +1,8 @@
 
 require('express');
-const userModel = require('../models/userModel');
-const product = require('../models/product');
-const Otp = require('../models/otp')
+const userModel = require('../../models/userModel');
+const product = require('../../models/product');
+const Otp = require('../../models/otp')
 const session = require('express-session');
 const passport = require('passport')
 const nodemailer = require('nodemailer');

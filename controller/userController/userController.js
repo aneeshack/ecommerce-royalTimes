@@ -1,19 +1,19 @@
 // require('express');
-const userModel = require('../models/userModel');
-const product = require('../models/product');
-const categoryModel = require('../models/category');
-const brandModel = require('../models/brand');
-const cartModel = require('../models/cart')
-const Otp = require('../models/otp');
+const userModel = require('../../models/userModel');
+const product = require('../../models/product');
+const categoryModel = require('../../models/category');
+const brandModel = require('../../models/brand');
+const cartModel = require('../../models/cart')
+const Otp = require('../../models/otp');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 require('body-parser');
 const { check, validationResult } = require('express-validator');
-const mailer = require('../controller/GoogleAuthController');
+const mailer = require('./GoogleAuthController');
 const fs = require('fs');
 const path = require('path');
-const cart = require('../models/cart');
+const cart = require('../../models/cart');
 
 //render homepage
 const homePage = async (req, res) => {

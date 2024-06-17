@@ -1,7 +1,9 @@
 
 <div class="col-md-2 profile-sidebar mb-5">
     <div class="profile-header">
-        <img src="/img/banner/maxresdefault.jpg" alt="Profile Picture" class="profile-thumbnail">     
+        <!-- <img src="/images/male.png" alt="Profile Picture" class="profile-thumbnail">    -->
+        <img src= "<%= userData && userData.profileImage ? '/images/userProfile/'+userData.profileImage : '/images/male.png' %>" alt="Profile Picture" class="profile-thumbnail">     
+  
         <div>
             <h5>Hello,</h5>      
             <h5><%= user.toUpperCase()%></h5>

@@ -2,10 +2,10 @@ const express = require('express');
 const fs = require('fs');
 const sharp = require('sharp');
 const path = require('path');
-const productModel = require('../models/product');
-const categoryModel = require('../models/category');
-const brandModel = require('../models/brand')
-const upload = require('../helpers/productMulter');
+const productModel = require('../../models/product');
+const categoryModel = require('../../models/category');
+const brandModel = require('../../models/brand')
+const upload = require('../../helpers/productMulter');
 const { check, validationResult } = require('express-validator');
 // const {cropImage} = require('../helpers/imageCrop');
 
