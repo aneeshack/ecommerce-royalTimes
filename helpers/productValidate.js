@@ -15,15 +15,41 @@ exports.addProductValidator = [
     check('rating', 'Rating must be a number between 1 and 5').optional().isFloat({ min: 1, max: 5 }),
     check('brand', 'Brand is required').not().isEmpty(),
     check('category', 'Category is required').not().isEmpty(),
+    // check('images').custom((value, { req }) => {
+    //     if (!req.files || req.files.length !== 3) {
+    //         throw new Error('Exactly three images are required');
+    //     }
+    //     req.files.forEach(file => {
+    //         if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.mimetype)) {
+    //             throw new Error('Only jpeg and png images are allowed');
+    //         }
+    //     });
+    //     return true;
+    // })
     check('images').custom((value, { req }) => {
-        if (!req.files || req.files.length !== 3) {
-            throw new Error('Exactly three images are required');
+        if (!req.files) {
+            throw new Error('Please select images');
         }
+    
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+        const maxImages = 3;
+    
+        if (req.files.length < maxImages) {
+            throw new Error(`At least ${maxImages} images are required`);
+        }
+    
+        if (req.files.length > maxImages) {
+            console.log('more that 3 images are found')
+            throw new Error(`Only ${maxImages} images are allowed`);
+        }
+    
         req.files.forEach(file => {
-            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.mimetype)) {
+            if (!allowedTypes.includes(file.mimetype.toLowerCase())) {
                 throw new Error('Only jpeg and png images are allowed');
             }
         });
-        return true;
+    
+        return true; // Return true if validation passes
     })
+    
 ];

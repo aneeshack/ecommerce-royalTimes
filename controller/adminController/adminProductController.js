@@ -52,7 +52,9 @@ const addProductAction = async (req, res) => {
         const categoryName = req.body.category;
 
         const brand = await brandModel.findOne({name: brandName});
-        const category = await brandModel.findOne({name: categoryName});
+        const category = await categoryModel.findOne({name: categoryName})
+  
+
         const savedImages = req.files.map(file => `/images/product/${file.filename}`);
         const product = new productModel({
             productName: req.body.productName,
@@ -77,7 +79,8 @@ const addProductAction = async (req, res) => {
 
     } catch (error) {
         console.log("Error saving product:", error.message);
-        res.status(500).send('Server Error');
+        req.flash('error', 'Error saving product');
+        res.redirect('/admin/product/addProduct'); 
     }
 };
 

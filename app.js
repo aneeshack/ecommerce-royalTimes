@@ -4,7 +4,7 @@ const session = require('express-session');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter')
 const userProductRouter = require('./routes/userProductRouter');
-const adminProductRouter = require('./routes/adminProductRouter')
+const adminProductRouter = require('./routes/adminProductRouter');
 const path = require('path');
 const bodyParser = require('body-parser');
 const passport = require('passport');
@@ -20,10 +20,10 @@ require('./config/passport');
 
 
 app.use(session({
-  secret: process.env.session_secret, // Replace 'your_secret_key' with your actual secret key
+  secret: process.env.session_secret,
   resave: false,
-  saveUninitialized: false, // Usually set to false to avoid storing unmodified sessions
-  store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/RoyalTimes' }), // Replace with your actual MongoDB connection string
+  saveUninitialized: false, 
+  store: MongoStore.create({ mongoUrl: process.env.DB_URL }), 
   cookie: { 
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
