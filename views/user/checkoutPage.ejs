@@ -60,43 +60,50 @@
                         <span class="close">&times;</span>
                         <!-- <p>This is a modal!</p> -->
                         <div class="col-lg-8">
-                            <h3>Billing Details</h3>
-                            <form class="row contact_form" action="#" method="post" novalidate="novalidate">
+                            <h3>Billing Address</h3>
+                            <span id="messageShow" class=" text-danger"></span>
+                            <!-- <form class="row contact_form" id="billingForm" onsubmit="return validateAddress()" > -->
+                            <form action="/user/checkout/address" method="post" id="billingForm"
+                                onsubmit="return validateAddress()">
+
                                 <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="firstone" name="name">
-                                    <span class="placeholder" data-placeholder="First name"></span>
-                                </div>
-                                <div class="col-md-6 form-group p_star">
-                                    <input type="text" class="form-control" id="number" name="number">
-                                    <span class="placeholder" data-placeholder="Phone number"></span>
-                                </div>
-                                <div class="col-md-6 form-group p_star">
-                                    <input type="text" class="form-control" id="email" name="compemailany">
-                                    <span class="placeholder" data-placeholder="Email Address"></span>
+                                    <input type="text" class="form-control" id="street" placeholder="Street name"
+                                        name="street" required>
                                 </div>
                                 <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="add1" name="add1">
-                                    <span class="placeholder" data-placeholder="Street name"></span>
+                                    <input type="text" class="form-control" placeholder="city name" id="city"
+                                        name="city" required>
                                 </div>
                                 <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="add2" name="add2">
-                                    <span class="placeholder" data-placeholder="city name"></span>
+                                    <input type="text" class="form-control" id="state" placeholder="state" name="state"
+                                        required>
                                 </div>
                                 <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="city" name="city">
-                                    <span class="placeholder" data-placeholder="state"></span>
-                                </div>
-                                <div class="col-md-12 form-group p_star">
-                                    <input type="text" class="form-control" id="name" name="name">
-                                    <span class="placeholder" data-placeholder="country"></span>
+                                    <input type="text" class="form-control" placeholder="country" id="country"
+                                        name="country" required>
                                 </div>
                                 <div class="col-md-12 form-group">
-                                    <input type="text" class="form-control" id="zip" name="zip"
-                                        placeholder="Postcode/ZIP">
+                                    <input type="text" class="form-control" id="pinCode" name="pinCode"
+                                        placeholder="Postcode/ZIP" required>
                                 </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="number" class="form-control" placeholder="Phone number" id="number"
+                                        name="number">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">add address</button>
                             </form>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-12 form-group mt-3">
+                    <div class="creat_account">
+                        <h3>Shipping Details</h3>
+                        <input type="checkbox" id="f-option3" name="selector">
+                        <label for="f-option3">Ship to a different address?</label>
+                        
+                    </div>
+                    <!-- <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea> -->
                 </div>
             </div>
 
@@ -137,18 +144,18 @@
                                                         </td>
                                                         <td style="width: 60%;"></td>
                                                         <td style="width: 60%;">
-                                                            <h4>
+                                                            <h4 name="totalAmount">
                                                                 <%= totalAmount %>
                                                             </h4>
                                                         </td>
                                                     </tr>
                         </tbody>
                     </table>
-                    
+
 
                     <div class="payment_item-event bg-white">
                         <div class="radion_btn">
-                            <input type="radio" id="f-option4" name="selector">
+                            <input type="radio" id="f-option4" name="cod">
                             <label for="f-option4">Cash On Delivery</label>
                             <div class="check"></div>
                         </div>
@@ -239,6 +246,8 @@
             cursor: pointer;
         }
     </style>
+    <script src="/script/checkoutAddress.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         // Get the modal
         var modal = document.getElementById('myModal');
@@ -268,7 +277,46 @@
     </script>
 
 
-    <!--================End Checkout Area =================-->
+    <script>
+        document.getElementById("billingForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+            const url = form.action;
 
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                
+                // Log response status and content
+                console.log('Response status:', response.status);
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+
+                // Try to parse as JSON
+                const data = JSON.parse(responseText);
+                console.log('Success:', data);
+                // alert('Form submitted successfully!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Form submitted successfully!'
+                });
+                modal.style.display = "none";
+            } catch (error) {
+                console.error('Error:', error);
+                // alert('Form submission failed. Please try again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Form submission failed. Please try again.'
+                });
+            }
+        });
+
+    </script>
 
     <%- include('../layouts/user/footer') %>

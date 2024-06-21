@@ -58,9 +58,9 @@ const changePasswordPage = async (req, res) => {
 
         if (req.session.isUser) {
             const userName = req.session.isUser;
-            const user = await userModel.findOne({ name: userName });
-            const userId = user._id.toString();
-            res.render('user/changepass', { userId });
+            const userData = await userModel.findOne({ name: userName });
+            const userId = userData._id.toString();
+            res.render('user/changepass', { userId ,userData});
         }
     } catch (error) {
         console.log('password Page:', error.message);

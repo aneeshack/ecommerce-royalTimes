@@ -8,7 +8,7 @@ const addressManage = async (req, res) => {
             const userData = await userModel.findOne({ name: userName });
             const userAddress = userData.address;
             const userId = userData._id
-            res.render('user/userAddress', { users: userAddress, editMode: false, userId });
+            res.render('user/userAddress', { users: userAddress, editMode: false, userId ,userData});
         }
     } catch (error) {
         console.log('address page render:', error.message);

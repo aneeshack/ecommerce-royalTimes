@@ -33,7 +33,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% if(cartItems && cartItems.products.length>0) { %>
+                            <% if(cartItems &&cartItems.products && cartItems.products.length>0) { %>
                                 <% cartItems.products.forEach(item=> { %>
                                     <tr>
                                         <td>
@@ -67,7 +67,7 @@
                                             <div class="product_count">
                                                 <input type="text" name="qty" id="qty-<%= item.productId._id %>"
                                                     maxlength="12" value="<%= item.quantity %>" title="Quantity:"
-                                                    class="input-text qty">
+                                                    class="input-text qty" max="<%= item.productId.stock %>">
                                                 <button
                                                     onclick="changeQuantity('<%= item.productId._id %>', 1,'<%= item.productId.price %>')"
                                                     class="increase items-count" type="button"><i
@@ -79,12 +79,15 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <h5><strong id="totalAmount<%-item.productId._id%>">$<%= item.quantity
-                                                        *item.productId.price %></strong></h5>
+                                            <!-- chaging the total amount -->
+                                            <h5><strong id="totalAmount<%-item.productId._id%>">$<%= item.total %>
+                                                </strong></h5>
+
                                         </td>
                                         <td>
                                         <td><button type="button" class="btn primary-btn btn-sm delete-btn"
-                                                data-type="product" data-id="<%= item._id %>">Delete</button></td>
+                                                data-type="product" data-id="<%= item.productId._id %>">Delete</button>
+                                        </td>
                                         </td>
 
                                         <% }) %>
@@ -125,10 +128,14 @@
 
                                                 </td>
                                                 <td>
-                                                    <h5>Subtotal</h5>
+                                                    <h5>Grannd Total</h5>
                                                 </td>
                                                 <td>
-                                                    <h5 id="subtotal">$2160.00</h5>
+                                                    <% if(grandTotalAmount &&grandTotalAmount>0) { %>
+                                                        <h5 id="grandTotal">$<%= grandTotalAmount %>.00</h5>
+                                                        <% }else{ %>
+                                                            <h5>0.00</h5>
+                                                            <% } %>
                                                 </td>
                                             </tr>
                                             <!-- <tr class="shipping_area">
@@ -193,51 +200,80 @@
             </div>
         </div>
     </section>
-    <!-- <h1>AJAX Example</h1>
-    <input type="text" id="inputfiled">
-    <button id="fetchButton">Fetch Data</button>
-    <div id="result"></div> -->
+
 
     <!-- Include SweetAlert CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
+    <!-- deleting a product in the cart list -->
     <script>
-        //to show confirmation message while deleting product in cart list
+        // To show confirmation message while deleting product in cart list
         document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function () {
+            button.addEventListener('click', async function () {
                 const type = this.dataset.type;
                 const id = this.dataset.id;
-                const confirmation = confirm(`Are you sure you want to delete this ${type} from the cart list?`);
-                if (confirmation) {
-                    window.location.href = `/user/deleteCart/${id}`;
-                }
-            })
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Are you sure you want to delete this ${type} from the cart list?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/user/deleteCart/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            } else {
+                                throw new Error('Failed to delete item.');
+                            }
+                        }).then(data => {
+                            console.log('response from server:', data);
+                            let message = data.success || 'Your item has been deleted.';
+                            Swal.fire('Deleted!', message, 'success')
+                                .then(() => {
+                                    window.location.href = '/user/cart';
+                                });
+
+                            // Update the grand total element
+                            const grandTotalElement = document.getElementById('grandTotal');
+                            if (grandTotalElement) {
+                                grandTotalElement.textContent = `$${data.grandTotal.toFixed(2)}`;
+                            }
+                        }).catch(error => {
+                            console.log('error while deleting the product', error);
+                            Swal.fire('Error!', 'Failed to delete item.', 'error');
+                        });
+                    }
+                });
+            });
         });
     </script>
 
-     <script>
+    <!-- when the quantity changing values are updated -->
+    <script>
         async function changeQuantity(productId, change, price) {
             const input = document.getElementById('qty-' + productId);
             let quantity = parseInt(input.value);
             let totalAmount = document.getElementById(`totalAmount${productId}`)
-            let subtotalElement = document.getElementById(`subtotal`)
-            const currentContent = totalAmount.textContent
+            let grandTotal = document.getElementById('grandTotal')
+            // const currentContent = totalAmount.textContent
 
 
             if (!isNaN(quantity)) {
-                quantity += change; // Increase or decrease the quantity based on the change value
-                if (quantity < 1) quantity = 1; // Ensure the quantity does not go below 1
+                quantity += change;
+                if (quantity < 1) quantity = 1;
                 input.value = quantity;
-                totalAmount.textContent = `$${Number(price) * Number(input.value)}`
 
-                let newSubtotal = 0;
-            document.querySelectorAll('strong[id^="totalAmount"]').forEach(element => {
-                newSubtotal += parseFloat(element.textContent.replace('$', ''));
-            });
-            subtotalElement.textContent = `$${newSubtotal}`;
-
-                //  Update the quantity in the database via fetch API
                 try {
                     const response = await fetch('/user/updateQuantity', {
                         method: 'POST',
@@ -248,7 +284,7 @@
                     });
 
                     if (!response.ok) {
-
+                        const result = await response.json();
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
@@ -256,7 +292,12 @@
                             confirmButtonText: 'OK'
                         });
                     } else {
+                        console.log('response is :', response)
                         const result = await response.json();
+                        //
+                        totalAmount.textContent = `$${result.productTotal}`
+                        grandTotal.textContent = `$${result.grandT}.00`
+                        console.log('result:', result)
                         Swal.fire({
                             icon: 'success',
                             title: 'Success!',
@@ -268,49 +309,17 @@
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    alert('Failed to update quantity');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An error occurred while updating the quantity',
+                        confirmButtonText: 'OK'
+                    });
                 }
             }
         }
 
-    </script> 
-   
-    <!-- ajax calling -->
-   <!-- <script>
-    function changeQuantity(productId,count,price ){
-        $.ajax({
-            url:'/user/getData',
-            data : {
-                proid : productId,
-                count : count,
-                price : price
-            },
-            method :'post',
-            success : (response) => {
-                alert(response)
-            }
-        })
-    }
-   </script> -->
-   <!-- <script>
-    $(document).ready(function() {
-            $('#fetchButton').click(function() {
-                const inupdata = $('#inputfiled').val();
-                alert(inupdata)
-                $.ajax({
-                    url: '/user/getData',
-                    type: 'post',
-                    data: {input:inupdata},
-                    success: (response) => {
+    </script>
 
-                        $('#result').html(response);
-                    },
-                    error: function(error) {
-                        $('#result').html('An error occurred');
-                    }
-                });
-            });
-        });
-   </script> -->
-    <!--================End Cart Area =================-->
+
     <%- include('../layouts/user/footer') %>

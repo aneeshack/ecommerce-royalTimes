@@ -7,24 +7,50 @@ const orderSchema = new mongoose.Schema({
         ref: 'userlogins',
         required: true
     },
-    products: [
-        {
-            productId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'product',
-                required : true
-            },
-            quantity: {
-                type: Number,
-                required : true
-            },
-        }
-    ],
-    totalAmount: {
-        type: Number,
+    cartItem: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cart',
         required: true
     },
-
+    // shippingAddress: {
+    //     type: String,
+    //     required: true
+    // },
+    billingAddress: {
+        type: String,
+        required: true
+    },
+    phone: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        required: true,
+        default: 'Pending'
+    },
+    totalPrice: {
+        type: Number
+    },
+    paymentMethod: {
+        type: String,
+        required: true,
+        // enum: ['COD', 'Razorpay', 'Credit Card', 'Debit Card', 'Net Banking', 'UPI'],
+        // default: 'COD'
+    },
+    dateOrdered: {
+        type:Date,
+        default:Date.now
+    }
+  
 });
+
+
+// orderSchema.virtual('id').get(function(){
+//     return this._id.toHexString();
+// })
+// orderSchema.set('toJSON',{
+//     virtuals:true
+// })
 
 module.exports = mongoose.model('Order', orderSchema);

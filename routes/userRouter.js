@@ -58,11 +58,14 @@ userRouter.get('/address/delete/:id',valid.isLogout,addressController.deleteAddr
 //cart controller routes
 userRouter.post('/cart',cartController.addToCart);
 userRouter.get('/cart',valid.isLogout,cartController.cartPage);
-userRouter.get('/deleteCart/:id',valid.isLogout,cartController.deleteCart);
+// userRouter.get('/deleteCart/:id',valid.isLogout,cartController.deleteCart);
+userRouter.delete('/deleteCart/:id',valid.isLogout,cartController.deleteCart);
 userRouter.post('/updateQuantity',cartController.updateQuantity);
 
 //chekout order and payment controller routes
 userRouter.get('/checkout',valid.isLogout,checkoutController.checkoutPage);
+userRouter.post('/checkout/address',checkoutController.checkoutAddressAdd);
+
 // userRouter.post('/order',checkoutController.orderAction);
 userRouter.get('/confirmation',valid.isLogout,checkoutController.confirmation);
 userRouter.get('/orders',valid.isLogout,checkoutController.orderList);

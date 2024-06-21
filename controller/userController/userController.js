@@ -180,9 +180,9 @@ const verifyOtp = async (req, res) => {
                         .catch(error => {
                             console.log("error in saving data", error)
                         })
-                    const cart = await cartModel.findOne({ userId: userId });
-                    let count = cart.products.length;
-                    req.session.countCart = count
+                    // const cart = await cartModel.findOne({ userId: userId });
+                    // let count = cart.products.length;
+                    // req.session.countCart = count
                     req.session.userId = userDetails._id;
                     req.session.isUser = userDetailsData.name;
                     res.redirect('/user/home')
@@ -253,8 +253,9 @@ const loginAction = async (req, res) => {
         const password = req.body.password;
         const check = await userModel.findOne({ email: email })
         if (check) {
-            if (check.isActive === true) {
-                const passwordMatch = await bcrypt.compare(password, check.password);
+            if (check.isActive === true ) {
+                if(check.isGoogleUser === false){
+                    const passwordMatch =  bcrypt.compare(password, check.password);
                 if (passwordMatch) {
                     req.session.userId = check._id
                     req.session.isUser = check.name;
@@ -262,7 +263,9 @@ const loginAction = async (req, res) => {
                 } else {
                     res.render('user/login', { message: "password not matching.", No_icons: true })
                 }
-
+                }else{
+                    res.render('user/login', { message: "please signin through google.", No_icons: true })
+                }             
             } else {
                 res.render('user/login', { message: "user is blocked by the admin for malpractice.", No_icons: true })
             }
@@ -271,6 +274,7 @@ const loginAction = async (req, res) => {
         }
 
     } catch (error) {
+        console.log('login action:',error.message)
         return res.status(400).json({
             success: false,
             loginMessage: error.message
