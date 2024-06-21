@@ -1,150 +1,327 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order List</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">E-Commerce Site</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Cart</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
 
-    <!-- Order List Section -->
-    <div class="container mt-5">
-        <h2 class="mb-4">My Orders</h2>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Total</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Sample Order Data -->
-                    <tr>
-                        <td>#12345</td>
-                        <td>2023-06-14</td>
-                        <td>Shipped</td>
-                        <td>$150.00</td>
-                        <td>
-                            <button class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#orderDetails12345" aria-expanded="false" aria-controls="orderDetails12345">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="5">
-                            <div class="collapse" id="orderDetails12345">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th>Image</th>
-                                            <th>Quantity</th>
-                                            <th>Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Sample Product Data -->
-                                        <tr>
-                                            <td>Product 1</td>
-                                            <td><img src="https://via.placeholder.com/50" alt="Product 1"></td>
-                                            <td>2</td>
-                                            <td>$50.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Product 2</td>
-                                            <td><img src="https://via.placeholder.com/50" alt="Product 2"></td>
-                                            <td>1</td>
-                                            <td>$50.00</td>
-                                        </tr>
-                                        <!-- Add more products as needed -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>#12346</td>
-                        <td>2023-06-13</td>
-                        <td>Processing</td>
-                        <td>$200.00</td>
-                        <td>
-                            <button class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#orderDetails12346" aria-expanded="false" aria-controls="orderDetails12346">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="5">
-                            <div class="collapse" id="orderDetails12346">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th>Image</th>
-                                            <th>Quantity</th>
-                                            <th>Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Sample Product Data -->
-                                        <tr>
-                                            <td>Product 3</td>
-                                            <td><img src="" alt="Product 3"></td>
-                                            <td>1</td>
-                                            <td>$100.00</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Product 4</td>
-                                            <td><img src="/public/images/newphoto.jpg" alt="Product 4"></td>
-                                            <td>1</td>
-                                            <td>$100.00</td>
-                                        </tr>
-                                        <!-- Add more products as needed -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Add more orders as needed -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+my cart page without giving max quantity as the stock
+<%- include('../layouts/user/header',{title:"cart-Page"}) %>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+    <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Shopping Cart</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="/user/home">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="category.html">Cart</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+
+    <!--================Cart Area =================-->
+    <section class="cart_area">
+        <div class="container">
+            <div class="cart_inner">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Total</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(cartItems &&cartItems.products && cartItems.products.length>0) { %>
+                                <% cartItems.products.forEach(item=> { %>
+                                    <tr>
+                                        <td>
+                                            <div class="media">
+                                                <div class="d-flex">
+                                                    <img src="<%= item.productId.images[0].replace('/public','') %>"
+                                                        alt="<%= item.productId.productName %>" class="img-thumbnail"
+                                                        style="width: 50px;">
+                                                </div>
+                                                <div class="media-body">
+                                                    <p>
+                                                        <%= item.productId.productName %>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h5>$<%= item.productId.price %>.00 </h5>
+                                        </td>
+                                        <!-- <td>
+                                <div class="product_count">
+                                    <input type="text" name="qty" id="sst" maxlength="12" value="1"  title="Quantity:"
+                                        class="input-text qty">
+                                    <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                        class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
+                                    <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                        class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
+                                </div>
+                            </td> -->
+                                        <td>
+                                            <div class="product_count">
+                                                <input type="text" name="qty" id="qty-<%= item.productId._id %>"
+                                                    maxlength="12" value="<%= item.quantity %>" title="Quantity:"
+                                                    class="input-text qty" max="<%= item.productId.stock %>">
+                                                <button
+                                                    onclick="changeQuantity('<%= item.productId._id %>', 1,'<%= item.productId.price %>')"
+                                                    class="increase items-count" type="button"><i
+                                                        class="lnr lnr-chevron-up"></i></button>
+                                                <button
+                                                    onclick="changeQuantity('<%= item.productId._id %>', -1,'<%= item.productId.price %>')"
+                                                    class="reduced items-count" type="button"><i
+                                                        class="lnr lnr-chevron-down"></i></button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <!-- chaging the total amount -->
+                                            <h5><strong id="totalAmount<%-item.productId._id%>">$<%= item.total %>
+                                                </strong></h5>
+
+                                        </td>
+                                        <td>
+                                        <td><button type="button" class="btn primary-btn btn-sm delete-btn"
+                                                data-type="product" data-id="<%= item.productId._id %>">Delete</button>
+                                        </td>
+                                        </td>
+
+                                        <% }) %>
+                                    </tr>
+                                    <% }else{ %>
+                                        <tr>
+                                            <td colspan="6">
+                                                <h3>No products found.</h3>
+                                            </td>
+
+
+                                        </tr>
+                                        <% } %>
+
+                                            <tr class="bottom_button">
+                                                <td>
+                                                    <a class="gray_btn" href="/user/category">Update Cart</a>
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <!-- <div class="cupon_text d-flex align-items-center">
+                                                        <input type="text" placeholder="Coupon Code">
+                                                        <a class="primary-btn" href="#">Apply</a>
+                                                        <a class="gray_btn" href="#">Close Coupon</a>
+                                                    </div> -->
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <h5>Grannd Total</h5>
+                                                </td>
+                                                <td>
+                                                    <% if(grandTotalAmount &&grandTotalAmount>0) { %>
+                                                        <h5 id="grandTotal">$<%= grandTotalAmount %>.00</h5>
+                                                        <% }else{ %>
+                                                            <h5>0.00</h5>
+                                                            <% } %>
+                                                </td>
+                                            </tr>
+                                            <!-- <tr class="shipping_area">
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <h5>Shipping</h5>
+                                                </td>
+                                                <td>
+                                                    <div class="shipping_box">
+                                                        <ul class="list">
+                                                            <li><a href="#">Flat Rate: $5.00</a></li>
+                                                            <li><a href="#">Free Shipping</a></li>
+                                                            <li><a href="#">Flat Rate: $10.00</a></li>
+                                                            <li class="active"><a href="#">Local Delivery: $2.00</a>
+                                                            </li>
+                                                        </ul>
+                                                        <h6>Calculate Shipping <i class="fa fa-caret-down"
+                                                                aria-hidden="true"></i></h6>
+                                                        <select class="shipping_select">
+                                                            <option value="1">Bangladesh</option>
+                                                            <option value="2">India</option>
+                                                            <option value="4">Pakistan</option>
+                                                        </select>
+                                                        <select class="shipping_select">
+                                                            <option value="1">Select a State</option>
+                                                            <option value="2">Select a State</option>
+                                                            <option value="4">Select a State</option>
+                                                        </select>
+                                                        <input type="text" placeholder="Postcode/Zipcode">
+                                                        <a class="gray_btn" href="#">Update Details</a>
+                                                    </div>
+                                                </td>
+                                            </tr> -->
+                                            <tr class="out_button_area">
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <div class="checkout_btn_inner d-flex align-items-center">
+                                                        <a class="gray_btn" href="/user/category">Continue Shopping</a>
+                                                        <a class="primary-btn" href="/user/checkout">Proceed to
+                                                            checkout</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Include SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <!-- deleting a product in the cart list -->
+    <script>
+        // To show confirmation message while deleting product in cart list
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', async function () {
+                const type = this.dataset.type;
+                const id = this.dataset.id;
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Are you sure you want to delete this ${type} from the cart list?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch(`/user/deleteCart/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            } else {
+                                throw new Error('Failed to delete item.');
+                            }
+                        }).then(data => {
+                            console.log('response from server:', data);
+                            let message = data.success || 'Your item has been deleted.';
+                            Swal.fire('Deleted!', message, 'success')
+                                .then(() => {
+                                    window.location.href = '/user/cart';
+                                });
+
+                            // Update the grand total element
+                            const grandTotalElement = document.getElementById('grandTotal');
+                            if (grandTotalElement) {
+                                grandTotalElement.textContent = `$${data.grandTotal.toFixed(2)}`;
+                            }
+                        }).catch(error => {
+                            console.log('error while deleting the product', error);
+                            Swal.fire('Error!', 'Failed to delete item.', 'error');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- when the quantity changing values are updated -->
+    <script>
+        async function changeQuantity(productId, change, price) {
+            const input = document.getElementById('qty-' + productId);
+            let quantity = parseInt(input.value);
+            let totalAmount = document.getElementById(`totalAmount${productId}`)
+            let grandTotal = document.getElementById('grandTotal')
+            // const currentContent = totalAmount.textContent
+
+
+            if (!isNaN(quantity)) {
+                quantity += change;
+                if (quantity < 1) quantity = 1;
+                input.value = quantity;
+
+                try {
+                    const response = await fetch('/user/updateQuantity', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ productId, quantity })
+                    });
+
+                    if (!response.ok) {
+                        const result = await response.json();
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: result.error || 'An error occurred',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        console.log('response is :', response)
+                        const result = await response.json();
+                        //
+                        totalAmount.textContent = `$${result.productTotal}`
+                        grandTotal.textContent = `$${result.grandT}.00`
+                        console.log('result:', result)
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: result.message || 'Operation successful',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        console.log('data from the backen', result.message);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An error occurred while updating the quantity',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+        }
+
+    </script>
+
+
+    <%- include('../layouts/user/footer') %>

@@ -266,10 +266,19 @@
             let quantity = parseInt(input.value);
             let totalAmount = document.getElementById(`totalAmount${productId}`)
             let grandTotal = document.getElementById('grandTotal')
-            // const currentContent = totalAmount.textContent
-
-
+            let maxStock = parseInt(input.getAttribute('max'));
+            // alert(maxStock)
             if (!isNaN(quantity)) {
+                if (quantity + change > maxStock) {
+            Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: `Maximum stock limit reached (${maxStock})`,
+                        confirmButtonText: 'OK'
+                    });
+            return; // Exit the function without changing the quantity
+        }
+
                 quantity += change;
                 if (quantity < 1) quantity = 1;
                 input.value = quantity;
