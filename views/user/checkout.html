@@ -1,0 +1,543 @@
+<%- include('../layouts/user/header',{title:"checkout-Page"}) %>
+
+    <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Checkout</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="single-product.html">Checkout</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+
+    <!--================Checkout Area =================-->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <form id="userAddress">
+                    <div class="user-info">
+                        <h3>User Information:</h3>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <h6>NAME: <strong>
+                                        <%= userData.name %>
+                                    </strong></h6>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <h6 id="updateNum">MOBILE NUMBER: <strong id="num">
+                                        <%= userData.mobileNumber %>
+                                    </strong></h6>
+                                <button id="addNumber" class="btn btn-outline-secondary text-dark">Add Number</button>
+                            </li>
+                            <li id="hiddenItem" class="list-group-item col-md-12" style="display: none;">
+                                <p id="message" style="color: red;"></p>
+                                <input id="mobile" type="number" class="form-control"
+                                    placeholder="Enter new mobile number">
+
+                            </li>
+                        </ul>
+
+                    </div>
+                    <br>
+                    <% if (userData.address && userData.address.length> 0) { %>
+                        <h4>Choose Your Shipping Address:</h4>
+                        <ul class="list-group">
+                            <% userData.address.forEach((addr, index)=> { %>
+                                <!-- <li class="list-group-item"> -->
+                                <li class="list-group-item ">
+                                    <input class="pixel-radio d-flex justify-content-between align-items-center" type="radio" id="<%= user._id %>" name="brand"
+                                        value="<%= user._id %>" >
+                                    <label for="<%= user._id %>">
+                                        Address <%= index + 1 %>:
+                                    </label>
+
+                                    <p>
+                                        <%= addr.street %>, <%= addr.city %>, <%= addr.state %>,
+                                                    <%= addr.country %>,<%= addr.pinCode %>,
+                                    </p>
+                                    <button id="editAddress" class="btn btn-outline-secondary text-dark">Edit Address</button>
+                                  
+                                </li>
+                                <!-- <li class="list-group-item " style="display: none;">
+                                    <form action="#" method="post" id="kkk"
+                                 >
+
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="street" placeholder="Street name"
+                                        name="street" required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" placeholder="city name" id="city"
+                                        name="city" required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="state" placeholder="state" name="state"
+                                        required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" placeholder="country" id="country"
+                                        name="country" required>
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <input type="text" class="form-control" id="pinCode" name="pinCode"
+                                        placeholder="Postcode/ZIP" required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="number" class="form-control" placeholder="Phone number" id="number"
+                                        name="number">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">add address</button>
+                            </form>
+                                </li> -->
+                              
+                                
+                                <% }) %>
+                                <!-- adding new address -->
+                                <li class="list-group-item " > <button id="addAddress"> Add New Address</button></li>
+                                <li class="list-group-item " style="display: none;" id="addingAddress">
+                                    <form action="/user/checkout/address" method="post" novalidate id="billingForm"
+                                    onsubmit="return validateAddress()">
+                                <span id="messageShow" class=" text-danger"></span>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="street" placeholder="Street name"
+                                        name="street" required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" placeholder="city name" id="city"
+                                        name="city" required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="state" placeholder="state" name="state"
+                                        required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" placeholder="country" id="country"
+                                        name="country" required>
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <input type="text" class="form-control" id="pinCode" name="pinCode"
+                                        placeholder="Postcode/ZIP" required>
+                                </div>
+                                <!-- <div class="col-md-12 form-group p_star">
+                                    <input type="number" class="form-control" placeholder="Phone number" id="number"
+                                        name="number">
+                                </div> -->
+                            <div class="buttonClass">
+                                <button type="submit" class="btn btn-primary mr-4">add address</button>
+                                <button  class="btn btn-primary" id="cancelButton">cancel</button>
+                            </div>
+                            </form>
+                                </li>
+                        </ul>
+                        <% } else { %>
+                            <p>No addresses found.</p>
+                            <% } %>
+                </form>
+                <!-- modal used for showing to add address -->
+                <button id="openModalBtn" class="primary-btn mt-5">Add Shipping Address</button>
+                
+                <!-- <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <div class="col-lg-8">
+                            <h3>Billing Address</h3>
+                            <span id="messageShow" class=" text-danger"></span>
+                            <form action="/user/checkout/address" method="post" id="billingForm"
+                                onsubmit="return validateAddress()">
+
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="street" placeholder="Street name"
+                                        name="street" required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" placeholder="city name" id="city"
+                                        name="city" required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" id="state" placeholder="state" name="state"
+                                        required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="text" class="form-control" placeholder="country" id="country"
+                                        name="country" required>
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <input type="text" class="form-control" id="pinCode" name="pinCode"
+                                        placeholder="Postcode/ZIP" required>
+                                </div>
+                                <div class="col-md-12 form-group p_star">
+                                    <input type="number" class="form-control" placeholder="Phone number" id="number"
+                                        name="number">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">add address</button>
+                            </form>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="col-md-12 form-group mt-3">
+                    <div class="creat_account">
+                        <h3>Shipping Details</h3>
+                        <input type="checkbox" id="f-option3" name="selector">
+                        <label for="f-option3">Ship to a different address?</label>
+
+                    </div>
+                    <!-- <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea> -->
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <!-- <div class="col-lg-4"> -->
+                <div class="order_box">
+                    <h2>Your Order</h2>
+                    <table class="table">
+                        <!-- <caption>Your Order</caption> -->
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 60%;">product</th>
+                                <th scope="col" style="width: 60%;">quantity</th>
+                                <th scope="col" style="width: 60%;">total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (cartItems && cartItems.length>0) { %>
+                                <% cartItems.forEach(items=> { %>
+                                    <% items.products.forEach(product=> { %>
+                                        <tr>
+                                            <td scope="row" style="width: 60%;">
+                                                <%= product.productId.productName%>
+                                            </td>
+                                            <td style="width: 60%;"> X <%= product.quantity %>
+                                            </td>
+                                            <td style="width: 60%;">
+                                                <%= product.productId.price * product.quantity %>
+                                            </td>
+                                        </tr>
+
+                                        <% }) %>
+                                            <% }) %>
+                                                <% } %>
+                                                    <tr>
+                                                        <td style="width: 60%;">
+                                                            <h4>Sub Total</h4>
+                                                        </td>
+                                                        <td style="width: 60%;"></td>
+                                                        <td style="width: 60%;">
+                                                            <h4 name="totalAmount">
+                                                                <%= totalAmount %>
+                                                            </h4>
+                                                        </td>
+                                                    </tr>
+                        </tbody>
+                    </table>
+
+
+                    <div class="payment_item-event bg-white">
+                        <div class="radion_btn">
+                            <input type="radio" id="f-option4" name="cod">
+                            <label for="f-option4">Cash On Delivery</label>
+                            <div class="check"></div>
+                        </div>
+                        <p>To use this payment method, simply select "Cash On Delivery" at checkout. Once your order is
+                            confirmed, our delivery team will handle the rest.</p>
+                        </p>
+                    </div>
+                    <!-- <div class="payment_item">
+                        <div class="radion_btn">
+                            <input type="radio" id="f-option5" name="selector">
+                            <label for="f-option5">Check payments</label>
+                            <div class="check"></div>
+                        </div>
+                        <p>Please send a check to Store Name, Store Street, Store Town, Store State /
+                            County,
+                            Store Postcode.</p>
+                    </div>
+                    <div class="payment_item active">
+                        <div class="radion_btn">
+                            <input type="radio" id="f-option6" name="selector">
+                            <label for="f-option6">Paypal </label>
+                            <img src="/img/product/card.jpg" alt="">
+                            <div class="check"></div>
+                        </div>
+                        <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
+                            account.</p>
+                    </div> -->
+                    <div class="creat_account">
+                        <input type="checkbox" id="f-option4" name="selector">
+                        <label for="f-option4">I’ve read and accept the </label>
+                        <a href="#">terms & conditions*</a>
+                    </div>
+                    <a class="primary-btn" href="/user/confirmation">Place Order</a>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- <style>
+        /* Modal CSS */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 2px solid #888;
+            width: 80%;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style> -->
+    <script src="/script/address.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <!-- add mobile number -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    let mobileNumber = '<%= userData.mobileNumber %>';
+    let addNumberButton = document.getElementById('addNumber');
+
+    if (mobileNumber) {
+        // If mobile number exists, hide the "Add Number" button
+        addNumberButton.style.display = 'none';
+    } else {
+        // If mobile number doesn't exist, show the "Add Number" button
+        addNumberButton.style.display = 'block';
+    }
+
+
+        document.getElementById('addNumber').addEventListener('click', async function (event) {
+            event.preventDefault();
+            let hiddenItem = document.getElementById('hiddenItem')
+            let mobileInput = document.getElementById('mobile')
+
+            if (hiddenItem.style.display === 'none') {
+                hiddenItem.style.display = 'block'
+            } else {
+                hiddenItem.style.display = 'none';
+                let mobile = mobileInput.value
+                if (mobile.length < 10 || mobile.length > 10) {
+                    document.getElementById('message').textContent = 'mobile number should contains 10 numbers'
+                } else {
+
+                    try {
+                        const response = fetch('/user/checkout/mobile', {
+                            method: 'POST',
+                            headers: {
+                                'Content-type': 'application/json',
+                            },
+                            body: JSON.stringify({ mobile })
+
+                        }).then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                            .then(data => {
+                                console.log('Response data:', data);
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: data.success || 'Operation successful',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                                document.getElementById('num').textContent = data.mobile
+                                document.getElementById('addNumber').style.display  = 'none';
+                            })
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while adding the mobile number',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+
+                }
+
+
+            }
+        });
+    })
+    </script>
+
+    <!-- add new address -->
+<script>
+    document.getElementById('addAddress').addEventListener('click', function(){
+        document.getElementById('addingAddress').style.display = 'block'
+    })
+    document.getElementById('cancelButton').addEventListener('click', function() {
+         document.getElementById('addingAddress').style.display = 'none'
+    })
+   
+        document.getElementById("billingForm").addEventListener("submit",  async function (event) {
+            event.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+            try {
+                const response = await fetch('/user/checkout/address', {
+                    method: 'POST',
+                    headers : {
+                        'Content-Type': 'multipart/form-data'
+                    },
+                    body: formData
+                })
+                if(response.ok){
+                    const data = await response.json();
+                    console.log('response data while success',data)
+                    Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: data.message || 'Address updated successfully!'
+                });
+                document.getElementById('addingAddress').style.display = 'none';
+                }else{
+                  const  dataError = await response.json();
+                  console.log('error occured ',dataError)
+                        Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: dataError.error || 'Form submission failed. Please try again.'
+                });
+                document.getElementById('addingAddress').style.display = 'none';
+                }
+                
+
+            } catch (error) {
+                console.error('Error:', error);
+                // alert('Form submission failed. Please try again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Form submission failed. Please try again.'
+                });
+            }
+        });
+
+</script>
+
+
+ 
+    <!-- script for modal form submission -->
+    <!-- <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("openModalBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script> -->
+
+
+<!-- modal form submission -->
+
+    <!-- <script>
+        document.getElementById("billingForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+            const url = form.action;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+
+                // Log response status and content
+                console.log('Response status:', response.status);
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+
+                // Try to parse as JSON
+                const data = JSON.parse(responseText);
+                console.log('Success:', data);
+                // alert('Form submitted successfully!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Form submitted successfully!'
+                });
+                modal.style.display = "none";
+            } catch (error) {
+                console.error('Error:', error);
+                // alert('Form submission failed. Please try again.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Form submission failed. Please try again.'
+                });
+            }
+        });
+
+    </script> -->
+
+    <%- include('../layouts/user/footer') %>

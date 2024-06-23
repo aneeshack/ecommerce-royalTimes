@@ -12,6 +12,8 @@ const passport = require('passport')
 const upload = require('../helpers/userMulter')
 const {signupValidator, otpMailValidator}= require('../helpers/userValidate')
 require('../config/passport')
+const multer = require('multer');
+const uploadForm = multer(); 
 
 //google signup
 userRouter.get('/auth/google',passport.authenticate('google',{
@@ -58,13 +60,15 @@ userRouter.get('/address/delete/:id',valid.isLogout,addressController.deleteAddr
 //cart controller routes
 userRouter.post('/cart',cartController.addToCart);
 userRouter.get('/cart',valid.isLogout,cartController.cartPage);
-// userRouter.get('/deleteCart/:id',valid.isLogout,cartController.deleteCart);
 userRouter.delete('/deleteCart/:id',valid.isLogout,cartController.deleteCart);
 userRouter.post('/updateQuantity',cartController.updateQuantity);
 
 //chekout order and payment controller routes
 userRouter.get('/checkout',valid.isLogout,checkoutController.checkoutPage);
-userRouter.post('/checkout/address',checkoutController.checkoutAddressAdd);
+userRouter.post('/checkout/mobile',valid.isLogout,checkoutController.checkoutPageMobile);
+userRouter.post('/checkout/address', uploadForm.none(),checkoutController.checkoutAddressAdd);
+userRouter.post('/checkout/address/edit', uploadForm.none(),checkoutController.checkoutAddressEdit);
+userRouter.post('/checkout/order',checkoutController.checkoutOrder);
 
 // userRouter.post('/order',checkoutController.orderAction);
 userRouter.get('/confirmation',valid.isLogout,checkoutController.confirmation);

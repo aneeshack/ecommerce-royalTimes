@@ -4,7 +4,8 @@ function validateAddress() {
     const pinCode = document.getElementById('pinCode').value.trim()
     const state = document.getElementById('state').value.trim()
     const country = document.getElementById('country').value.trim()
-
+    
+    console.log('address validation')
     const pinCodePattern = /^[0-9]+$/;
     const statePattern = /^[A-Za-z\s]+$/;
 
@@ -26,7 +27,7 @@ function validateAddress() {
     }
    
     else if(street.length <=2 ){
-        document.getElementById('messageShow').innerHTML = ("The street name should contain more than 2 characters.")
+        document.getElementById('messageShow').innerHTML = "The street name should contain more than 2 characters."
         return false
     }
     else if (city.length<=2) {
@@ -49,7 +50,8 @@ function validateAddress() {
     document.getElementById('messageShow').innerHTML = 'The country should contain atleast 2 characters.';
     return false; 
     }
-
+    
+    document.getElementById('messageShow').innerHTML = '';
     return true;
 
 }
