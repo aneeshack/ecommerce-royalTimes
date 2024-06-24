@@ -7,15 +7,11 @@ const orderSchema = new mongoose.Schema({
         ref: 'userlogins',
         required: true
     },
-    cartItem: {
+    cartItemId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Cart',
-        required: true
+        required: false
     },
-    // shippingAddress: {
-    //     type: String,
-    //     required: true
-    // },
     billingAddress: {
         type: String,
         required: true
@@ -35,8 +31,8 @@ const orderSchema = new mongoose.Schema({
     paymentMethod: {
         type: String,
         required: true,
-        // enum: ['COD', 'Razorpay', 'Credit Card', 'Debit Card', 'Net Banking', 'UPI'],
-        // default: 'COD'
+        enum: ['COD', 'Razorpay', 'Credit Card', 'Debit Card', 'Net Banking', 'UPI'],
+        default: 'COD'
     },
     dateOrdered: {
         type:Date,

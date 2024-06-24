@@ -184,12 +184,21 @@
                                                 <td>
 
                                                 </td>
+                                               
                                                 <td>
+                                                    
                                                     <div class="checkout_btn_inner d-flex align-items-center">
-                                                        <a class="gray_btn" href="/user/category">Continue Shopping</a>
+                                                        <% if(cartItems &&cartItems.products && cartItems.products.length>0) { %>
+                                                        
                                                         <a class="primary-btn" href="/user/checkout">Proceed to
                                                             checkout</a>
+                                                            <% }else{ %>
+                                                                <a class="gray_btn" href="/user/category">Continue Shopping</a>
+                                                                <% } %>
                                                     </div>
+                                                   
+                                                </tr>
+                                               
                                                 </td>
                                             </tr>
 

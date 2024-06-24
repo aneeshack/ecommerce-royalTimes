@@ -1,5 +1,7 @@
 const cartModel = require('../../models/cart');
 const userModel = require('../../models/userModel');
+const orderModel = require('../../models/order');
+
 
 //To retrieve checkout page
 const checkoutPage = async (req, res) => {
@@ -8,7 +10,12 @@ const checkoutPage = async (req, res) => {
             const userId = req.session.userId;
             if (userId) {
                 const cartItems = await cartModel.find({ userId: userId }).populate('products.productId');
-
+                // let cartid 
+                // cartItems.forEach(items=>{
+                //     cartid = items.id
+                //     console.log('id:',cartid)
+                // })
+                // console.log('cart item id :',cartid)
                 let totalAmount = 0;
                 cartItems.forEach(cartItem => {
                     cartItem.products.forEach(product => {
@@ -131,41 +138,10 @@ const checkoutAddressEdit = async (req, res) => {
 }
 
 
-const checkoutOrder = async (req, res) => {
-
-}
-
-
-const confirmation = async (req, res) => {
-
-    res.render('user/confirmation');
-}
-
-const orderList = async (req, res) => {
-    // const userId = req.session.userId;
-    // const cartItems = await cartModel.find({userId:userId}).populate('products')
-    // console.log("cart items:",cartItems.products)
-    try {
-        if (req.session.isUser) {
-            const user = req.session.isUser
-            const userData = await userModel.findOne({ name: user });
-
-            res.render('user/orderList', { userData })
-        } else {
-            res.redirect('/user/login')
-        }
-    } catch (error) {
-        console.log('error in showing order list:', error.message);
-    }
-
-}
 
 module.exports = {
     checkoutPage,
     checkoutPageMobile,
     checkoutAddressAdd,
     checkoutAddressEdit,
-    checkoutOrder,
-    confirmation,
-    orderList,
 }

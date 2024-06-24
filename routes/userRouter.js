@@ -7,6 +7,7 @@ const categoryController = require('../controller/userController/categoryControl
 const userProfileController = require('../controller/userController/userProfileController');
 const cartController = require('../controller/userController/cartController');
 const checkoutController = require('../controller/userController/checkoutController');
+const orderController = require('../controller/userController/orderController')
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
 const upload = require('../helpers/userMulter')
@@ -68,11 +69,11 @@ userRouter.get('/checkout',valid.isLogout,checkoutController.checkoutPage);
 userRouter.post('/checkout/mobile',valid.isLogout,checkoutController.checkoutPageMobile);
 userRouter.post('/checkout/address', uploadForm.none(),checkoutController.checkoutAddressAdd);
 userRouter.post('/checkout/address/edit', uploadForm.none(),checkoutController.checkoutAddressEdit);
-userRouter.post('/checkout/order',checkoutController.checkoutOrder);
 
-// userRouter.post('/order',checkoutController.orderAction);
-userRouter.get('/confirmation',valid.isLogout,checkoutController.confirmation);
-userRouter.get('/orders',valid.isLogout,checkoutController.orderList);
+// order management routes
+userRouter.post('/checkout/order',orderController.placeOrder);
+userRouter.get('/confirmation',valid.isLogout,orderController.confirmation);
+userRouter.get('/orders',valid.isLogout,orderController.orderList);
 
 module.exports =userRouter
     
