@@ -450,10 +450,15 @@
                 const addressId = selectedAddress ? selectedAddress.value : null;
                 const paymentMethod = document.querySelector('input[name="cod"]:checked') ? 'COD' : null;
                 const totalAmount = document.getElementById('checkoutTotal').textContent.trim();
-                const cartItemID = document.getElementById('cartItemId').getAttribute('data-cart-item-id')
-                console.log('cart item id:',cartItemID)
-
-
+                // const cartItemID = document.getElementById('cartItemId').getAttribute('data-cart-item-id') 
+                const cartItemElement = document.getElementById('cartItemId');
+    if (cartItemElement) {
+        const cartItemID = cartItemElement.getAttribute('data-cart-item-id');
+        console.log('Cart Item ID:', cartItemID);
+        if (cartItemID) {
+          
+            console.log('Cart items ID:', cartItemID);
+       
                 // Prepare order data
                 const orderData = {
                     mobileNumber,
@@ -504,6 +509,24 @@
                             text:  'Order submission failed please try again '
                         });
                 }
+            } else {
+            console.log('No cart items ID found.');
+            Swal.fire({
+                icon : 'error',
+                title:'Error',
+                text:'no cart items found'
+
+            })
+        }
+    } else {
+        console.log('No cart items found.');
+        Swal.fire({
+                icon : 'error',
+                title:'Error',
+                text:'no cart items found'
+
+            })
+    }
                 });
             });
      

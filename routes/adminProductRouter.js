@@ -1,6 +1,7 @@
 const express = require('express');
 const productRouter = express.Router();
 const adminProductController = require('../controller/adminController/adminProductController');
+const orderController = require('../controller/adminController/adminOrderController');
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
 const upload = require('../helpers/productMulter')
@@ -20,6 +21,9 @@ productRouter.post('/editProduct/:id',upload.array('images',3),adminValid.isAdmi
 
 productRouter.get('/block/:id',adminValid.isAdmin,adminProductController.blockProduct);
 productRouter.get('/unblock/:id',adminValid.isAdmin,adminProductController.unblockProduct);
+
+productRouter.get('/orderList',adminValid.isAdmin,orderController.orderList);
+
 
 
 module.exports =productRouter

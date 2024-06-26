@@ -1,24 +1,24 @@
 require('express');
 const productModel = require('../../models/product');
 const cartModel = require('../../models/cart')
-
+const helpers = require('../userController/helper');
 
 //adding products to the cart list
 const addToCart = async (req, res) => {
     try {
         const { productId } = req.body;
         const userId = req.session.userId;
+      
         const productItem = await productModel.findById(productId);
         if (!productItem) {
             res.status(500).render('404error')
         } else {
             const productPrice = productItem.price
 
-            //check if the product already exist in the cart
-            const productExists = await cartModel.findOne({
-                userId,
-                'products.productId': productId,
-            });
+            //check if product exist in the cart already
+            const productExists = await helpers.cartProductData(userId, productId)
+          
+            console.log('product exist:',productExists)
             if (productExists) {
                 res.redirect('/user/cart');
             } else {
@@ -48,6 +48,7 @@ const addToCart = async (req, res) => {
     }
 }
 
+
 //showing cart page
 const cartPage = async (req, res) => {
     try {
@@ -55,6 +56,7 @@ const cartPage = async (req, res) => {
             let userId = req.session.userId;
             if (userId) {
                 const cartItems = await cartModel.findOne({ userId }).populate('products.productId');
+                console.log('cartitems are:',cartItems)
                 if (cartItems) {
                     const grandTotalAmount = cartItems.grandTotal || 0;
                     res.render('user/cart', { cartItems, grandTotalAmount });
@@ -73,6 +75,8 @@ const cartPage = async (req, res) => {
         res.redirect('back');
     }
 }
+
+
 
 //update the quantity of the products
 const updateQuantity = async (req, res) => {

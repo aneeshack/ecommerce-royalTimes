@@ -1,5 +1,22 @@
 const mongoose = require('mongoose');
 
+const addressSchema = new mongoose.Schema({
+    street: String,
+    city: String,
+    state: String,
+    pinCode: String,
+    country: String
+})
+
+const productSchema = new mongoose.Schema({
+    productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'product'
+    },
+    productName: String,
+    quantity: Number,
+    total: Number
+});
 
 const orderSchema = new mongoose.Schema({
     userId: {
@@ -7,15 +24,13 @@ const orderSchema = new mongoose.Schema({
         ref: 'userlogins',
         required: true
     },
-    cartItemId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Cart',
-        required: false
-    },
-    billingAddress: {
-        type: String,
-        required: true
-    },
+    productItems:[productSchema],
+    // cartItemId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Cart',
+    //     required: false
+    // },
+    billingAddress: [addressSchema],
     phone: {
         type: String,
         required: true
@@ -41,12 +56,5 @@ const orderSchema = new mongoose.Schema({
   
 });
 
-
-// orderSchema.virtual('id').get(function(){
-//     return this._id.toHexString();
-// })
-// orderSchema.set('toJSON',{
-//     virtuals:true
-// })
 
 module.exports = mongoose.model('Order', orderSchema);

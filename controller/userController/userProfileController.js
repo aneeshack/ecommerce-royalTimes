@@ -2,6 +2,7 @@ const userModel = require('../../models/userModel')
 
 //to render user profile
 const profilePage = async (req, res) => {
+    
     try {
         if (req.session.isUser) {
             const user = req.session.isUser
@@ -16,7 +17,6 @@ const profilePage = async (req, res) => {
         // res.status(500).render('404error', { status: 500, message: 'Internal Server Error' });
     }
 }
-
 
 
 // updating the user profile

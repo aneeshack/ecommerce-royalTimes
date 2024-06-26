@@ -10,12 +10,7 @@ const checkoutPage = async (req, res) => {
             const userId = req.session.userId;
             if (userId) {
                 const cartItems = await cartModel.find({ userId: userId }).populate('products.productId');
-                // let cartid 
-                // cartItems.forEach(items=>{
-                //     cartid = items.id
-                //     console.log('id:',cartid)
-                // })
-                // console.log('cart item id :',cartid)
+          
                 let totalAmount = 0;
                 cartItems.forEach(cartItem => {
                     cartItem.products.forEach(product => {
