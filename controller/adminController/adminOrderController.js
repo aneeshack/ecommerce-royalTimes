@@ -15,11 +15,11 @@ const orderModel = require('../../models/order');
 //admin getting all user orders
 const orderList = async (req, res) => {
     try {
-       const orderList = await orderModel.find()
-       console.log('orderlistsare:',orderList);
+       const order = await orderModel.find()
+       console.log('orderlistsare:',order);
    
-        
-        res.status(200).json({ success: true,  });
+        res.render('admin/adminOrderList',{order})
+        // res.status(200).json({ success: true,  });
     } catch (error) {
         // res.status(500).json({ success: false, message: 'Server Error', error });
     }
