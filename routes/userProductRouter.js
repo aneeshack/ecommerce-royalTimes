@@ -8,4 +8,5 @@ require('../config/passport')
 productRouter.get('/:productId',userProductController.productDetails);
 
 
+
 module.exports =productRouter

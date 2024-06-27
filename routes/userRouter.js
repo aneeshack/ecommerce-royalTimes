@@ -40,8 +40,9 @@ userRouter.post('/verifyOtp',userController.verifyOtp)
 
 //product filtering
 userRouter.get('/category',categoryController.categoryPage);
-userRouter.get('/api/products',categoryController.brandFilter);
-userRouter.get('/api/productCategory',categoryController.categoryFilter);
+userRouter.get('/filter',categoryController.productFilter);
+// userRouter.get('/api/products',categoryController.brandFilter);
+// userRouter.get('/api/productCategory',categoryController.categoryFilter);
 
 //user profile details
 userRouter.get('/profile',valid.isLogout,userProfileController.profilePage);

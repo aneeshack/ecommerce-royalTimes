@@ -15,7 +15,12 @@ const productSchema = new mongoose.Schema({
     },
     productName: String,
     quantity: Number,
-    total: Number
+    total: Number,
+    status:String
+    // status: {
+    //     type: String,
+    //     default: 'Pending'
+    // },
 });
 
 const orderSchema = new mongoose.Schema({
@@ -24,12 +29,7 @@ const orderSchema = new mongoose.Schema({
         ref: 'userlogins',
         required: true
     },
-    productItems:[productSchema],
-    // cartItemId: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Cart',
-    //     required: false
-    // },
+    productItems: [productSchema],
     billingAddress: [addressSchema],
     phone: {
         type: String,
@@ -50,10 +50,10 @@ const orderSchema = new mongoose.Schema({
         default: 'COD'
     },
     dateOrdered: {
-        type:Date,
-        default:Date.now
+        type: Date,
+        default: Date.now
     }
-  
+
 });
 
 

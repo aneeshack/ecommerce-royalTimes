@@ -23,6 +23,8 @@ productRouter.get('/block/:id',adminValid.isAdmin,adminProductController.blockPr
 productRouter.get('/unblock/:id',adminValid.isAdmin,adminProductController.unblockProduct);
 
 productRouter.get('/orderList',adminValid.isAdmin,orderController.orderList);
+productRouter.post('/orderStatus',adminValid.isAdmin,orderController.orderStatus);
+
 
 
 

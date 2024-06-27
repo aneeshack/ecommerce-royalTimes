@@ -31,10 +31,6 @@ const productSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    // brand:{
-    //     type:String,
-    //     required:true
-    // },
     brand:{
         type : mongoose.Schema.Types.ObjectId,
         ref: 'brands'
@@ -43,10 +39,6 @@ const productSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref: 'category'
     },
-    // category:{
-    //     type:String,
-    //     required:true
-    // },
     watchType:{
         type:String,
         required:true

@@ -28,6 +28,18 @@ const productDetails = async( req,res)=>{
     }   
 }
 
+
+// //filter products based on category price and brand
+// const productFilter = async (req, res) => {
+//     try {
+//         console.log('hello this is product filter')
+//     } catch (error) {
+//         console.log('error in filtering:',error.message);
+//     }
+// }
+
+
 module.exports ={
-    productDetails
+    productDetails,
+    // productFilter
 }

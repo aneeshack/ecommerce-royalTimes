@@ -34,7 +34,7 @@
                         <% order.forEach(orderItem=> { %>
                             <% orderItem.productItems.forEach((product,index)=> { %>
                                 <tr>
-                                    
+
                                     <td>
 
                                         <%= product.productName %>
@@ -50,10 +50,18 @@
                                     </td>
                                     <td>
                                         <%= orderItem.paymentMethod %>
-                                       
+
                                     </td>
                                     <td>
-                                        <%= orderItem.status %>
+                                        <select name="status" data-order-id="<%= orderItem._id %>"
+                                            data-product-id="<%= product._id %>" onchange="updateStatus(this)">
+                                            <% const statuses=['Pending', 'Processing' , 'Shipped' , 'Delivered' ]; %>
+                                                <% statuses.forEach(status=> { %>
+                                                    <option value="<%= status %>" <%=product.status===status
+                                                        ? 'selected' : '' %>><%= status %>
+                                                    </option>
+                                                    <% }); %>
+                                        </select>
                                     </td>
                                 </tr>
                                 </tr>
@@ -65,9 +73,7 @@
                                                     the order.</td>
                                             </tr>
                                             <% } %>
-
                 </tbody>
-
             </table>
 
 
@@ -88,6 +94,47 @@
                 </ul>
             </nav>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script>
+            function updateStatus(selectElement) {
 
+                const orderId = selectElement.getAttribute('data-order-id');
+                const productId = selectElement.getAttribute('data-product-id');
+                const status = selectElement.value;
+                
+                fetch('/admin/product/orderStatus', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ orderId, productId, status })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: data.message || 'Operation successful',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: data.message || 'An error occurred while adding the mobile number',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+
+                    })
+                    .catch(error => {
+                        console.log('Error', error);
+                        alert('An error occured while updating status')
+                    })
+
+            }
+        </script>
 
         <%- include('../layouts/admin/adminFooter') %>
