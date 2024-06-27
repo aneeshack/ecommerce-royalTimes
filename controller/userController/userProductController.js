@@ -3,29 +3,32 @@ const product = require('../../models/product');
 const mongoose = require('mongoose');
 
 //product detail showing page
-const productDetails = async( req,res)=>{
-    try {     
-        
-            const productId = req.params.productId;
-            if (!mongoose.isValidObjectId(productId)) {
-                console.log('Invalid product ID');
-                return res.status(400).json({ error: 'Invalid product ID' });
-            }
+const productDetails = async (req, res) => {
+    try {
 
-            const product_details = await product.findById(productId).populate('brand').populate('category');
-            // const category = await categoryModel.find();
-            // const brand = await brandModel.find();
-            const user = req.session.isUser;
-            if(!product_details){
-                console.log('product details not found')
-                return res.status(404).json({ error: 'Product not found' });             
-            }else{
-                res.render('user/productDetails',{products:product_details,user})
-            }   
-        
+        const productId = req.params.productId;
+        if (!mongoose.isValidObjectId(productId)) {
+            console.log('Invalid product ID');
+            return res.status(400).json({ error: 'Invalid product ID' });
+        }
+
+        const product_details = await product.findById(productId)
+        .populate('brand')
+        .populate('category');
+
+        const user = req.session.isUser;
+        if (!product_details) {
+            console.log('product details not found')
+            return res.status(404).json({ error: 'Product not found' });
+        } else {
+            const relatedProducts = await product.find({ category: product_details.category })
+            console.log('related products',relatedProducts)
+            res.render('user/productDetails', { products: product_details, user ,relatedProducts})
+        }
+
     } catch (error) {
-        console.log("product adding error:",error.message)
-    }   
+        console.log("product adding error:", error.message)
+    }
 }
 
 
@@ -39,7 +42,7 @@ const productDetails = async( req,res)=>{
 // }
 
 
-module.exports ={
+module.exports = {
     productDetails,
     // productFilter
 }

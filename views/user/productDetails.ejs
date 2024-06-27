@@ -1,6 +1,6 @@
 <%- include('../layouts/user/header',{title:"product-details"}) %>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<!-- Start Banner Area -->
 	<section class="banner-area organic-breadcrumb">
 		<div class="container">
@@ -19,60 +19,76 @@
 	<!-- End Banner Area -->
 
 	<!--================Single Product Area =================-->
-    <div id="productContainer" >
-    <% if(products) { %>
-	<div class="product_image_area">
-		<div class="container product-card">
-			<div class="row s_product_inner">
-				<div class="col-lg-6">
-					<div class="s_Product_carousel">
-						<div class="single-prd-item">
-							<img class="zoomable-image" id="zoomable-image" src="<%= products.images[0].replace('/public','') %>"  data-zoom-image="<%= products.images[0] %>" alt="<%= products.productName %>">
+	<div id="productContainer">
+		<% if(products) { %>
+			<div class="product_image_area">
+				<div class="container product-card">
+					<div class="row s_product_inner">
+						<div class="col-lg-6">
+							<div class="s_Product_carousel">
+								<div class="single-prd-item">
+									<img class="zoomable-image" id="zoomable-image"
+										src="<%= products.images[0].replace('/public','') %>"
+										data-zoom-image="<%= products.images[0] %>" alt="<%= products.productName %>">
+								</div>
+								<div class="single-prd-item">
+									<img class="zoomable-image" id="zoom_02"
+										src="<%= products.images[1].replace('/public','') %>"
+										data-zoom-image="<%= products.images[1] %>" alt="<%= products.productName %>">
+								</div>
+								<div class="single-prd-item">
+									<img class="zoomable-image" id="zoom_03"
+										src="<%= products.images[2].replace('/public','') %>"
+										data-zoom-image="<%= products.images[2] %>" alt="<%= products.productName %>">
+								</div>
+							</div>
 						</div>
-						<div class="single-prd-item">
-							<img class="zoomable-image"  id="zoom_02" src="<%= products.images[1].replace('/public','') %>" data-zoom-image="<%= products.images[1] %>" alt="<%= products.productName %>">
-						</div>
-						<div class="single-prd-item">
-							<img class="zoomable-image" id="zoom_03" src="<%= products.images[2].replace('/public','') %>" data-zoom-image="<%= products.images[2] %>" alt="<%= products.productName %>">
-						</div>
-					</div>
-				</div>
-				<style>
-					/* styles.css */
-.single-prd-item {
-    position: relative;
-    width: 300px; /* Adjust as needed */
-    height: 300px; /* Adjust as needed */
-    overflow: hidden;
-}
+						<style>
+							/* styles.css */
+							.single-prd-item {
+								position: relative;
+								width: 300px;
+								/* Adjust as needed */
+								height: 300px;
+								/* Adjust as needed */
+								overflow: hidden;
+							}
 
-.zoomable-image {
-    width: 100%;
-    height: auto;
-    transition: transform 0.3s ease; /* Smooth transition for zoom effect */
-}
+							.zoomable-image {
+								width: 100%;
+								height: auto;
+								transition: transform 0.3s ease;
+								/* Smooth transition for zoom effect */
+							}
 
-.zoomable-image.zoomed {
-    transform: scale(1.5); /* Zoom factor (adjust as needed) */
-}
+							.zoomable-image.zoomed {
+								transform: scale(1.5);
+								/* Zoom factor (adjust as needed) */
+							}
+						</style>
+						<div class="col-lg-5 offset-lg-1">
+							<div class="s_product_text">
+								<h3>
+									<%= products.productName %>
+								</h3>
+								<h2>$<%= products.price %>.00</h2>
+								<ul class="list">
+									<li><a class="active" href="#"><span>Category</span>: <%= products.category.name %>
+												</a></li>
+									<li><a href="#"><span>Brand</span> : <%= products.brand.name %></a></li>
+									<% if (products.stock===0) { %>
+										<li><span style="color: red;">Out of Stock</span></li>
+										<% } else if (products.stock < 5) { %>
+											<li><a href="#"><span style="color: red;">Remaining Stock</span> : <%=
+														products.stock %></a></li>
+											<% } %>
 
-				</style>
-				<div class="col-lg-5 offset-lg-1">
-					<div class="s_product_text">
-						<h3><%= products.productName %></h3>
-						<h2>$<%= products.price %>.00</h2>
-						<ul class="list">
-							<li><a class="active" href="#"><span>Category</span>: <%= products.category.name %></a></li>
-							<li><a href="#"><span>Brand</span> : <%= products.brand.name %></a></li>
-							<% if (products.stock === 0) { %>
-								<li><span style="color: red;">Out of Stock</span></li>
-							<% } else if (products.stock < 5) { %>
-								<li><a href="#"><span style="color: red;">Remaining Stock</span> : <%= products.stock %></a></li>
-							<% } %>
-							
-						</ul>
-						<p>Fastrack watches are known for their trendy designs, youthful appeal, and affordability, making them popular among the younger generation. With a focus on style, innovation, and functionality, Fastrack offers a wide range of watches that cater to various tastes and preferences.</p>
-						<!-- <div class="product_count">
+								</ul>
+								<p>Fastrack watches are known for their trendy designs, youthful appeal, and
+									affordability, making them popular among the younger generation. With a focus on
+									style, innovation, and functionality, Fastrack offers a wide range of watches that
+									cater to various tastes and preferences.</p>
+								<!-- <div class="product_count">
 							<label for="qty">Quantity:</label>
 							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
 							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
@@ -80,440 +96,540 @@
 							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
 						</div> -->
-						<div class="card_area d-flex align-items-center">
-							<form action="/user/cart" method="POST">
-								<input type="hidden" name="productId" value="<%= products._id %>">
-								<button class="primary-btn" type="submit">Add to Cart</button>
-							</form>
-							
-							<!-- <a class="primary-btn" href="/user/cart">Add to Cart</a> -->
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-							<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
-						</div>
-						<br>
-						<div class="card_area d-flex align-items-center">
-							<a class="primary-btn" href="#">Buy</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	
-</div>
-	<!--================End Single Product Area =================-->
+								<div class="card_area d-flex align-items-center">
+									<form action="/user/cart" method="POST">
+										<input type="hidden" name="productId" value="<%= products._id %>">
+										<button class="primary-btn" type="submit">Add to Cart</button>
+									</form>
 
-	<!--================Product Description Area =================-->
-	<section class="product_description_area">
-		<div class="container">
-			<ul class="nav nav-tabs" id="myTab" role="tablist">
-				<li class="nav-item">
-					<a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
-					 aria-selected="false">Specification</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-					 aria-selected="false">Comments</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-					 aria-selected="false">Reviews</a>
-				</li>
-			</ul>
-			<div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-					<p>Beryl Cook is one of Britain’s most talented and amusing artists .Beryl’s pictures feature women of all shapes
-						and sizes enjoying themselves .Born between the two world wars, Beryl Cook eventually left Kendrick School in
-						Reading at the age of 15, where she went to secretarial school and then into an insurance office. After moving to
-						London and then Hampton, she eventually married her next door neighbour from Reading, John Cook. He was an
-						officer in the Merchant Navy and after he left the sea in 1956, they bought a pub for a year before John took a
-						job in Southern Rhodesia with a motor company. Beryl bought their young son a box of watercolours, and when
-						showing him how to use it, she decided that she herself quite enjoyed painting. John subsequently bought her a
-						child’s painting set for her birthday and it was with this that she produced her first significant work, a
-						half-length portrait of a dark-skinned lady with a vacant expression and large drooping breasts. It was aptly
-						named ‘Hangover’ by Beryl’s husband and</p>
-					<p>It is often frustrating to attempt to plan meals that are designed for one. Despite this fact, we are seeing
-						more and more recipe books and Internet websites that are dedicated to the act of cooking for one. Divorce and
-						the death of spouses or grown children leaving for college are all reasons that someone accustomed to cooking for
-						more than one would suddenly need to learn how to adjust all the cooking practices utilized before into a
-						streamlined plan of cooking that is more efficient for one person creating less</p>
-				</div>
-				<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-					<div class="table-responsive">
-						<table class="table">
-							<tbody>
-								<tr>
-									<td>
-										<h5>Product Name</h5>
-									</td>
-									<td>
-										<h5><%= products.productName %></h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Watch Type</h5>
-									</td>
-									<td>
-										<h5><%= products.watchType %></h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Case Material</h5>
-									</td>
-									<td>
-										<h5><%= products.CaseMaterial %></h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Dial Colour</h5>
-									</td>
-									<td>
-										<h5><%= products.dialColour %></h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Strap Material</h5>
-									</td>
-									<td>
-										<h5><%= products.strapMaterial %></h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Model Number</h5>
-									</td>
-									<td>
-										<h5><%= products.ModelNumber %></h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Features</h5>
-									</td>
-									<td>
-										<h5><%= products.features %></h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Warrenty</h5>
-									</td>
-									<td>
-										<h5><%= products.warranty %> Year</h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Stock</h5>
-									</td>
-									<td>
-										<h5><%= products.stock %></h5>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<h5>Rating</h5>
-									</td>
-									<td>
-										<h5><%= products.rating %></h5>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="comment_list">
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="/img/product/review-1.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<h5>12th Feb, 2018 at 05:56 pm</h5>
-											<a class="reply_btn" href="#">Reply</a>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
+									<!-- <a class="primary-btn" href="/user/cart">Add to Cart</a> -->
+									<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
+									<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
 								</div>
-								<div class="review_item reply">
-									<div class="media">
-										<div class="d-flex">
-											<img src="/img/product/review-2.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<h5>12th Feb, 2018 at 05:56 pm</h5>
-											<a class="reply_btn" href="#">Reply</a>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
+								<br>
+								<div class="card_area d-flex align-items-center">
+									<a class="primary-btn" href="#">Buy</a>
 								</div>
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="/img/product/review-3.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<h5>12th Feb, 2018 at 05:56 pm</h5>
-											<a class="reply_btn" href="#">Reply</a>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="review_box">
-								<h4>Post a comment</h4>
-								<form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="text" class="form-control" id="name" name="name" placeholder="Your Full name">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="email" class="form-control" id="email" name="email" placeholder="Email Address">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="text" class="form-control" id="number" name="number" placeholder="Phone Number">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<textarea class="form-control" name="message" id="message" rows="1" placeholder="Message"></textarea>
-										</div>
-									</div>
-									<div class="col-md-12 text-right">
-										<button type="submit" value="submit" class="btn primary-btn">Submit Now</button>
-									</div>
-								</form>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="row total_rate">
-								<div class="col-6">
-									<div class="box_total">
-										<h5>Overall</h5>
-										<h4><%= products.rating %></h4>
-										<h6>(03 Reviews)</h6>
+
+			</div>
+			<!--================End Single Product Area =================-->
+
+			<!--================Product Description Area =================-->
+			<section class="product_description_area">
+				<div class="container">
+					<ul class="nav nav-tabs" id="myTab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab"
+								aria-controls="home" aria-selected="true">Description</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+								aria-controls="profile" aria-selected="false">Specification</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+								aria-controls="contact" aria-selected="false">Comments</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab"
+								aria-controls="review" aria-selected="false">Reviews</a>
+						</li>
+					</ul>
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+							<ul>
+								<li>
+									Product <%= products.productName %> is a awsome product in watch industry.
+
+								</li>
+								<li>The watch with wonder and low price as only $<%= products.price %>.00 is a wonderfull gift.</li>
+								<li>It is madeup of <%= products.CaseMaterial %> that make it feel free to use.
+									
+								</li>
+								<li>It has a new wonder full feature of todays world as <%= products.features %> contain in it.</li>
+							</ul>
+						</div>
+						<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+							<div class="table-responsive">
+								<table class="table">
+									<tbody>
+										<tr>
+											<td>
+												<h5>Product Name</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.productName %>
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Watch Type</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.watchType %>
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Case Material</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.CaseMaterial %>
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Dial Colour</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.dialColour %>
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Strap Material</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.strapMaterial %>
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Model Number</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.ModelNumber %>
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Features</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.features %>
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Warrenty</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.warranty %> Year
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Stock</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.stock %>
+												</h5>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<h5>Rating</h5>
+											</td>
+											<td>
+												<h5>
+													<%= products.rating %>
+												</h5>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="comment_list">
+										<div class="review_item">
+											<div class="media">
+												<div class="d-flex">
+													<img src="/img/product/review-1.png" alt="">
+												</div>
+												<div class="media-body">
+													<h4>Blake Ruiz</h4>
+													<h5>12th Feb, 2018 at 05:56 pm</h5>
+													<a class="reply_btn" href="#">Reply</a>
+												</div>
+											</div>
+											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+												tempor incididunt ut labore et
+												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+												ullamco laboris nisi ut aliquip ex ea
+												commodo</p>
+										</div>
+										<div class="review_item reply">
+											<div class="media">
+												<div class="d-flex">
+													<img src="/img/product/review-2.png" alt="">
+												</div>
+												<div class="media-body">
+													<h4>Blake Ruiz</h4>
+													<h5>12th Feb, 2018 at 05:56 pm</h5>
+													<a class="reply_btn" href="#">Reply</a>
+												</div>
+											</div>
+											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+												tempor incididunt ut labore et
+												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+												ullamco laboris nisi ut aliquip ex ea
+												commodo</p>
+										</div>
+										<div class="review_item">
+											<div class="media">
+												<div class="d-flex">
+													<img src="/img/product/review-3.png" alt="">
+												</div>
+												<div class="media-body">
+													<h4>Blake Ruiz</h4>
+													<h5>12th Feb, 2018 at 05:56 pm</h5>
+													<a class="reply_btn" href="#">Reply</a>
+												</div>
+											</div>
+											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+												tempor incididunt ut labore et
+												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+												ullamco laboris nisi ut aliquip ex ea
+												commodo</p>
+										</div>
 									</div>
 								</div>
-								<div class="col-6">
-									<div class="rating_list">
-										<h3>Based on 3 Reviews</h3>
+								<div class="col-lg-6">
+									<div class="review_box">
+										<h4>Post a comment</h4>
+										<form class="row contact_form" action="contact_process.php" method="post"
+											id="contactForm" novalidate="novalidate">
+											<div class="col-md-12">
+												<div class="form-group">
+													<input type="text" class="form-control" id="name" name="name"
+														placeholder="Your Full name">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<input type="email" class="form-control" id="email" name="email"
+														placeholder="Email Address">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<input type="text" class="form-control" id="number" name="number"
+														placeholder="Phone Number">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<textarea class="form-control" name="message" id="message" rows="1"
+														placeholder="Message"></textarea>
+												</div>
+											</div>
+											<div class="col-md-12 text-right">
+												<button type="submit" value="submit" class="btn primary-btn">Submit
+													Now</button>
+											</div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+							<div class="row">
+								<div class="col-lg-6">
+									<div class="row total_rate">
+										<div class="col-6">
+											<div class="box_total">
+												<h5>Overall</h5>
+												<h4>
+													<%= products.rating %>
+												</h4>
+												<h6>(03 Reviews)</h6>
+											</div>
+										</div>
+										<div class="col-6">
+											<div class="rating_list">
+												<h3>Based on 3 Reviews</h3>
+												<ul class="list">
+													<li><a href="#">5 Star <i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+													</li>
+													<li><a href="#">4 Star <i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+													</li>
+													<li><a href="#">3 Star <i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+													</li>
+													<li><a href="#">2 Star <i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+													</li>
+													<li><a href="#">1 Star <i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i><i
+																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
+													</li>
+												</ul>
+											</div>
+										</div>
+									</div>
+									<div class="review_list">
+										<div class="review_item">
+											<div class="media">
+												<div class="d-flex">
+													<img src="/img/product/review-1.png" alt="">
+												</div>
+												<div class="media-body">
+													<h4>Blake Ruiz</h4>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+												</div>
+											</div>
+											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+												tempor incididunt ut labore et
+												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+												ullamco laboris nisi ut aliquip ex ea
+												commodo</p>
+										</div>
+										<div class="review_item">
+											<div class="media">
+												<div class="d-flex">
+													<img src="/img/product/review-2.png" alt="">
+												</div>
+												<div class="media-body">
+													<h4>Blake Ruiz</h4>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+												</div>
+											</div>
+											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+												tempor incididunt ut labore et
+												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+												ullamco laboris nisi ut aliquip ex ea
+												commodo</p>
+										</div>
+										<div class="review_item">
+											<div class="media">
+												<div class="d-flex">
+													<img src="/img/product/review-3.png" alt="">
+												</div>
+												<div class="media-body">
+													<h4>Blake Ruiz</h4>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+													<i class="fa fa-star"></i>
+												</div>
+											</div>
+											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+												tempor incididunt ut labore et
+												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+												ullamco laboris nisi ut aliquip ex ea
+												commodo</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="review_box">
+										<h4>Add a Review</h4>
+										<p>Your Rating:</p>
 										<ul class="list">
-											<li><a href="#">5 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">4 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">3 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">2 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">1 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
+											<li><a href="#"><i class="fa fa-star"></i></a></li>
+											<li><a href="#"><i class="fa fa-star"></i></a></li>
+											<li><a href="#"><i class="fa fa-star"></i></a></li>
+											<li><a href="#"><i class="fa fa-star"></i></a></li>
+											<li><a href="#"><i class="fa fa-star"></i></a></li>
 										</ul>
+										<p>Outstanding</p>
+										<form class="row contact_form" action="contact_process.php" method="post"
+											id="contactForm" novalidate="novalidate">
+											<div class="col-md-12">
+												<div class="form-group">
+													<input type="text" class="form-control" id="name" name="name"
+														placeholder="Your Full name" onfocus="this.placeholder = ''"
+														onblur="this.placeholder = 'Your Full name'">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<input type="email" class="form-control" id="email" name="email"
+														placeholder="Email Address" onfocus="this.placeholder = ''"
+														onblur="this.placeholder = 'Email Address'">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<input type="text" class="form-control" id="number" name="number"
+														placeholder="Phone Number" onfocus="this.placeholder = ''"
+														onblur="this.placeholder = 'Phone Number'">
+												</div>
+											</div>
+											<div class="col-md-12">
+												<div class="form-group">
+													<textarea class="form-control" name="message" id="message" rows="1"
+														placeholder="Review" onfocus="this.placeholder = ''"
+														onblur="this.placeholder = 'Review'"></textarea></textarea>
+												</div>
+											</div>
+											<div class="col-md-12 text-right">
+												<button type="submit" value="submit" class="primary-btn">Submit
+													Now</button>
+											</div>
+										</form>
 									</div>
 								</div>
-							</div>
-							<div class="review_list">
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="/img/product/review-1.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="/img/product/review-2.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="/img/product/review-3.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="review_box">
-								<h4>Add a Review</h4>
-								<p>Your Rating:</p>
-								<ul class="list">
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-								</ul>
-								<p>Outstanding</p>
-								<form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Full name'">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<textarea class="form-control" name="message" id="message" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
-										</div>
-									</div>
-									<div class="col-md-12 text-right">
-										<button type="submit" value="submit" class="primary-btn">Submit Now</button>
-									</div>
-								</form>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</section>
-	<% } else { %>
-		<p>No product details available.</p>
-	<% } %>
-	<!--================End Product Description Area =================-->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevateZoom.min.js"></script>  
-	<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const images = document.querySelectorAll('.zoomable-image');
+			</section>
+			<% } else { %>
+				<p>No product details available.</p>
+				<% } %>
 
-    images.forEach(image => {
-        image.addEventListener('mouseover', () => {
-            image.classList.add('zoomed');
-        });
+					<!-- New -->
+					<!-- Related Products Section -->
+					<div class="container">
+						<% if (Array.isArray(relatedProducts) && relatedProducts.length> 0) { %>
+							<div class="row mt-4">
+								<div class="col-md-12">
+									<h3>Related Products</h3>
+								</div>
+								<% relatedProducts.forEach(relatedProduct=> { %>
+									<div class="col-md-4 mb-4">
+										<div class="card h-100 product-card">
+											<a href="/user/product/<%= relatedProduct._id %>">
+												<img src="<%= relatedProduct.images[0].replace('/public','') %>"
+													class="card-img-top" alt="<%= relatedProduct.productName %>"
+													data-product-id="<%= relatedProduct._id %>">
+											</a>
+											<div class="card-body">
+												<h5 class="card-title">
+													<%= relatedProduct.productName %>
+												</h5>
+												<h5 class="card-title">
+													<%= relatedProduct.brand.name %>
+												</h5>
+												<p class="card-text">Price: $<%= relatedProduct.price %>
+												</p>
+												<form action="/user/cart" method="POST">
+													<input type="hidden" name="productId"
+														value="<%= relatedProduct._id %>">
+													<button class="primary-btn" type="submit">Add to Cart</button>
+												</form>
+											</div>
+										</div>
+									</div>
+									<% }); %>
+							</div>
+							<% } %>
+					</div>
+					<!--================End Product Description Area =================-->
 
-        image.addEventListener('mouseout', () => {
-            image.classList.remove('zoomed');
-        });
-    });
-});
+
+					<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+					<script
+						src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevateZoom.min.js"></script>
+
+					<script>
+						document.addEventListener('DOMContentLoaded', () => {
+							const images = document.querySelectorAll('.zoomable-image');
+
+							images.forEach(image => {
+								image.addEventListener('mouseover', () => {
+									image.classList.add('zoomed');
+								});
+
+								image.addEventListener('mouseout', () => {
+									image.classList.remove('zoomed');
+								});
+							});
+						});
 
 
-	</script>
-   <script>
+					</script>
 
-		// Assuming you have a function to fetch product data from your backend
-function fetchProducts() {
-    // Fetch products data from backend API
-    fetch('/user/product/:productId') // Assuming this is the correct API endpoint to fetch products
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // Parse response as JSON
-        })
-        .then(products => renderProducts(products)) // Pass products to renderProducts function
-        .catch(error => console.error('Error fetching products:', error));
-}
+					<script>
+
+						// Assuming you have a function to fetch product data from your backend
+						function fetchProducts() {
+							// Fetch products data from backend API
+							fetch('/user/product/:productId') // Assuming this is the correct API endpoint to fetch products
+								.then(response => {
+									if (!response.ok) {
+										throw new Error('Network response was not ok');
+									}
+									return response.json(); // Parse response as JSON
+								})
+								.then(products => renderProducts(products)) // Pass products to renderProducts function
+								.catch(error => console.error('Error fetching products:', error));
+						}
 
 
-function renderProducts(products) {
-    const productContainer = document.getElementById('productContainer');
-    // Clear previous content
-    productContainer.innerHTML = '';
+						function renderProducts(products) {
+							const productContainer = document.getElementById('productContainer');
+							// Clear previous content
+							productContainer.innerHTML = '';
 
-    products.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.classList.add('product-card');
+							products.forEach(product => {
+								const productCard = document.createElement('div');
+								productCard.classList.add('product-card');
 
-        // Create elements for product details (name, image, price, etc.)
-        const productName = document.createElement('h4');
-        productName.textContent = product.productName;
+								// Create elements for product details (name, image, price, etc.)
+								const productName = document.createElement('h4');
+								productName.textContent = product.productName;
 
-        const productImage = document.createElement('img');
-        productImage.src = product.images[0];
-        productImage.alt = product.productName;
+								const productImage = document.createElement('img');
+								productImage.src = product.images[0];
+								productImage.alt = product.productName;
 
-        const productPrice = document.createElement('p');
-        productPrice.textContent = `Price: $${product.price}`;
+								const productPrice = document.createElement('p');
+								productPrice.textContent = `Price: $${product.price}`;
 
-        // Append elements to productCard
-        productCard.appendChild(productName);
-        productCard.appendChild(productImage);
-        productCard.appendChild(productPrice);
+								// Append elements to productCard
+								productCard.appendChild(productName);
+								productCard.appendChild(productImage);
+								productCard.appendChild(productPrice);
 
-        // Append productCard to productContainer
-        productContainer.appendChild(productCard);
-    });
-}
+								// Append productCard to productContainer
+								productContainer.appendChild(productCard);
+							});
+						}
 
-// Fetch and render products when the page loads
-document.addEventListener('DOMContentLoaded', fetchProducts);
+						// Fetch and render products when the page loads
+						document.addEventListener('DOMContentLoaded', fetchProducts);
 
-	</script>
-    
-<%- include('../layouts/user/footer') %>
+					</script>
+
+					<%- include('../layouts/user/footer') %>
