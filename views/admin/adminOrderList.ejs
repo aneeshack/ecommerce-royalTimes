@@ -27,6 +27,7 @@
                         <th scope="col">Total</th>
                         <th scope="col">Payment</th>
                         <th scope="col">Status</th>
+                        <th scope="col">notifications</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,7 +37,7 @@
                                 <tr>
 
                                     <td>
-
+                                        <img src="<%= product.productId.images[0].replace('/public','')  %>" alt="Product Image" class="img-fluid" style="max-width: 40px;">
                                         <%= product.productName %>
                                     </td>
                                     <td>
@@ -53,6 +54,11 @@
 
                                     </td>
                                     <td>
+                                        <% if (['Return Requested', 'return request accepted', 'return request rejected'].includes(product.status)) { %>
+                                            <a href="/admin/product/return/<%= orderItem._id %>/<%= product._id %>" class="text-danger">
+                                                <%= product.status %>
+                                            </a>
+                                            <% }else{ %>
                                         <select name="status" data-order-id="<%= orderItem._id %>"
                                             data-product-id="<%= product._id %>" onchange="updateStatus(this)">
                                             <% const statuses=['Pending', 'Processing' , 'Shipped' , 'Delivered' ]; %>
@@ -61,7 +67,14 @@
                                                         ? 'selected' : '' %>><%= status %>
                                                     </option>
                                                     <% }); %>
+                                                    <% } %>
                                         </select>
+                                    </td>
+                                    <td>
+                                        <% if (product.status === 'Return Requested') { %>
+                                            <a href="/admin/product/return/<%= orderItem._id %>/<%= product._id %>"
+                                                class="text-danger">requested to return</a>
+                                        <% } %>
                                     </td>
                                 </tr>
                                 </tr>
@@ -95,7 +108,9 @@
             </nav>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-        <script>
+       
+        <!-- updating status for products -->
+       <script>
             function updateStatus(selectElement) {
 
                 const orderId = selectElement.getAttribute('data-order-id');

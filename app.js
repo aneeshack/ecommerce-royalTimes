@@ -6,7 +6,7 @@ const adminRouter = require('./routes/adminRouter')
 const userProductRouter = require('./routes/userProductRouter');
 const adminProductRouter = require('./routes/adminProductRouter');
 const path = require('path');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const passport = require('passport');
 require('./connection/mongooseConnect')
 const sessionSecret = process.env.session_secret || 'default-secret-key';
@@ -38,10 +38,8 @@ app.use(passport.session());
 app.use(checkUser);
 
 
-
-//bodyparser
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended:true}))
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
 
 
   app.use(methodOveride('_method'));
@@ -63,8 +61,7 @@ app.use(bodyParser.urlencoded({extended:true}))
     next();
 });
 
-
-//join paths
+// Set view engine and static files
 app.set('view engine','ejs')
 app.use(express.static(path.join(__dirname,'public')));
 app.use(express.static(path.join(__dirname,'public/userHome')));
@@ -81,10 +78,16 @@ app.use('/admin',adminRouter)
 app.use('/admin/product',adminProductRouter)
 
 
-app.get('*',(req,res)=>{
-    res.render('404error')
-})
+// Catch-all route for 404 errors
+app.use((req, res, next) => {
+  res.status(404).render('404error');
+});
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render('500error', { error: err.message });
+});
 
 const PORT = process.env.PORT||3000
 

@@ -52,7 +52,8 @@ const dashboard = (req, res) => {
 //Admin Logouot
 const logout = (req, res) => {
     req.session.destroy();
-    res.render('admin/adminLogin');
+    // res.render('/admin/adminLogin');
+    res.redirect('/admin/login')
 }
 
 //user list

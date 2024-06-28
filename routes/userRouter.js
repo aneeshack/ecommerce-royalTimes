@@ -39,10 +39,10 @@ userRouter.get('/resendOtp',userController.resendOtp);
 userRouter.post('/verifyOtp',userController.verifyOtp)
 
 //product filtering
-userRouter.get('/category',categoryController.categoryPage);
-userRouter.get('/filter',categoryController.productFilter);
-// userRouter.get('/api/products',categoryController.brandFilter);
-// userRouter.get('/api/productCategory',categoryController.categoryFilter);
+userRouter.get('/category',valid.isLogout,categoryController.categoryPage);
+userRouter.get('/filter',valid.isLogout,categoryController.productFilter);
+userRouter.get('/search',valid.isLogout,categoryController.searchProduct);
+
 
 //user profile details
 userRouter.get('/profile',valid.isLogout,userProfileController.profilePage);
@@ -62,19 +62,23 @@ userRouter.get('/address/delete/:id',valid.isLogout,addressController.deleteAddr
 //cart controller routes
 userRouter.post('/cart',cartController.addToCart);
 userRouter.get('/cart',valid.isLogout,cartController.cartPage);
-userRouter.delete('/deleteCart/:id',valid.isLogout,cartController.deleteCart);
+userRouter.delete('/deleteCart/:id',cartController.deleteCart);
 userRouter.post('/updateQuantity',cartController.updateQuantity);
 
 //chekout order and payment controller routes
 userRouter.get('/checkout',valid.isLogout,checkoutController.checkoutPage);
-userRouter.post('/checkout/mobile',valid.isLogout,checkoutController.checkoutPageMobile);
+userRouter.post('/checkout/mobile',checkoutController.checkoutPageMobile);
 userRouter.post('/checkout/address', uploadForm.none(),checkoutController.checkoutAddressAdd);
 userRouter.post('/checkout/address/edit', uploadForm.none(),checkoutController.checkoutAddressEdit);
 
-// order management routes
+// ordering product
 userRouter.post('/checkout/order',orderController.placeOrder);
 userRouter.get('/confirmation',valid.isLogout,orderController.confirmation);
+
+//order management
 userRouter.get('/orders',valid.isLogout,orderController.orderList);
+userRouter.get('/order/cancel/:orderId/:productId',valid.isLogout,orderController.orderCancel);
+userRouter.post('/order/return',valid.isLogout,orderController.returnProduct);
 
 module.exports =userRouter
     

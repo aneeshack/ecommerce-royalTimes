@@ -50,9 +50,11 @@
                     <td><%= row.date %></td>
                     <td>
                         <!-- Delete Icon (Replace with actual delete functionality) -->
-                      
+                        <% if(row.isActive) { %>
                         <a href="/admin/block/<%= row._id %>"><button class="btn btn-danger">BLOCK</button></a>
+                        <% }else{ %>
                         <a href="/admin/unblock/<%= row._id %>"><button class="btn btn-success">UNBLOCK</button></a>
+                        <% } %>
                     </td>
                 </tr>
                 <% }) %>

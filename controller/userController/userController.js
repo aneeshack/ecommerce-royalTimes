@@ -21,11 +21,16 @@ const homePage = async (req, res) => {
         const products = await product.find({ isActive: true }).populate('brand');
      
         const user = req.session.isUser;
-        // const cart = await cartModel.findOne({ userId: userId });
-        // let count = cart.products.length;
-        // req.session.countCart = count
+        const userId = req.session.userId
+   
         if (user) {
-            res.render('user/homePage', { No_icons: false, products: products, user: user });
+            const usercheck = await userModel.findOne({ _id: userId, isActive: true });
+            if(usercheck){
+                res.render('user/homePage', { No_icons: false, products: products, user: user });
+            }else{
+                res.render('user/homePage', { No_icons: true, products: products });
+            }
+           
         } else {
             // count =0
             res.render('user/homePage', { No_icons: true, products: products });

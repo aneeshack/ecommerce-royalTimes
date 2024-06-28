@@ -16,11 +16,14 @@ const productSchema = new mongoose.Schema({
     productName: String,
     quantity: Number,
     total: Number,
-    status:String
-    // status: {
-    //     type: String,
-    //     default: 'Pending'
-    // },
+    status: {
+        type: String,
+        default: 'Pending'
+    },
+    returnReason: {
+        type: String,
+        default: 'not returned'
+    },
 });
 
 const orderSchema = new mongoose.Schema({
@@ -35,11 +38,11 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    status: {
-        type: String,
-        required: true,
-        default: 'Pending'
-    },
+    // status: {
+    //     type: String,
+    //     required: true,
+    //     default: 'Pending'
+    // },
     totalPrice: {
         type: Number
     },

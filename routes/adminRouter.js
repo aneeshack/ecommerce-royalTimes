@@ -7,7 +7,7 @@ const couponController = require('../controller/adminController/couponController
 const adminValid = require('../middleware/adminValidation');
 
 //admin validation
-adminRouter.get('/', adminController.login);
+adminRouter.get('/login', adminController.login);
 adminRouter.post('/login', adminController.loginAction);
 adminRouter.get('/dashboard', adminValid.isAdmin, adminController.dashboard);
 adminRouter.get('/logout', adminValid.isAdmin, adminController.logout);

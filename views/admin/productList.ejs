@@ -56,9 +56,11 @@
                     <td>
                         <a href="/admin/product/editProduct/<%= row._id %>" class="btn btn-info btn-sm">Edit</a>
                         <!-- <button type="button" class="btn btn-danger btn-sm">Delete</button> -->
+                         <% if(row.isActive) { %>
                         <a href="/admin/product/block/<%= row._id %>"><button class="btn btn-danger">BLOCK</button></a>
+                        <% }else{ %>
                         <a href="/admin/product/unblock/<%= row._id %>"><button class="btn btn-success">UNBLOCK</button></a>
-                    
+                    <% } %>
                     </td>
                 </tr>
                 <!-- Add more rows for other products -->
