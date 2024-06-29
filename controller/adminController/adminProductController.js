@@ -7,6 +7,7 @@ const categoryModel = require('../../models/category');
 const brandModel = require('../../models/brand')
 const upload = require('../../helpers/productMulter');
 const { check, validationResult } = require('express-validator');
+const { Mongoose, default: mongoose } = require('mongoose');
 // const {cropImage} = require('../helpers/imageCrop');
 
 
@@ -41,48 +42,51 @@ const addProduct = async (req, res) => {
 // For posting product details
 const addProductAction = async (req, res) => {
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        req.flash('error', errors.array().map(error => error.msg));
-        return res.redirect('/admin/product/addProduct'); // Adjust the path as necessary
-    }
     try {
-
-        const brandName = req.body.brand;
-        const categoryName = req.body.category;
-
-        const brand = await brandModel.findOne({name: brandName});
-        const category = await categoryModel.findOne({name: categoryName})
-  
-
-        const savedImages = req.files.map(file => `/images/product/${file.filename}`);
-        const product = new productModel({
+        if (!req.files || req.files.length !== 3) {
+            return res.status(400).json({ message: 'Please upload exactly 3 images.' });
+        }
+        // Create a new Product instance
+        const newProduct = new productModel({
             productName: req.body.productName,
             price: req.body.price,
-            images: savedImages,
             stock: req.body.stock,
             warranty: req.body.warranty,
             rating: req.body.rating,
-            brand: brand.id,
-            category: category.id,
             watchType: req.body.watchType,
             CaseMaterial: req.body.CaseMaterial,
             dialColour: req.body.dialColour,
             strapMaterial: req.body.strapMaterial,
             ModelNumber: req.body.ModelNumber,
             features: req.body.features,
+            brand: req.body.brand,
+            category: req.body.category
         });
 
-        await product.save();
-        req.flash('success', 'product added successfully')
-        res.redirect('/admin/product/productList')
+      
+            const images = req.files;
+            const imagePaths = [];
 
+            // Process each uploaded image
+            for (const image of images) {
+                const imagePath = `/images/product/${image.filename}`; 
+                imagePaths.push(imagePath);
+            }
+
+            // Set product images
+            newProduct.images = imagePaths;
+        
+
+        // Save the new product to the database
+        await newProduct.save();
+
+        res.status(200).json({ message: 'Product updated successfully!' });
     } catch (error) {
-        console.log("Error saving product:", error.message);
-        req.flash('error', 'Error saving product');
-        res.redirect('/admin/product/addProduct'); 
+        console.error("Error saving product:", error.message);
+        res.status(500).json({ message: 'An error occurred while adding the product.' });
     }
 };
+
 
 
 const blockProduct = async (req, res) => {
@@ -149,45 +153,99 @@ const editPage = async (req, res) => {
 
 }
 
+// const updateProduct = async (req, res) => {
+//     try {
+//         const id = req.params.id;
+
+//         //update product fields
+//         const savedImages = req.files.map(file => `/images/product/${file.filename}`);
+//         console.log('thisi s the brand',req.body.brand)
+//         const products = await productModel.findById(id)
+//         console.log('products are:',products);
+
+       
+//         const updatedProduct = await productModel.findByIdAndUpdate(id, {
+//             productName: req.body.productName,
+//             price: req.body.price,
+//             images: savedImages,
+//             stock: req.body.stock,
+//             warranty: req.body.warranty,
+//             rating: req.body.rating,
+//             brand: req.body.brand,
+//             category: req.body.category,
+//             watchType: req.body.watchType,
+//             CaseMaterial: req.body.CaseMaterial,
+//             dialColour: req.body.dialColour,
+//             strapMaterial: req.body.strapMaterial,
+//             ModelNumber: req.body.ModelNumber,
+//             features: req.body.features,
+//         }, { new: true });
+
+//         if (!updatedProduct) {
+//             req.flash('error', 'product is not found.');
+//             return res.redirect('/admin/product/productList')
+//         }
+
+//         req.flash('success', 'successfully edited the Product.')
+//         res.redirect('/admin/product/productList')
+//     } catch (error) {
+//         console.log('editing product:', error.message);
+//         req.flash('error', 'An error occured while editing the product.');
+//         res.redirect('/admin/product/productList')
+//     }
+
+// }
+
 const updateProduct = async (req, res) => {
     try {
         const id = req.params.id;
-
-        //update product fields
-        const savedImages = req.files.map(file => `/images/product/${file.filename}`);
-        const updatedProduct = await productModel.findByIdAndUpdate(id, {
-            productName: req.body.productName,
-            price: req.body.price,
-            images: savedImages,
-            stock: req.body.stock,
-            warranty: req.body.warranty,
-            rating: req.body.rating,
-            brand: req.body.brand,
-            category: req.body.category,
-            watchType: req.body.watchType,
-            CaseMaterial: req.body.CaseMaterial,
-            dialColour: req.body.dialColour,
-            strapMaterial: req.body.strapMaterial,
-            ModelNumber: req.body.ModelNumber,
-            features: req.body.features,
-        }, { new: true });
-
+        const imageIndexes = req.body.imageIndexes || []; 
+        const{productName,price,stock,warranty,rating,watchType,CaseMaterial,dialColour,strapMaterial,ModelNumber,features,brand,category}= req.body
+       
+        const updatedProduct  = await productModel.findById(id)
         if (!updatedProduct) {
-            req.flash('error', 'product is not found.');
-            return res.redirect('/admin/product/productList')
+            return res.status(404).json({ message: 'Product not found.' });
         }
 
-        req.flash('success', 'successfully edited the Product.')
-        res.redirect('/admin/product/productList')
+        updatedProduct.productName = productName;
+        updatedProduct.price = price;
+        updatedProduct.stock = stock;
+        updatedProduct.warranty = warranty;
+        updatedProduct.rating = rating;
+        updatedProduct.watchType = watchType;
+        updatedProduct.CaseMaterial = CaseMaterial;
+        updatedProduct.dialColour = dialColour;
+        updatedProduct.strapMaterial = strapMaterial;
+        updatedProduct.ModelNumber = ModelNumber;
+        updatedProduct.features = features;
+        updatedProduct.brand = brand;
+        updatedProduct.category = category;
+
+        if (req.files && req.files.length > 0) {
+            const images = req.files;
+            const imagePaths = [];
+      
+            // Process each uploaded image
+            for (const image of images) {
+              const imagePath = `/images/product/${image.filename}`; 
+              imagePaths.push(imagePath);
+            }
+     
+            imageIndexes.forEach((index, i) => {
+                updatedProduct.images[index] = imagePaths[i];
+            });
+          }
+
+          await updatedProduct.save();
+          
+
+        res.status(200).json({ message: 'Product updated successfully!' });
     } catch (error) {
         console.log('editing product:', error.message);
-        req.flash('error', 'An error occured while editing the product.');
-        res.redirect('/admin/product/productList')
+        res.status(500).json({ message: 'An error occurred while editing the product.' });
     }
 
 }
-
-
 module.exports = {
     addProduct,
     addProductAction,

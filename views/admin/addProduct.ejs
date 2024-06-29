@@ -31,6 +31,7 @@
               </ul>
             </div>
             <% } %>
+            <div id="message-container"></div>
               <form
                 action="<%= editMode ? `/admin/product/editProduct/${product._id}` : '/admin/product/addProduct' %>  "
                 method="post" id="upload-form" enctype="multipart/form-data" >
@@ -118,7 +119,7 @@
                   <label for="productBrand">Brand</label>
                   <select class="form-control" id="productBrand" name="brand" required>
                     <% brands.forEach(brand=> { %>
-                      <option value="<%= brand.name %>">
+                      <option value="<%= brand._id %>" >
                         <%= brand.name %>
                       </option>
                       <% }) %>
@@ -128,7 +129,7 @@
                   <label for="productCategory">Category</label>
                   <select class="form-control" id="productCategory" name="category" required>
                     <% categories.forEach(category=> { %>
-                      <option value="<%= category.name %>">
+                      <option value="<%= category._id %>">
                         <%= category.name %>
                       </option>
                       <% }) %>
@@ -138,14 +139,50 @@
 
 
                 <h2>Select Three Images</h2>
-                <input type="file" accept="image/*" name="images" multiple onchange="previewImages(event)">
-                <p id="file-count">No files selected</p>
-                <span id="image-error" style="color: red;"></span>
-                <div id="preview"></div>
+
+                <div class="form-group">
+                  <label for="image1">Image 1</label>
+                  <input type="file" accept="image/*" name="images" onchange="previewImage(event, 0)">
+                  <% if (editMode && product.images && product.images.length > 0) { %>
+                    <div id="preview1" class="image-preview">
+                      <img src="<%= product.images[0] %>" alt="Image Preview">
+                    </div>
+                  <% } else { %>
+                    <div id="preview1" class="image-preview"></div>
+                  <% } %>
+                </div>
+              
+                <div class="form-group">
+                  <label for="image2">Image 2</label>
+                  <input type="file" accept="image/*" name="images" onchange="previewImage(event, 1)">
+                  <% if (editMode && product.images && product.images.length > 1) { %>
+                    <div id="preview2" class="image-preview">
+                      <img src="<%= product.images[1] %>" alt="Image Preview">
+                    </div>
+                  <% } else { %>
+                    <div id="preview2" class="image-preview"></div>
+                  <% } %>
+                </div>
+              
+                <div class="form-group">
+                  <label for="image3">Image 3</label>
+                  <input type="file" accept="image/*" name="images" onchange="previewImage(event, 2)">
+                  <% if (editMode && product.images && product.images.length > 2) { %>
+                    <div id="preview3" class="image-preview">
+                      <img src="<%= product.images[2] %>" alt="Image Preview">
+                    </div>
+                  <% } else { %>
+                    <div id="preview3" class="image-preview"></div>
+                  <% } %>
+                </div>
+              
+                <!-- <p id="file-count">No files selected</p>
+                <span id="image-error" style="color: red;"></span> -->
+              
                 
                 <br>
                 <br>
-                <button type="submit" id="productSubmit" class="btn btn-primary">
+                <button type="submit" id="productSubmit" class="btn btn-primary d-block">
                   <%= editMode ? 'Update Product' : 'Add Product' %>
                 </button>
               </form>
@@ -183,139 +220,98 @@
         color: #0b0;
         /* display: block; */
       }
+      .image-preview img {
+    width: 300px;
+    height: auto;
+    margin-right: 0px;
+}
     </style>
 
- <script>
-function validateImages(event) {
-    let files = event.target.files;
-    let errorMessage = document.getElementById('image-error');
-    if (files.length !== 3) {
-        errorMessage.textContent = 'Exactly three images are required.';
-    } else {
-        errorMessage.textContent = ''; // Clear the error message if images are correct
-    }
-}
 
-
- </script>
     <script src="/script/product.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-<!-- 
+
+
+
 <script>
+  function previewImage(event, index) {
+  const file = event.target.files[0];
+  const reader = new FileReader();
+  const preview = document.getElementById(`preview${index + 1}`);
 
-  function previewImages(event) {
-
-    let preview = document.getElementById('preview');
+  reader.onload = function() {
+    const imgElement = document.createElement('img');
+    imgElement.src = reader.result;
+    imgElement.alt = 'Image Preview';
     preview.innerHTML = '';
+    preview.appendChild(imgElement);
+  };
 
-    let files = event.target.files;
-    for (let i = 0; i < files.length; i++) {
-      let file = files[i];
-      let reader = new FileReader()
-
-      reader.onload = function (event) {
-
-        var imageContainer = document.createElement('div');
-        imageContainer.style.position = 'relative';
-        imageContainer.style.display = 'inline-block';
-        
-        let img = document.createElement('img');
-        img.src = event.target.result;
-        img.style.width = '300px';
-        img.style.height = 'auto';
-
-        var closeButton = document.createElement('button');
-        closeButton.innerHTML = '&times;';
-        closeButton.style.position = 'absolute';
-        closeButton.style.backgroundColor = 'white';
-        closeButton.style.fontSize ='20px';
-        closeButton.style.left ='-5px';
-        closeButton.style.border = '1px';
-        closeButton.style.width = '30px';
-        closeButton.style.height = '30px';
-
-        imageContainer.appendChild(img)
-        imageContainer.appendChild(closeButton)
-        preview.appendChild(imageContainer)
-
-        closeButton.onclick = function () {
-          preview.removeChild(imageContainer)
-        }
-      }
-      reader.readAsDataURL(file);
-    }
+  if (file) {
+    reader.readAsDataURL(file);
+  } else {
+    preview.innerHTML = 'No file selected';
   }
-
-</script> -->
-
-<script>
-
-  let selectedFiles = [];
-
-  function previewImages(event) {
-    
-    let files = Array.from(event.target.files);
-    selectedFiles = selectedFiles.concat(files);
-
-    files.forEach((file, index) => {
-      let reader = new FileReader()
-
-      reader.onload = function (event) {
-        var imageContainer = document.createElement('div');
-        imageContainer.style.position = 'relative';
-        imageContainer.style.display = 'inline-block';
-        
-        let img = document.createElement('img');
-        img.src = event.target.result;
-        img.style.width = '300px';
-        img.style.height = 'auto';
-
-        var closeButton = document.createElement('button');
-        closeButton.innerHTML = '&times;';
-        closeButton.style.position = 'absolute';
-        closeButton.style.backgroundColor = 'white';
-        closeButton.style.fontSize ='20px';
-        closeButton.style.left ='-5px';
-        closeButton.style.border = '1px';
-        closeButton.style.width = '30px';
-        closeButton.style.height = '30px';
-        closeButton.onclick = function () {
-          preview.removeChild(imageContainer);
-          removeFile(index+selectedFiles.length-files.length)
-        }
-
-        imageContainer.appendChild(img)
-        imageContainer.appendChild(closeButton)
-        document.getElementById('preview').appendChild(imageContainer)
-
-        
-      }
-      reader.readAsDataURL(file);
-    });
-  }
-
-  function removeFile(index){
-    selectedFiles.splice(index , 1);
-
-    let dataTransfer = new DataTransfer();
-    selectedFiles.forEach(file => dataTransfer.items.add(file))
-
-    document.querySelector('input[type ="file"]').files = dataTransfer.files;
-    updateFileCount();
-  }
-  function updateFileCount() {
-            let fileCountElement = document.getElementById('file-count');
-            if (selectedFiles.length === 0) {
-                fileCountElement.textContent = 'No files selected';
-                alert(fileCountElement.textContent)
-            } else {
-                fileCountElement.textContent = selectedFiles.length + ' file(s) selected';
-            alert(fileCountElement.textContent)
-              }
-        }
+}
 
 </script>
+<script>
+  document.getElementById('upload-form').addEventListener('submit', async function (event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const form = event.target;
+      const formData = new FormData(form);
+      const url = form.action; // This will use the correct URL from the form action attribute
+      const messageContainer = document.getElementById('message-container');
+
+      try {
+          const response = await fetch(url, {
+              method: 'POST',
+              body: formData,
+          });
+
+          const result = await response.json();
+
+          // Clear previous messages
+          messageContainer.innerHTML = '';
+
+          if (response.ok) {
+              // Success message
+              const successMessage = document.createElement('div');
+              successMessage.className = 'alert alert-success';
+              successMessage.textContent = result.message || 'Product updated successfully!';
+              messageContainer.appendChild(successMessage);
+
+              // Optionally, redirect to another page after a delay
+              setTimeout(() => {
+                  window.location.href = '/admin/product/productList';
+              }, 2000);
+          } else {
+              // Error message
+              const errorMessage = document.createElement('div');
+              errorMessage.className = 'alert alert-danger';
+              errorMessage.textContent = result.message || 'An error occurred while updating the product.';
+              messageContainer.appendChild(errorMessage);
+          }
+      } catch (error) {
+          console.error('Error:', error);
+          // Display error message
+          messageContainer.innerHTML = `<div class="alert alert-danger">An unexpected error occurred.</div>`;
+      }
+  });
+
+  // function previewImage(event, index) {
+  //     const reader = new FileReader();
+  //     reader.onload = function () {
+  //         const preview = document.getElementById(`preview${index + 1}`);
+  //         preview.innerHTML = `<img src="${reader.result}" alt="Image Preview">`;
+  //     };
+  //     reader.readAsDataURL(event.target.files[0]);
+  // }
+</script>
+
+
     <%- include('../layouts/admin/adminFooter') %>
