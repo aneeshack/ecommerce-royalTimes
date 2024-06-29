@@ -153,49 +153,7 @@ const editPage = async (req, res) => {
 
 }
 
-// const updateProduct = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-
-//         //update product fields
-//         const savedImages = req.files.map(file => `/images/product/${file.filename}`);
-//         console.log('thisi s the brand',req.body.brand)
-//         const products = await productModel.findById(id)
-//         console.log('products are:',products);
-
-       
-//         const updatedProduct = await productModel.findByIdAndUpdate(id, {
-//             productName: req.body.productName,
-//             price: req.body.price,
-//             images: savedImages,
-//             stock: req.body.stock,
-//             warranty: req.body.warranty,
-//             rating: req.body.rating,
-//             brand: req.body.brand,
-//             category: req.body.category,
-//             watchType: req.body.watchType,
-//             CaseMaterial: req.body.CaseMaterial,
-//             dialColour: req.body.dialColour,
-//             strapMaterial: req.body.strapMaterial,
-//             ModelNumber: req.body.ModelNumber,
-//             features: req.body.features,
-//         }, { new: true });
-
-//         if (!updatedProduct) {
-//             req.flash('error', 'product is not found.');
-//             return res.redirect('/admin/product/productList')
-//         }
-
-//         req.flash('success', 'successfully edited the Product.')
-//         res.redirect('/admin/product/productList')
-//     } catch (error) {
-//         console.log('editing product:', error.message);
-//         req.flash('error', 'An error occured while editing the product.');
-//         res.redirect('/admin/product/productList')
-//     }
-
-// }
-
+// updating the added product
 const updateProduct = async (req, res) => {
     try {
         const id = req.params.id;

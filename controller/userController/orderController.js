@@ -130,6 +130,7 @@ const orderList = async (req, res) => {
 //api for cancel the products
 const orderCancel = async (req, res) => {
     try {
+        console.log('order cancel')
         const { orderId, productId } = req.params;
         const order = await orderModel.findById(orderId);
 

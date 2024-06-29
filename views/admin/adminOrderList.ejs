@@ -31,14 +31,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% if (order && order.length> 0) { %>
+                    <% if (order && order?.length> 0) { %>
                         <% order.forEach(orderItem=> { %>
-                            <% orderItem.productItems.forEach((product,index)=> { %>
+                            <% orderItem?.productItems.forEach((product,index)=> { %>
                                 <tr>
 
                                     <td>
-                                        <img src="<%= product.productId.images[0]  %>" alt="Product Image" class="img-fluid" style="max-width: 40px;">
-                                        <%= product.productName %>
+                                        <img src="<%= product?.productId?.images[0]  %>" alt="Product Image" class="img-fluid" style="max-width: 40px;">
+                                        <%= product?.productName %>
                                     </td>
                                     <td>
                                         <%= orderItem.dateOrdered.toDateString() %>
@@ -61,7 +61,7 @@
                                             <% }else{ %>
                                         <select name="status" data-order-id="<%= orderItem._id %>"
                                             data-product-id="<%= product._id %>" onchange="updateStatus(this)">
-                                            <% const statuses=['Pending', 'Processing' , 'Shipped' , 'Delivered' ]; %>
+                                            <% const statuses=['Pending', 'Processing' , 'Shipped' , 'Delivered','Cancelled' ]; %>
                                                 <% statuses.forEach(status=> { %>
                                                     <option value="<%= status %>" <%=product.status===status
                                                         ? 'selected' : '' %>><%= status %>

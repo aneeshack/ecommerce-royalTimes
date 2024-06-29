@@ -39,44 +39,44 @@
                                         <td>
                                             <div class="media">
                                                 <div class="d-flex">
-                                                    <img src="<%= item.productId.images[0] %>"
-                                                        alt="<%= item.productId.productName %>" class="img-thumbnail"
+                                                    <img src="<%= item?.productId?.images[0] %>"
+                                                        alt="<%= item?.productId?.productName %>" class="img-thumbnail"
                                                         style="width: 50px;">
                                                 </div>
                                                 <div class="media-body">
                                                     <p>
-                                                        <%= item.productId.productName %>
+                                                        <%= item?.productId?.productName %>
                                                     </p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <h5>$<%= item.productId.price %>.00 </h5>
+                                            <h5>$<%= item?.productId?.price %>.00 </h5>
                                         </td>
                                         <td>
                                             <div class="product_count">
-                                                <input type="text" name="qty" id="qty-<%= item.productId._id %>"
-                                                    maxlength="12" value="<%= item.quantity %>" title="Quantity:"
-                                                    class="input-text qty" max="<%= item.productId.stock %>">
+                                                <input type="text" name="qty" id="qty-<%= item?.productId?._id %>"
+                                                    maxlength="12" value="<%= item?.quantity %>" title="Quantity:"
+                                                    class="input-text qty" max="<%= item?.productId?.stock %>">
                                                 <button
-                                                    onclick="changeQuantity('<%= item.productId._id %>', 1,'<%= item.productId.price %>')"
+                                                    onclick="changeQuantity('<%= item?.productId?._id %>', 1,'<%= item?.productId?.price %>')"
                                                     class="increase items-count" type="button"><i
                                                         class="lnr lnr-chevron-up"></i></button>
                                                 <button
-                                                    onclick="changeQuantity('<%= item.productId._id %>', -1,'<%= item.productId.price %>')"
+                                                    onclick="changeQuantity('<%= item?.productId?._id %>', -1,'<%= item?.productId?.price %>')"
                                                     class="reduced items-count" type="button"><i
                                                         class="lnr lnr-chevron-down"></i></button>
                                             </div>
                                         </td>
                                         <td>
                                             <!-- chaging the total amount -->
-                                            <h5><strong id="totalAmount<%-item.productId._id%>">$<%= item.total %>
+                                            <h5><strong id="totalAmount<%-item?.productId?._id%>">$<%= item?.total %>
                                                 </strong></h5>
 
                                         </td>
                                         <td>
                                         <td><button type="button" class="btn primary-btn btn-sm delete-btn"
-                                                data-type="product" data-id="<%= item.productId._id %>">Remove</button>
+                                                data-type="product" data-id="<%= item?.productId?._id %>">Remove</button>
                                         </td>
                                         </td>
 

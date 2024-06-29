@@ -67,26 +67,26 @@
                                             <% orderItem.productItems.forEach(product=> { %>
                                                 <tr>
                                                     <td>
-                                                        <img src="<%= product.productId.images[0]  %>" alt="Product Image" class="img-fluid" style="max-width: 40px;">
-                                                        <%= product.productName %>
+                                                        <img src="<%= product?.productId?.images[0]  %>" alt="Product Image" class="img-fluid" style="max-width: 40px;">
+                                                        <%= product?.productName %>
                                                     </td>
                                                     <td>
-                                                        <%= product.quantity %>
+                                                        <%= product?.quantity %>
                                                     </td>
                                                     <td>
-                                                        <%= product.total %>
+                                                        <%= product?.total %>
                                                     </td>
                                                     <td>
-                                                        <% if (product.status === 'Cancelled') { %>
+                                                        <% if (product?.status === 'Cancelled') { %>
                                                             <span class="text-muted">Cancelled</span>
-                                                        <% } else if (product.status === 'Return Requested') { %>
+                                                        <% } else if (product?.status === 'Return Requested') { %>
                                                             <span class="text-danger">Return Requested</span>
-                                                        <% } else if (product.status === 'return request accepted') { %>
-                                                            <span class="text-danger">Return Request Accepted</span>
-                                                        <% } else if (product.status === 'return request rejected') { %>
+                                                        <% } else if (product?.status === 'return request accepted') { %>
+                                                            <span class="text-success">Return Request Accepted</span>
+                                                        <% } else if (product?.status === 'return request rejected') { %>
                                                             <span class="text-danger">Return Request Rejected</span>
                                                         <% }else{ %>
-                                                            <%= product.status %>
+                                                            <%= product?.status %>
                                                             <% } %>
                                                     </td>
                                                     <td>
@@ -95,7 +95,7 @@
                                                     <td>
                                                         <% if (product.status==='Delivered' ) { %>
                                                             <button class="btn btn-danger btn-sm" id="returnBtn"
-                                                                onclick="showReturnModal('<%= orderItem._id %>', '<%= product.productId %>')">Return</button>
+                                                                onclick="showReturnModal('<%= orderItem._id %>', '<%= product.productId._id %>')">Return</button>
 
                                                           
                                                                 <% } else if (['Cancelled', 'Return Requested', 'return request accepted',  'return request rejected'].includes(product.status)) { %>
@@ -112,11 +112,13 @@
                                                                     </span>
                                                                 <% } else { %>
                                                                     <button
-                                                                        onclick="cancelProduct('<%= orderItem._id %>', '<%= product.productId%>')"
-                                                                        id="cancelBtn_<%= orderItem._id %>_<%= product.productId %>"
+                                                                        onclick="cancelProduct('<%= orderItem._id %>', '<%= product.productId._id%>')"
+                                                                        id="cancelBtn_<%= orderItem._id %>_<%= product.productId._id %>"
                                                                         class="btn btn-warning btn-sm">Cancel</button>
 
                                                                     <% } %>
+                                                                    
+
                                                     </td>
                                                     
                                                 </tr>
@@ -212,7 +214,9 @@
             <!-- // Function to cancel a product using fetch with SweetAlert confirmation -->
             <script>
                 const cancelProduct = (orderId, productId) => {
+              
                     // Show SweetAlert confirmation dialog
+                    console.log('order cancel')
                     Swal.fire({
                         title: 'Are you sure?',
                         text: 'Do you want to cancel this product?',
