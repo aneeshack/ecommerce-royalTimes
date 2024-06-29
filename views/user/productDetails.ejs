@@ -28,17 +28,17 @@
 							<div class="s_Product_carousel">
 								<div class="single-prd-item">
 									<img class="zoomable-image" id="zoomable-image"
-										src="<%= products.images[0].replace('/public','') %>"
+										src="<%= products.images[0] %>"
 										data-zoom-image="<%= products.images[0] %>" alt="<%= products.productName %>">
 								</div>
 								<div class="single-prd-item">
 									<img class="zoomable-image" id="zoom_02"
-										src="<%= products.images[1].replace('/public','') %>"
+										src="<%= products.images[1] %>"
 										data-zoom-image="<%= products.images[1] %>" alt="<%= products.productName %>">
 								</div>
 								<div class="single-prd-item">
 									<img class="zoomable-image" id="zoom_03"
-										src="<%= products.images[2].replace('/public','') %>"
+										src="<%= products.images[2] %>"
 										data-zoom-image="<%= products.images[2] %>" alt="<%= products.productName %>">
 								</div>
 							</div>
@@ -530,7 +530,7 @@
 									<div class="col-md-4 mb-4">
 										<div class="card h-100 product-card">
 											<a href="/user/product/<%= relatedProduct._id %>">
-												<img src="<%= relatedProduct.images[0].replace('/public','') %>"
+												<img src="<%= relatedProduct.images[0] %>"
 													class="card-img-top" alt="<%= relatedProduct.productName %>"
 													data-product-id="<%= relatedProduct._id %>">
 											</a>
@@ -631,5 +631,6 @@
 						document.addEventListener('DOMContentLoaded', fetchProducts);
 
 					</script>
+
 
 					<%- include('../layouts/user/footer') %>

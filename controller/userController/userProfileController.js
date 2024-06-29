@@ -1,4 +1,7 @@
 const userModel = require('../../models/userModel')
+const path=require('path')
+const fs=require('fs')
+const bcrypt = require('bcrypt')
 
 //to render user profile
 const profilePage = async (req, res) => {
@@ -22,6 +25,7 @@ const profilePage = async (req, res) => {
 // updating the user profile
 const profileUpdate = async (req, res) => {
     try {
+        console.log('hello')
         const user = req.session.isUser;
         const userData = await userModel.findOne({ name: user });
         if (!userData) {
@@ -30,10 +34,12 @@ const profileUpdate = async (req, res) => {
 
         if (req.file) {
             if (userData.profileImage) {
-                const imagePath = path.join(__dirname, '../public/images/userProfile', userData.profileImage);
+                const imagePath = path.join(__dirname, `../../public/images/userProfile/${userData.profileImage}`);
                 fs.unlinkSync(imagePath);
             }
             userData.profileImage = req.file.filename;
+            
+            console.log('Profile image updated:', userData.profileImage);
         }
 
         // Update other user profile fields

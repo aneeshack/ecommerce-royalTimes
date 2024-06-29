@@ -60,7 +60,7 @@ const addressEditpage = async (req, res) => {
             const userAddress = userData.address;
             const addressToEdit = userAddress.find(address => address._id.toString() === addressId);
             console.log(addressId)
-            res.render('user/userAddress', { users: userAddress, editMode: true, addressToEdit });
+            res.render('user/userAddress', { users: userAddress, editMode: true, addressToEdit, userData });
         }
     } catch (error) {
         console.log('render edit page:', error.message);

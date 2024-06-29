@@ -35,7 +35,7 @@
                     <div class="alert alert-danger"><%= errorMessage %></div>
                 <% } %>
 
-                 <span id="messageShow" class="bg-danger text-white"></span>
+                 <span id="messageShow" class=" text-danger"></span>
                 <form class="row login_form" action="/user/password/<%= userId %>" method="post" id="contactForm" onsubmit="return validatePassword()" >
                     <div class="col-md-12 form-group">
                         <input type="password" class="form-control" id="password" name="password" placeholder="Enter Your Password" required>

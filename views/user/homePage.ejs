@@ -109,7 +109,7 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100 product-card">
 					<a href="/user/product/<%= product._id %>"> <!-- Link to product details page -->
-                    <img src="<%= product.images[0].replace('/public','') %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
+                    <img src="<%= product.images[0] %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
 					</a>
                     <div class="card-body">
                         <h5 class="card-title"><%= product.productName %></h5>
