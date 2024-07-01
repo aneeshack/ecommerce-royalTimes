@@ -5,10 +5,25 @@ const categoryModel = require('../../models/category');
 // render the page containing all the products 
 const categoryPage = async (req, res) => {
     try {
+        const{page} = req.query;
+        const currentPage =parseInt(page)
+        const limit = 1;
+        console.log('page no is :',typeof(currentPage))
+
+        const skip = (page-1) *limit
         const category = await categoryModel.find();
         const brands = await brandModel.find();
-        const products = await productModel.find({ isActive: true }).populate('brand');
-        res.render('user/categoryPage', { category, brands, products });
+        const products = await productModel.find({ isActive: true }).populate('brand').skip(skip).limit(limit);
+        const totalProducts = await productModel.countDocuments();
+        console.log('total products:',totalProducts)
+        res.render('user/categoryPage', { 
+            category, 
+            brands, 
+            products,
+            currentPage,
+            totalProducts,
+           totalPages:Math.ceil(totalProducts/limit) 
+        });
 
     } catch (error) {
         console.log('loading category page by user:', error.message);

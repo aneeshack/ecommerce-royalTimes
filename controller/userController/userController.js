@@ -67,6 +67,10 @@ const signup = (req, res) => {
 }
 
 
+const otpPage = (req, res )=> {
+    res.render('user/otpPage')
+}
+
 //generate random otp
 const randomOtp = async () => {
     return Math.floor(1000 + Math.random() * 9000);
@@ -269,7 +273,7 @@ const loginAction = async (req, res) => {
                     res.render('user/login', { message: "password not matching.", No_icons: true })
                 }
                 }else{
-                    res.render('user/login', { message: "please signin through google.", No_icons: true })
+                    res.render('user/login', { message: "please signin through google,or signup and try again.", No_icons: true })
                 }             
             } else {
                 res.render('user/login', { message: "user is blocked by the admin for malpractice.", No_icons: true })
@@ -305,5 +309,6 @@ module.exports = {
     signup,
     resendOtp,
     verifyOtp,
-    logout
+    logout,
+    otpPage
 }

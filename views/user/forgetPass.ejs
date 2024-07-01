@@ -25,7 +25,8 @@
 						<img class="img-fluid" src="/img/login.jpg" alt="">
 						<div class="hover">
 							<h4>New to our website?</h4>
-							<p>There are advances being made in science and technology everyday, and a good example of this is the</p>
+							<p>There are advances being made in science and technology everyday, and a good example of
+								this is the</p>
 							<a class="primary-btn" href="registration.html">Create an Account</a>
 						</div>
 					</div>
@@ -33,19 +34,53 @@
 				<div class="col-lg-6">
 					<div class="login_form_inner">
 						<h3>forgot password</h3>
-						<form class="row login_form" action="/user/login" method="post" id="contactForm" >
+						<form class="row login_form" id="forgotPassEmail">
 							<div class="col-md-12 form-group">
-								<input type="email" class="form-control" id="email" name="email" placeholder="Enter your Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'email'">
+								<input type="email" class="form-control" id="email" name="email"
+									placeholder="Enter your Email Address" onfocus="this.placeholder = ''"
+									onblur="this.placeholder = 'email'">
 							</div>
 							<div class="col-md-12 form-group">
-							<button type="submit" value="submit" class="primary-btn"><a href="/user/forgetPassOtp" style="color: white;">Send OTP</a></button>	
-								<a href="/user/signup" style="color: orange;" >SIGNUP</a>
+								<button type="submit" value="submit" class="primary-btn">
+										Send OTP</button>
+								<a href="/user/signup" style="color: orange;">SIGNUP</a>
 							</div>
 						</form>
 					</div>
 				</div>
-			
+
 	</section>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+	<script>
+		document.getElementById('forgotPassEmail').addEventListener('submit', async function (event) {
+			event.preventDefault();
+
+			const email = document.getElementById('email').value;
+			try {
+				const response = await fetch('/user/forgotPass/email', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ email: email })
+				})
+				const data = await response.json()
+				if (response.ok) {
+					console.log('email send successfully:', data.message)
+					window.location.href = '/user/forgotOtp'
+				} else {
+					console.log('email sending failed', data.message);
+					Swal.fire('Error!', data.message || 'Failed to get the email.', 'error');
+				}
+			} catch (error) {
+				console.log('error in posting email:', error.message);
+				Swal.fire('Error!', data.message || 'Failed to get the email.', 'error');
+				alert('some errors occured')
+			}
+
+		})
+	</script>
 
 
-<%- include('../layouts/user/footer') %>
+
+	<%- include('../layouts/user/footer') %>

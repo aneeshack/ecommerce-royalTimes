@@ -8,6 +8,7 @@ const userProfileController = require('../controller/userController/userProfileC
 const cartController = require('../controller/userController/cartController');
 const checkoutController = require('../controller/userController/checkoutController');
 const orderController = require('../controller/userController/orderController')
+const forgotPassController = require('../controller/userController/fogotPassController');
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
 const upload = require('../helpers/userMulter')
@@ -35,8 +36,17 @@ userRouter.get('/login',userController.login);
 userRouter.post('/login',userController.loginAction);
 userRouter.get('/signup',userController.signup);
 userRouter.post('/signup',signupValidator,otpMailValidator,userController.signupAction);//signup and otp send
+userRouter.get('/otp',userController.otpPage); 
 userRouter.get('/resendOtp',userController.resendOtp); 
-userRouter.post('/verifyOtp',userController.verifyOtp)
+userRouter.post('/verifyOtp',userController.verifyOtp);
+
+// forgot password routes
+userRouter.get('/forgotPass',forgotPassController.forgotPassword);
+userRouter.post('/forgotPass/email',forgotPassController.forgotPasswordEmail);
+userRouter.get('/forgotOtp',forgotPassController.otpPage);
+userRouter.get('/forgotPass/resendOtp',forgotPassController.resendOtp); 
+userRouter.post('/forgotPass/verifyOtp',forgotPassController.verifyOtp);
+userRouter.post('/forget/changePass',forgotPassController.changePassword);
 
 //product filtering
 userRouter.get('/category',valid.isLogout,categoryController.categoryPage);

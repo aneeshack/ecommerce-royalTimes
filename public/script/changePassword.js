@@ -1,5 +1,5 @@
 function validatePassword() {
-    const oldePassword = document.getElementById('password').value.trim();
+    // const oldePassword = document.getElementById('password').value.trim();
     const password = document.getElementById('newpassword').value.trim()
     const passwordConfirm = document.getElementById('Password_Confirm').value.trim()
     const messageShow = document.getElementById('messageShow');

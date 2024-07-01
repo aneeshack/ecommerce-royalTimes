@@ -56,7 +56,7 @@ const cartPage = async (req, res) => {
             let userId = req.session.userId;
             if (userId) {
                 const cartItems = await cartModel.findOne({ userId }).populate('products.productId');
-                console.log('cartitems are:',JSON.stringify(cartItems))
+                console.log('cartitems are:',cartItems)
                 if (cartItems) {
                     const grandTotalAmount = cartItems.grandTotal || 0;
                     res.render('user/cart', { cartItems, grandTotalAmount });
