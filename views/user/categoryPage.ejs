@@ -36,6 +36,10 @@
 		.text-right {
 			text-align: right;
 		}
+		.availability-label .badge {
+    font-size: 1.2rem; /* Custom font size */
+    /* Additional custom styles */
+}
 	</style>
 	<!-- End Banner Area -->
 	<div class="container_fluid">
@@ -151,12 +155,6 @@
 												<% } %>
 
 					</div>
-					<!-- <style>
-						.pagination a.active {
-							font-weight: bold;
-							color: red;
-						}
-					</style> -->
 				</div>
 				<!-- End Filter Bar -->
 				<br>
@@ -179,6 +177,13 @@
 															alt="<%= product.productName %>"
 															data-product-id="<%= product._id %>">
 													</a>
+													<div class="availability-label position-absolute top-0 end-0 mt-2 me-2" >
+														<% if (product.stock>0) { %>
+															<span class="badge badge-success ">In Stock</span>
+														<% } else { %>
+															<span class="badge badge-danger  fs-5">Out of Stock</span>
+														<% } %>
+													</div>
 													<div class="card-body">
 														<h5 class="card-title">
 															<%= product.productName %>
@@ -189,11 +194,10 @@
 
 														<p class="card-text">Price: $<%= product.price %>
 														</p>
+														
 														<form action="/user/cart" method="POST">
-															<input type="hidden" name="productId"
-																value="<%= product._id %>">
-															<button class="primary-btn" type="submit">Add to
-																Cart</button>
+															<input type="hidden" name="productId" value="<%= product._id %>" data-stock="<%= product.stock %>">
+															<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
 														</form>
 
 													</div>
@@ -209,33 +213,39 @@
 									<% } %>
 							</div>
 					</div>
-
-
-					<!-- End Best Seller -->
-					<!-- Start Filter Bar -->
-					<!-- <div class="filter-bar d-flex flex-wrap align-items-center">
-						<div class="sorting mr-auto">
-							<select>
-								<option value="1">Show 12</option>
-								<option value="1">Show 12</option>
-								<option value="1">Show 12</option>
-							</select>
-						</div>
-						<div class="pagination">
-							<a href="#" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>
-							<a href="#" class="active">1</a>
-							<a href="#">2</a>
-							<a href="#">3</a>
-							<a href="#" class="dot-dot"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
-							<a href="#">6</a>
-							<a href="#" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
-						</div>
-					</div> -->
-					<!-- End Filter Bar -->
+				
 			</div>
 		</div>
 	</div>
-
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>	
+	<!-- when outof stock it prevent add to cart -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+	
+			addToCartButtons.forEach(button => {
+				button.addEventListener('click', function (event) {
+					event.preventDefault(); 
+					
+					const form = button.closest('form'); 
+					const productId = form.querySelector('input[name="productId"]').value;
+					const stock = parseInt(form.querySelector('input[name="productId"]').dataset.stock);
+	
+					if (stock === 0) {
+						Swal.fire({
+							icon: 'info',
+							title: 'Out of Stock',
+							text: 'This product is currently out of stock.',
+							confirmButtonText: 'OK'
+						});
+					} else {
+						form.submit(); 
+					}
+				});
+			});
+		});
+	</script>
+	
 	<!-- searching the products -->
 	<script>
 		document.getElementById('searchInput').addEventListener('input', function () {

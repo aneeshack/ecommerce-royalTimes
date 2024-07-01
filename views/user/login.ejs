@@ -36,6 +36,14 @@
 						<% if (locals.message) { %>
 							<span class="text-danger"><%= message %></span>
 						<% } %>
+						<% if(errorMessage && errorMessage.length >0) { %>
+							<div id="error-popup" class="popup">
+							  <div class="alert alert-danger">
+								<span><%= errorMessage %></span>
+							  <button onclick="closeErrorPopup()">close</button>
+							</div>
+							</div>
+						<% } %>
 						<form class="row login_form" action="/user/login" method="post" id="contactForm" >
 							<div class="col-md-12 form-group">
 								<input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'" required>
@@ -64,4 +72,12 @@
 	</section>
 
 
+	<script>
+	
+		function closeErrorPopup(){
+		  document.getElementById('error-popup').style.display = 'none';
+		}
+		setTimeout(closeErrorPopup, 10000);
+		
+	  </script>
 <%- include('../layouts/user/footer') %>

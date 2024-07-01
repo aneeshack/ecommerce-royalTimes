@@ -79,6 +79,8 @@
     </ul>
 
     <hr>
+    <% if (users && users.length<3 ||editMode) { %>
+    <div id="addNewAddress">
     <h4><%= editMode ? 'Edit Address':'Add New Address' %></h4>
     <span id="messageShow" class=" text-danger"></span>
     <form id="addAddressForm" action="/user/address/<%= editMode ? 'edit/' + addressToEdit._id : userId %>" method="post" onsubmit="return validateAddress()">
@@ -106,7 +108,10 @@
     
       <button type="submit" class="btn btn-primary"><%= editMode ? 'edit address' :'add address' %></button>
     </form>
-   
+  </div>
+  <% }else{ %>
+    <p></p>
+    <% } %>
     <hr>
     
   </div>

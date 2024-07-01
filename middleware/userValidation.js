@@ -12,14 +12,13 @@ const isLogout = async(req,res,next)=>{
         if (!userCheck) {
             return res.redirect('/user/home');
         }
+      
         next()
     } catch (error) {
         console.log(error.messasge)
     }
  }
     
-
-
  
     const isLogin =async(req,res,next)=>{
         try {

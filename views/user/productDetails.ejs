@@ -97,11 +97,11 @@
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
 						</div> -->
 								<div class="card_area d-flex align-items-center">
+									
 									<form action="/user/cart" method="POST">
-										<input type="hidden" name="productId" value="<%= products._id %>">
-										<button class="primary-btn" type="submit">Add to Cart</button>
+										<input type="hidden" name="productIds" value="<%= products._id %>" data-stock="<%= products.stock %>">
+										<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
 									</form>
-
 									<!-- <a class="primary-btn" href="/user/cart">Add to Cart</a> -->
 									<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
 									<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
@@ -127,17 +127,17 @@
 								aria-controls="home" aria-selected="true">Description</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+							<a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
 								aria-controls="profile" aria-selected="false">Specification</a>
 						</li>
-						<li class="nav-item">
+						<!-- <li class="nav-item">
 							<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
 								aria-controls="contact" aria-selected="false">Comments</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab"
+							<a class="nav-link " id="review-tab" data-toggle="tab" href="#review" role="tab"
 								aria-controls="review" aria-selected="false">Reviews</a>
-						</li>
+						</li> -->
 					</ul>
 					<div class="tab-content" id="myTabContent">
 						<div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -153,7 +153,7 @@
 								<li>It has a new wonder full feature of todays world as <%= products.features %> contain in it.</li>
 							</ul>
 						</div>
-						<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+						<div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 							<div class="table-responsive">
 								<table class="table">
 									<tbody>
@@ -261,7 +261,7 @@
 								</table>
 							</div>
 						</div>
-						<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+						<!-- <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="comment_list">
@@ -355,8 +355,8 @@
 									</div>
 								</div>
 							</div>
-						</div>
-						<div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+						</div> -->
+						<!-- <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
 							<div class="row">
 								<div class="col-lg-6">
 									<div class="row total_rate">
@@ -364,7 +364,7 @@
 											<div class="box_total">
 												<h5>Overall</h5>
 												<h4>
-													<%= products.rating %>
+													
 												</h4>
 												<h6>(03 Reviews)</h6>
 											</div>
@@ -510,7 +510,7 @@
 									</div>
 								</div>
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</section>
@@ -534,6 +534,13 @@
 													class="card-img-top" alt="<%= relatedProduct.productName %>"
 													data-product-id="<%= relatedProduct._id %>">
 											</a>
+											<div class="availability-label position-absolute top-0 end-0 mt-2 me-2" >
+												<% if (relatedProduct.stock>0) { %>
+													<span class="badge badge-success ">In Stock</span>
+												<% } else { %>
+													<span class="badge badge-danger  fs-5">Out of Stock</span>
+												<% } %>
+											</div>
 											<div class="card-body">
 												<h5 class="card-title">
 													<%= relatedProduct.productName %>
@@ -544,7 +551,7 @@
 												<p class="card-text">Price: $<%= relatedProduct.price %>
 												</p>
 												<form action="/user/cart" method="POST">
-													<input type="hidden" name="productId"
+													<input type="hidden" name="s"
 														value="<%= relatedProduct._id %>">
 													<button class="primary-btn" type="submit">Add to Cart</button>
 												</form>
@@ -562,6 +569,34 @@
 					<script
 						src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevateZoom.min.js"></script>
 
+						<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>	
+						<!-- when outof stock it prevent add to cart -->
+						<script>
+							document.addEventListener('DOMContentLoaded', function () {
+								const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+						
+								addToCartButtons.forEach(button => {
+									button.addEventListener('click', function (event) {
+										event.preventDefault(); 
+										
+										const form = button.closest('form'); 
+										const productId = form.querySelector('input[name="productIds"]').value;
+										const stock = parseInt(form.querySelector('input[name="productIds"]').dataset.stock);
+						
+										if (stock === 0) {
+											Swal.fire({
+												icon: 'info',
+												title: 'Out of Stock',
+												text: 'This product is currently out of stock.',
+												confirmButtonText: 'OK'
+											});
+										} else {
+											form.submit(); 
+										}
+									});
+								});
+							});
+						</script>
 					<script>
 						document.addEventListener('DOMContentLoaded', () => {
 							const images = document.querySelectorAll('.zoomable-image');
@@ -582,17 +617,17 @@
 
 					<script>
 
-						// Assuming you have a function to fetch product data from your backend
+					
 						function fetchProducts() {
-							// Fetch products data from backend API
-							fetch('/user/product/:productId') // Assuming this is the correct API endpoint to fetch products
+							
+							fetch('/user/product/:productId') 
 								.then(response => {
 									if (!response.ok) {
 										throw new Error('Network response was not ok');
 									}
-									return response.json(); // Parse response as JSON
+									return response.json(); 
 								})
-								.then(products => renderProducts(products)) // Pass products to renderProducts function
+								.then(products => renderProducts(products))
 								.catch(error => console.error('Error fetching products:', error));
 						}
 
