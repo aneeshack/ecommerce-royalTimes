@@ -9,6 +9,7 @@ const cartController = require('../controller/userController/cartController');
 const checkoutController = require('../controller/userController/checkoutController');
 const orderController = require('../controller/userController/orderController')
 const forgotPassController = require('../controller/userController/fogotPassController');
+const wishListController = require('../controller/userController/wishListController');
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
 const upload = require('../helpers/userMulter')
@@ -89,6 +90,12 @@ userRouter.get('/confirmation',valid.isLogout,orderController.confirmation);
 userRouter.get('/orders',valid.isLogout,orderController.orderList);
 userRouter.get('/order/cancel/:orderId/:productId',valid.isLogout,orderController.orderCancel);
 userRouter.post('/order/return',valid.isLogout,orderController.returnProduct);
+
+
+// wish list
+userRouter.get('/wishList',wishListController.wishList);
+userRouter.post('/wish',wishListController.wishProduct);
+userRouter.delete('/wish/delete/:id',wishListController.deleteWish);
 
 module.exports =userRouter
     

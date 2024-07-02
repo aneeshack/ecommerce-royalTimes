@@ -5,6 +5,7 @@ const categoryModel = require('../../models/category');
 const brandModel = require('../../models/brand');
 const cartModel = require('../../models/cart')
 const Otp = require('../../models/otp');
+const wishlistModel =require('../../models/wishList');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -25,8 +26,9 @@ const homePage = async (req, res) => {
    
         if (user) {
             const usercheck = await userModel.findOne({ _id: userId, isActive: true });
+            const wishList = await wishlistModel.find();
             if(usercheck){
-                res.render('user/homePage', { No_icons: false, products: products, user: user });
+                res.render('user/homePage', { No_icons: false, products: products, user: user , wishList});
             }else{
                 res.render('user/homePage', { No_icons: true, products: products });
             }

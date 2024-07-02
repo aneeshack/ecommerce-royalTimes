@@ -1,4 +1,5 @@
 <%- include('../layouts/user/header',{title:"product-details"}) %>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<!-- Start Banner Area -->
@@ -27,18 +28,15 @@
 						<div class="col-lg-6">
 							<div class="s_Product_carousel">
 								<div class="single-prd-item">
-									<img class="zoomable-image" id="zoomable-image"
-										src="<%= products.images[0] %>"
+									<img class="zoomable-image" id="zoomable-image" src="<%= products.images[0] %>"
 										data-zoom-image="<%= products.images[0] %>" alt="<%= products.productName %>">
 								</div>
 								<div class="single-prd-item">
-									<img class="zoomable-image" id="zoom_02"
-										src="<%= products.images[1] %>"
+									<img class="zoomable-image" id="zoom_02" src="<%= products.images[1] %>"
 										data-zoom-image="<%= products.images[1] %>" alt="<%= products.productName %>">
 								</div>
 								<div class="single-prd-item">
-									<img class="zoomable-image" id="zoom_03"
-										src="<%= products.images[2] %>"
+									<img class="zoomable-image" id="zoom_03" src="<%= products.images[2] %>"
 										data-zoom-image="<%= products.images[2] %>" alt="<%= products.productName %>">
 								</div>
 							</div>
@@ -65,6 +63,11 @@
 								transform: scale(1.5);
 								/* Zoom factor (adjust as needed) */
 							}
+
+							.heart-icon {
+								font-size: 40px;
+								/* Adjust the size as needed */
+							}
 						</style>
 						<div class="col-lg-5 offset-lg-1">
 							<div class="s_product_text">
@@ -74,7 +77,7 @@
 								<h2>$<%= products.price %>.00</h2>
 								<ul class="list">
 									<li><a class="active" href="#"><span>Category</span>: <%= products.category.name %>
-												</a></li>
+										</a></li>
 									<li><a href="#"><span>Brand</span> : <%= products.brand.name %></a></li>
 									<% if (products.stock===0) { %>
 										<li><span style="color: red;">Out of Stock</span></li>
@@ -82,7 +85,6 @@
 											<li><a href="#"><span style="color: red;">Remaining Stock</span> : <%=
 														products.stock %></a></li>
 											<% } %>
-
 								</ul>
 								<p>Fastrack watches are known for their trendy designs, youthful appeal, and
 									affordability, making them popular among the younger generation. With a focus on
@@ -96,20 +98,27 @@
 							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
 						</div> -->
+								<i class="fa fa-heart wishlist-icon <%= products.isWishlist ? 'fas text-danger heart-icon' : 'far heart-icon' %>"
+									data-product-id="<%= products._id %>"></i>
+
 								<div class="card_area d-flex align-items-center">
-									
+
 									<form action="/user/cart" method="POST">
-										<input type="hidden" name="productIds" value="<%= products._id %>" data-stock="<%= products.stock %>">
+										<input type="hidden" name="productIds" value="<%= products._id %>"
+											data-stock="<%= products.stock %>">
 										<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
 									</form>
 									<!-- <a class="primary-btn" href="/user/cart">Add to Cart</a> -->
-									<a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-									<a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+									<!-- <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a> -->
+
+									<!-- <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a> -->
 								</div>
+
+
 								<br>
-								<div class="card_area d-flex align-items-center">
+								<!-- <div class="card_area d-flex align-items-center">
 									<a class="primary-btn" href="#">Buy</a>
-								</div>
+								</div> -->
 							</div>
 						</div>
 					</div>
@@ -146,14 +155,17 @@
 									Product <%= products.productName %> is a awsome product in watch industry.
 
 								</li>
-								<li>The watch with wonder and low price as only $<%= products.price %>.00 is a wonderfull gift.</li>
+								<li>The watch with wonder and low price as only $<%= products.price %>.00 is a
+										wonderfull gift.</li>
 								<li>It is madeup of <%= products.CaseMaterial %> that make it feel free to use.
-									
+
 								</li>
-								<li>It has a new wonder full feature of todays world as <%= products.features %> contain in it.</li>
+								<li>It has a new wonder full feature of todays world as <%= products.features %> contain
+										in it.</li>
 							</ul>
 						</div>
-						<div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+						<div class="tab-pane fade show active" id="profile" role="tabpanel"
+							aria-labelledby="profile-tab">
 							<div class="table-responsive">
 								<table class="table">
 									<tbody>
@@ -530,16 +542,16 @@
 									<div class="col-md-4 mb-4">
 										<div class="card h-100 product-card">
 											<a href="/user/product/<%= relatedProduct._id %>">
-												<img src="<%= relatedProduct.images[0] %>"
-													class="card-img-top" alt="<%= relatedProduct.productName %>"
+												<img src="<%= relatedProduct.images[0] %>" class="card-img-top"
+													alt="<%= relatedProduct.productName %>"
 													data-product-id="<%= relatedProduct._id %>">
 											</a>
-											<div class="availability-label position-absolute top-0 end-0 mt-2 me-2" >
+											<div class="availability-label position-absolute top-0 end-0 mt-2 me-2">
 												<% if (relatedProduct.stock>0) { %>
 													<span class="badge badge-success ">In Stock</span>
-												<% } else { %>
-													<span class="badge badge-danger  fs-5">Out of Stock</span>
-												<% } %>
+													<% } else { %>
+														<span class="badge badge-danger  fs-5">Out of Stock</span>
+														<% } %>
 											</div>
 											<div class="card-body">
 												<h5 class="card-title">
@@ -551,8 +563,7 @@
 												<p class="card-text">Price: $<%= relatedProduct.price %>
 												</p>
 												<form action="/user/cart" method="POST">
-													<input type="hidden" name="s"
-														value="<%= relatedProduct._id %>">
+													<input type="hidden" name="s" value="<%= relatedProduct._id %>">
 													<button class="primary-btn" type="submit">Add to Cart</button>
 												</form>
 											</div>
@@ -564,39 +575,93 @@
 					</div>
 					<!--================End Product Description Area =================-->
 
+					<script>
+						document.addEventListener('DOMContentLoaded', function () {
+							const wishlistIcons = document.querySelectorAll('.wishlist-icon');
+
+							wishlistIcons.forEach(icon => {
+								icon.addEventListener('click', function () {
+
+									this.classList.toggle('far');
+									this.classList.toggle('fas');
+									this.classList.toggle('text-danger');
+
+
+									const productId = this.getAttribute('data-product-id');
+									addToWishlist({ productId });
+								});
+							});
+						});
+
+						async function addToWishlist(productId) {
+							try {
+								const response = await fetch('/user/wish', {
+									method: 'POST',
+									headers: {
+										'Content-Type': 'application/json',
+									},
+									body: JSON.stringify(productId)
+
+								})
+								const data = await response.json();
+								if (response.ok) {
+									console.log('added products to wishlist:', data);
+									Swal.fire({
+										position: 'bottom',
+										icon: 'success',
+										title: data.message || 'wishlist!',
+										showConfirmButton: false,
+										timer: 2000
+									});
+								} else {
+									console.log(' error in adding products to wishlist:', data);
+									Swal.fire({
+										position: 'bottom',
+										icon: 'error',
+										title: data.message,
+										showConfirmButton: false,
+										timer: 3000
+									});
+								}
+							} catch (error) {
+								console.log('error occured while adding to wishlist', error.message);
+							}
+
+						}
+					</script>
 
 					<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 					<script
 						src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevateZoom.min.js"></script>
 
-						<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>	
-						<!-- when outof stock it prevent add to cart -->
-						<script>
-							document.addEventListener('DOMContentLoaded', function () {
-								const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-						
-								addToCartButtons.forEach(button => {
-									button.addEventListener('click', function (event) {
-										event.preventDefault(); 
-										
-										const form = button.closest('form'); 
-										const productId = form.querySelector('input[name="productIds"]').value;
-										const stock = parseInt(form.querySelector('input[name="productIds"]').dataset.stock);
-						
-										if (stock === 0) {
-											Swal.fire({
-												icon: 'info',
-												title: 'Out of Stock',
-												text: 'This product is currently out of stock.',
-												confirmButtonText: 'OK'
-											});
-										} else {
-											form.submit(); 
-										}
-									});
+					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+					<!-- when outof stock it prevent add to cart -->
+					<script>
+						document.addEventListener('DOMContentLoaded', function () {
+							const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+							addToCartButtons.forEach(button => {
+								button.addEventListener('click', function (event) {
+									event.preventDefault();
+
+									const form = button.closest('form');
+									const productId = form.querySelector('input[name="productIds"]').value;
+									const stock = parseInt(form.querySelector('input[name="productIds"]').dataset.stock);
+
+									if (stock === 0) {
+										Swal.fire({
+											icon: 'info',
+											title: 'Out of Stock',
+											text: 'This product is currently out of stock.',
+											confirmButtonText: 'OK'
+										});
+									} else {
+										form.submit();
+									}
 								});
 							});
-						</script>
+						});
+					</script>
 					<script>
 						document.addEventListener('DOMContentLoaded', () => {
 							const images = document.querySelectorAll('.zoomable-image');
@@ -617,15 +682,15 @@
 
 					<script>
 
-					
+
 						function fetchProducts() {
-							
-							fetch('/user/product/:productId') 
+
+							fetch('/user/product/:productId')
 								.then(response => {
 									if (!response.ok) {
 										throw new Error('Network response was not ok');
 									}
-									return response.json(); 
+									return response.json();
 								})
 								.then(products => renderProducts(products))
 								.catch(error => console.error('Error fetching products:', error));
