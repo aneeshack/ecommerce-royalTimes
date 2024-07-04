@@ -7,6 +7,7 @@ const productDetails = async (req, res) => {
     try {
 
         const productId = req.params.productId;
+        console.log('product id is:',productId)
         if (!mongoose.isValidObjectId(productId)) {
             console.log('Invalid product ID');
             return res.status(400).json({ error: 'Invalid product ID' });

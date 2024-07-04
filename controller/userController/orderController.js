@@ -3,9 +3,19 @@ const cartModel = require('../../models/cart')
 const orderModel = require('../../models/order');
 const productModel = require('../../models/product');
 const productReturn = require('../../models/returnProduct')
+// const razorpayService = require('../../helpers/razorpay');
 const mongoose = require('mongoose')
+const Razorpay = require('razorpay');
+
+// create a instance for razopay
+const razorpayInstance = new Razorpay({
+    key_id: process.env.RAZORPAY_ID_KEY,
+    key_secret: process.env.RAZORPAY_SECRET_KEY
+});
+
 
 //placing product order
+
 const placeOrder = async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -39,7 +49,74 @@ const placeOrder = async (req, res) => {
             return res.status(400).json({ error: 'Cart not found' });
         }
 
-        // Map cart items to order items
+        if (!paymentMethod) {
+            return res.status(400).json({ error: 'Please select one payment method to continue' });
+        }
+
+        let razorpayOrder = null;
+        if (paymentMethod !== 'COD') {
+            const options = {
+                amount: totalAmount * 100, // amount in the smallest currency unit
+                currency: 'INR',
+                receipt: `order_rcptid_${userId}`,
+                payment_capture: 1
+            };
+           
+            razorpayOrder = await razorpayInstance.orders.create(options);
+            return res.status(200).json({ success: 'payment placed successfully', razorpayOrderId: razorpayOrder.id });
+
+        } else {
+            // Map cart items to order items
+            const productItems = cart.products.map(product => ({
+                productId: product.productId._id,
+                productName: product.productId.productName,
+                quantity: product.quantity,
+                total: product.total
+            }));
+            // if cod save the data
+            const newOrder = new orderModel({
+                userId: userId,
+                productItems: productItems,
+                billingAddress: selectedAddress,
+                phone: mobileNumber,
+                paymentMethod: paymentMethod,
+                totalPrice: totalAmount
+            });
+
+            await newOrder.save();
+            for (const item of productItems) {
+                await productModel.findByIdAndUpdate(
+                    item.productId,
+                    { $inc: { stock: -item.quantity } },
+                    { new: true }
+                );
+            }
+            req.session.newOrder = newOrder._id.toString();
+
+            //  to clear the cart
+            await cartModel.deleteOne({ _id: cartItemID });
+            res.status(200).json({ success: 'Order placed successfully with COD' });
+        }
+    } catch (error) {
+        console.log('Error in placing order:', error.message);
+        res.status(400).json({ error: 'Some errors occurred while placing the order, try again' });
+    }
+};
+
+//redirecting while payment done through razorpay
+const paymentOrder = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+
+        const paymentData= req.body;
+        const orderData = paymentData.orderData;
+        const { mobileNumber, addressId, paymentMethod, cartItemID, totalAmount } = orderData;
+        const { orderId, paymentId, razorpayOrderId, amount } = paymentData;
+
+        const userData = await userModel.findById(userId);
+        const selectedAddress = userData.address.find(addr => addr._id.toString() === addressId);
+        const cart = await cartModel.findById(cartItemID).populate('products.productId');
+
         const productItems = cart.products.map(product => ({
             productId: product.productId._id,
             productName: product.productId.productName,
@@ -47,17 +124,15 @@ const placeOrder = async (req, res) => {
             total: product.total
         }));
 
-        if (!paymentMethod) {
-            return res.status(400).json({ error: 'Please select one payment method to continue' });
-        }
-
         const newOrder = new orderModel({
             userId: userId,
             productItems: productItems,
             billingAddress: selectedAddress,
             phone: mobileNumber,
             paymentMethod: paymentMethod,
-            totalPrice: totalAmount
+            totalPrice: totalAmount,
+
+
         });
 
         await newOrder.save();
@@ -70,19 +145,17 @@ const placeOrder = async (req, res) => {
                 { new: true }
             );
         }
-
         req.session.newOrder = newOrder._id.toString();
         //  to clear the cart
         await cartModel.deleteOne({ _id: cartItemID });
+        res.status(200).json({ success: 'Order placed successfully with razorpay' });
 
-        res.status(200).json({ success: 'Order placed successfully' });
+
     } catch (error) {
-        console.log('Error in placing order:', error.message);
-        res.status(400).json({ error: 'Some errors occurred while placing the order, try again' });
+        console.log('some error while updating the payment:', error.message);
+        res.status(400).json({ error: 'Error in placing razorpay.' })
     }
-};
-
-
+}
 
 //render confirmation page
 const confirmation = async (req, res) => {
@@ -107,6 +180,9 @@ const confirmation = async (req, res) => {
     }
 
 }
+
+
+
 
 
 //showing all the order of the user
@@ -165,31 +241,31 @@ const orderCancel = async (req, res) => {
 // product returning request
 const returnProduct = async (req, res) => {
     try {
-    console.log('return ing product')
-    const { orderId, productId, returnReason } = req.body;
-    console.log('values are obtaining in body:',req.body);
-    
+        console.log('return ing product')
+        const { orderId, productId, returnReason } = req.body;
+        console.log('values are obtaining in body:', req.body);
+
         const order = await orderModel.findById(orderId);
-       if(!order){
-        console.log('order is not found')
-        return res.status(404).json({ message: 'order not found.' })
-       }
+        if (!order) {
+            console.log('order is not found')
+            return res.status(404).json({ message: 'order not found.' })
+        }
 
-       const productUpdate = order.productItems.find(item => item.productId.toString() === productId);
-       if(!productUpdate){
-        console.log('products not found in order schema:')
-        return res.status(404).json({ message: 'product not found in the order.' })
-       }
+        const productUpdate = order.productItems.find(item => item.productId.toString() === productId);
+        if (!productUpdate) {
+            console.log('products not found in order schema:')
+            return res.status(404).json({ message: 'product not found in the order.' })
+        }
 
-       productUpdate.status = 'Return Requested';
-       productUpdate.returnReason = returnReason;
-       await order.save();
-    
+        productUpdate.status = 'Return Requested';
+        productUpdate.returnReason = returnReason;
+        await order.save();
+
 
         res.json({ success: true });
     } catch (error) {
-        console.log('error occured while return a product:',error.message);
-        res.status(400).json({error: 'Failed to submit the return request.'})
+        console.log('error occured while return a product:', error.message);
+        res.status(400).json({ error: 'Failed to submit the return request.' })
     }
 }
 
@@ -199,5 +275,6 @@ module.exports = {
     confirmation,
     orderList,
     orderCancel,
-    returnProduct
+    returnProduct,
+    paymentOrder
 }

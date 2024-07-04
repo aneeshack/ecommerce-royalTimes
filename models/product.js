@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema({
     },
     rating:{
         type:Number,
-        required:true
+        required:false
     },
     brand:{
         type : mongoose.Schema.Types.ObjectId,

@@ -1,0 +1,101 @@
+<%- include('../layouts/user/header',{title:"Wallet"}) %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    
+<!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Wallet</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="/user/home">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="/user/profile">userProfile<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="/user/wallet">wallet</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+
+    <div class="container mt-5 mb-5">
+        <!-- Wallet Balance Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3>Wallet Balance</h3>
+                        <h2 class="text-success">$250.00</h2>
+                        <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addFundsModal">Add Funds</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction History Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Transaction History</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-07-01</td>
+                                    <td>Purchase at Store X</td>
+                                    <td class="text-danger">-$50.00</td>
+                                    <td>$200.00</td>
+                                </tr>
+                                <tr>
+                                    <td>2024-06-25</td>
+                                    <td>Refund from Store Y</td>
+                                    <td class="text-success">+$30.00</td>
+                                    <td>$250.00</td>
+                                </tr>
+                                <!-- Add more transactions as needed -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Funds Modal -->
+    <div class="modal fade" id="addFundsModal" tabindex="-1" role="dialog" aria-labelledby="addFundsModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFundsModalLabel">Add Funds</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="amount">Amount</label>
+                            <input type="number" class="form-control" id="amount" placeholder="Enter amount">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Funds</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <%- include('../layouts/user/footer') %>

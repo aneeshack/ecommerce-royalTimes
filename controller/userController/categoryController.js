@@ -7,7 +7,7 @@ const categoryPage = async (req, res) => {
     try {
         const{page} = req.query;
         const currentPage =parseInt(page)
-        const limit = 1;
+        const limit = 3;
         console.log('page no is :',typeof(currentPage))
 
         const skip = (page-1) *limit

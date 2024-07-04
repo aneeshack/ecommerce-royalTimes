@@ -117,10 +117,25 @@ const changePass = async (req, res) => {
     }
 }
 
+const walletPage = async(req, res) => {
+    try {
+        if (req.session.isUser) {
+            const user = req.session.isUser
+            const userData = await userModel.findOne({ name: user });
+            res.render('user/userWallet',userData)
+        } else {
+            res.render('404error')
+        }
+      
+        
+    } catch (error) {
+        
+    }
+}
 module.exports = {
     profilePage,
     profileUpdate,
     changePasswordPage,
-    changePass
-
+    changePass,
+    walletPage
 }

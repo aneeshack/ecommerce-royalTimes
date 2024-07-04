@@ -6,6 +6,8 @@ const orderModel = require('../../models/order');
 //To retrieve checkout page
 const checkoutPage = async (req, res) => {
     try {
+        const razorpayKeyId = process.env.RAZORPAY_ID_KEY
+
         if (req.session.isUser) {
             const userId = req.session.userId;
             if (userId) {
@@ -20,7 +22,7 @@ const checkoutPage = async (req, res) => {
 
                 const userData = await userModel.findById({ _id: userId })
                 const userIds = userData._id.toString()
-                res.render('user/checkoutPage', { userData, cartItems, totalAmount, userIds })
+                res.render('user/checkoutPage', { userData, cartItems, totalAmount, userIds,razorpayKeyId })
             } else {
                 res.redirect('/user/login', { message: "please login to access checkout page." })
             }

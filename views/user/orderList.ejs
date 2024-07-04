@@ -45,7 +45,7 @@
             <div class="row">
                 <%- include('../layouts/userProfile/profileSidebar') %>
                     <div class="col-md-9">
-                        <h2>My Cart</h2>
+                        <h2>My Orders</h2>
 
                         <div class="table-responsive">
                             <table class="table table-bordered">
@@ -58,7 +58,7 @@
                                         <th scope="col">Status</th>
                                         <th scope="col">Payment Mode</th>
                                         <th scope="col">Actions</th>
-                                        <!-- <th scope="col">Actions</th> -->
+                                        <!-- <th scope="col"></th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -67,7 +67,9 @@
                                             <% orderItem.productItems.forEach(product=> { %>
                                                 <tr>
                                                     <td>
-                                                        <img src="<%= product?.productId?.images[0]  %>" alt="Product Image" class="img-fluid" style="max-width: 40px;">
+                                                        <img src="<%= product?.productId?.images[0]  %>"
+                                                            alt="Product Image" class="img-fluid"
+                                                            style="max-width: 40px;">
                                                         <%= product?.productName %>
                                                     </td>
                                                     <td>
@@ -77,17 +79,22 @@
                                                         <%= product?.total %>
                                                     </td>
                                                     <td>
-                                                        <% if (product?.status === 'Cancelled') { %>
+                                                        <% if (product?.status==='Cancelled' ) { %>
                                                             <span class="text-muted">Cancelled</span>
-                                                        <% } else if (product?.status === 'Return Requested') { %>
-                                                            <span class="text-danger">Return Requested</span>
-                                                        <% } else if (product?.status === 'return request accepted') { %>
-                                                            <span class="text-success">Return Request Accepted</span>
-                                                        <% } else if (product?.status === 'return request rejected') { %>
-                                                            <span class="text-danger">Return Request Rejected</span>
-                                                        <% }else{ %>
-                                                            <%= product?.status %>
-                                                            <% } %>
+                                                            <% } else if (product?.status==='Return Requested' ) { %>
+                                                                <span class="text-danger">Return Requested</span>
+                                                                <% } else if
+                                                                    (product?.status==='return request accepted' ) { %>
+                                                                    <span class="text-success">Return Request
+                                                                        Accepted</span>
+                                                                    <% } else if
+                                                                        (product?.status==='return request rejected' ) {
+                                                                        %>
+                                                                        <span class="text-danger">Return Request
+                                                                            Rejected</span>
+                                                                        <% }else{ %>
+                                                                            <%= product?.status %>
+                                                                                <% } %>
                                                     </td>
                                                     <td>
                                                         <%= orderItem.paymentMethod %>
@@ -97,19 +104,29 @@
                                                             <button class="btn btn-danger btn-sm" id="returnBtn"
                                                                 onclick="showReturnModal('<%= orderItem._id %>', '<%= product.productId._id %>')">Return</button>
 
-                                                          
-                                                                <% } else if (['Cancelled', 'Return Requested', 'return request accepted',  'return request rejected'].includes(product.status)) { %>
-                                                                    <span>
-                                                                        <% if (product.status === 'Cancelled') { %>
-                                                                            <span class="text-muted">Cancelled</span>
-                                                                        <% } else if (product.status === 'Return Requested') { %>
-                                                                            <span class="text-danger">Return Requested</span>
-                                                                        <% } else if (product.status === 'return request accepted') { %>
-                                                                            <span class="text-danger">Return Request Accepted</span>
-                                                                        <% } else if (product.status === 'return request rejected') { %>
-                                                                            <span class="text-danger">Return Request Rejected</span>
-                                                                        <% } %>
-                                                                    </span>
+
+                                                            <% } else if (['Cancelled', 'Return Requested'
+                                                                , 'return request accepted' , 'return request rejected'
+                                                                ].includes(product.status)) { %>
+                                                                <span>
+                                                                    <% if (product.status==='Cancelled' ) { %>
+                                                                        <span class="text-muted">Cancelled</span>
+                                                                        <% } else if
+                                                                            (product.status==='Return Requested' ) { %>
+                                                                            <span class="text-danger">Return
+                                                                                Requested</span>
+                                                                            <% } else if
+                                                                                (product.status==='return request accepted'
+                                                                                ) { %>
+                                                                                <span class="text-danger">Return Request
+                                                                                    Accepted</span>
+                                                                                <% } else if
+                                                                                    (product.status==='return request rejected'
+                                                                                    ) { %>
+                                                                                    <span class="text-danger">Return
+                                                                                        Request Rejected</span>
+                                                                                    <% } %>
+                                                                </span>
                                                                 <% } else { %>
                                                                     <button
                                                                         onclick="cancelProduct('<%= orderItem._id %>', '<%= product.productId._id%>')"
@@ -117,10 +134,90 @@
                                                                         class="btn btn-warning btn-sm">Cancel</button>
 
                                                                     <% } %>
-                                                                    
-
+                                                                        <% if(product.status==='Delivered' ){ %>
+                                                                            <button class=" btn btn-success btn-sm"
+                                                                                data-toggle="modal"
+                                                                                data-target="#reviewModal">review
+                                                                                product</button>
+                                                                            <!-- Modal -->
+                                                                            <div class="modal fade" id="reviewModal"
+                                                                                tabindex="-1"
+                                                                                aria-labelledby="reviewModalLabel"
+                                                                                aria-hidden="true">
+                                                                                <div class="modal-dialog">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                            <h5 class="modal-title"
+                                                                                                id="reviewModalLabel">
+                                                                                                Review and Rate the
+                                                                                                Product</h5>
+                                                                                            <button type="button"
+                                                                                                class="close"
+                                                                                                data-dismiss="modal"
+                                                                                                aria-label="Close">
+                                                                                                <span
+                                                                                                    aria-hidden="true">&times;</span>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                        <div class="modal-body">
+                                                                                            <form id="reviewForm">
+                                                                                                <div class="form-group">
+                                                                                                    <label
+                                                                                                        for="rating">Rating</label>
+                                                                                                    <select
+                                                                                                        class="form-control"
+                                                                                                        id="rating"
+                                                                                                        name="rating">
+                                                                                                        <option
+                                                                                                            value="1">1
+                                                                                                            - Very Bad
+                                                                                                        </option>
+                                                                                                        <option
+                                                                                                            value="2">2
+                                                                                                            - Bad
+                                                                                                        </option>
+                                                                                                        <option
+                                                                                                            value="3">3
+                                                                                                            - Average
+                                                                                                        </option>
+                                                                                                        <option
+                                                                                                            value="4">4
+                                                                                                            - Good
+                                                                                                        </option>
+                                                                                                        <option
+                                                                                                            value="5">5
+                                                                                                            - Excellent
+                                                                                                        </option>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                                <div class="form-group">
+                                                                                                    <label
+                                                                                                        for="review">Review</label>
+                                                                                                    <textarea
+                                                                                                        class="form-control"
+                                                                                                        id="review"
+                                                                                                        name="review"
+                                                                                                        rows="3"></textarea>
+                                                                                                </div>
+                                                                                            </form>
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-secondary"
+                                                                                                data-dismiss="modal">Close</button>
+                                                                                            <button type="button"
+                                                                                                class="btn btn-primary"
+                                                                                                id="submitReview"
+                                                                                                onclick="reviewSubmit('<%= product.productId._id %>','<%= orderItem.userId %>')">Submit
+                                                                                                Review</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <% }else{ %>
+                                                                                <% } %>
                                                     </td>
-                                                    
+
                                                 </tr>
                                                 <% }); %>
                                                     <% }); %>
@@ -135,139 +232,161 @@
                         </div>
                     </div>
             </div>
+        </div>
+    </body>
 
-            <!-- Return Modal -->
-            <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form id="returnForm">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="returnModalLabel">Return Product</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="orderId" id="orderId">
-                                <input type="hidden" name="productId" id="productId">
-                                <div class="form-group">
-                                    <label for="returnReason">Reason for Return</label>
-                                    <textarea class="form-control" id="returnReason" name="returnReason" rows="3"
-                                        required></textarea>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Submit Return Request</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            <script>
-                const showReturnModal = (orderId, productId) => {
-                    document.getElementById('orderId').value = orderId;
-                    document.getElementById('productId').value = productId;
-                    $('#returnModal').modal('show');
-                };
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                document.getElementById('returnForm').addEventListener('submit', function (event) {
-                    event.preventDefault();
+    <script>
+        const showReturnModal = (orderId, productId) => {
+            document.getElementById('orderId').value = orderId;
+            document.getElementById('productId').value = productId;
+            $('#returnModal').modal('show');
+        };
 
-                    const orderId = document.getElementById('orderId').value;
-                    const productId = document.getElementById('productId').value;
-                    const returnReason = document.getElementById('returnReason').value;
+        document.getElementById('returnForm').addEventListener('submit', function (event) {
+            event.preventDefault();
 
-                    fetch('/user/order/return', {
-                        method: 'POST',
+            const orderId = document.getElementById('orderId').value;
+            const productId = document.getElementById('productId').value;
+            const returnReason = document.getElementById('returnReason').value;
+
+            fetch('/user/order/return', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ orderId, productId, returnReason })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#returnModal').modal('hide');
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Your request submitted.",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                        window.location.reload();
+                    } else {
+                        alert('Failed to submit return request.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+
+    <!-- // Function to cancel a product using fetch with SweetAlert confirmation -->
+    <script>
+        const cancelProduct = (orderId, productId) => {
+
+            // Show SweetAlert confirmation dialog
+            console.log('order cancel')
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you want to cancel this product?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, cancel it!',
+                cancelButtonText: 'No, keep it'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/user/order/cancel/${orderId}/${productId}`, {
+                        method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ orderId, productId, returnReason })
                     })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                $('#returnModal').modal('hide');
-                                Swal.fire({
-                                    position: "top-end",
-                                    icon: "success",
-                                    title: "Your request submitted.",
-                                    showConfirmButton: false,
-                                    timer: 1500
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(data => {
+                                    throw new Error(data.message || 'Failed to cancel product.');
                                 });
-                              
-                                window.location.reload();
-                            } else {
-                                alert('Failed to submit return request.');
                             }
+                            return response.json();
                         })
-                        .catch(error => console.error('Error:', error));
-                });
-            </script>
+                        .then(data => {
+                            console.log('Product canceled successfully:', data);
+                            const cancelBtn = document.getElementById(`cancelBtn_${orderId}_${productId}`);
+                            if (cancelBtn) {
+                                cancelBtn.style.display = 'none';
+                                window.location.reload();
 
+                            }
 
-            <!-- // Function to cancel a product using fetch with SweetAlert confirmation -->
-            <script>
-                const cancelProduct = (orderId, productId) => {
-              
-                    // Show SweetAlert confirmation dialog
-                    console.log('order cancel')
+                            Swal.fire('Cancelled!', 'Your product has been canceled.', 'success');
+                        })
+                        .catch(error => {
+                            console.error('Error canceling product:', error);
+                            // Handle error: show error message, retry logic, etc.
+                            Swal.fire('Error!', error.message, 'error');
+                        });
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // User clicked on "No, keep it" button
+                    Swal.fire('Cancelled', 'Your product cancellation request was canceled :)', 'info');
+                }
+            });
+        };
+    </script>
+
+    <!-- review the product -->
+    <script>
+        const reviewSubmit = async function (productId, userId) {
+            const rating = document.getElementById('rating').value;
+            const review = document.getElementById('review').value;
+
+            console.log('Rating:', rating);
+            console.log('Review:', review);
+            console.log('product id is:', `${productId}`)
+            console.log('user id is:', `${userId}`)
+
+            try {
+                const response = await fetch('/user/review', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ rating, review, productId, userId })
+                })
+                const data = await response.json();
+                if (response.ok) {
+                    console.log('success')
+                    $('#reviewModal').modal('hide');
                     Swal.fire({
-                        title: 'Are you sure?',
-                        text: 'Do you want to cancel this product?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, cancel it!',
-                        cancelButtonText: 'No, keep it'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            fetch(`/user/order/cancel/${orderId}/${productId}`, {
-                                method: 'GET',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                            })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        return response.json().then(data => {
-                                            throw new Error(data.message || 'Failed to cancel product.');
-                                        });
-                                    }
-                                    return response.json();
-                                })
-                                .then(data => {
-                                    console.log('Product canceled successfully:', data);
-                                    const cancelBtn = document.getElementById(`cancelBtn_${orderId}_${productId}`);
-                                    if (cancelBtn) {
-                                        cancelBtn.style.display = 'none';
-                                        window.location.reload();
-
-                                    }
-
-                                    Swal.fire('Cancelled!', 'Your product has been canceled.', 'success');
-                                })
-                                .catch(error => {
-                                    console.error('Error canceling product:', error);
-                                    // Handle error: show error message, retry logic, etc.
-                                    Swal.fire('Error!', error.message, 'error');
-                                });
-                        } else if (result.dismiss === Swal.DismissReason.cancel) {
-                            // User clicked on "No, keep it" button
-                            Swal.fire('Cancelled', 'Your product cancellation request was canceled :)', 'info');
-                        }
+                        position: 'bottom',
+                        icon: 'success',
+                        title: data.success || 'review the product!',
+                        showConfirmButton: false,
+                        timer: 2000
                     });
-                };
-            </script>
+
+                } else {
+                    console.log('error in review')
+                    Swal.fire({
+                        position: 'bottom',
+                        icon: 'error',
+                        title: data.error,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            } catch (error) {
+
+            }
+        }
 
 
+    </script>
 
-            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-            <%- include('../layouts/user/footer') %>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <%- include('../layouts/user/footer') %>

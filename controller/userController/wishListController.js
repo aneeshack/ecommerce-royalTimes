@@ -7,31 +7,31 @@ const wishList = async(req, res) =>{
         
         const result = await wishlistModel.aggregate([
             {
-                $unwind: '$products' // Deconstruct the array of product IDs
+                $unwind: '$products' 
             },
             {
                 $lookup: {
-                    from: 'products', // The name of the collection to join
+                    from: 'products', 
                     let: { productId: '$products' }, 
                     pipeline: [
                         {
                             $match: {
                                 $expr: {
-                                    $eq: ['$_id', { $toObjectId: '$$productId' }] // Match the product IDs
+                                    $eq: ['$_id', { $toObjectId: '$$productId' }] 
                                 }
                             }
                         }
                     ],
-                    as: 'populatedProducts' // The name for the resulting field that holds the joined documents
+                    as: 'populatedProducts' 
                 }
             },
             {
-                $unwind: '$populatedProducts' // Deconstruct the array of populated products
+                $unwind: '$populatedProducts' 
             },
             {
                 $group: {
-                    _id: '$_id', // Group by the wishlist ID
-                    products: { $push: '$populatedProducts' } // Reconstruct the products array with the populated documents
+                    _id: '$_id',
+                    products: { $push: '$populatedProducts' } 
                 }
             }
         ]);
@@ -60,29 +60,20 @@ const wishProduct = async(req, res)=>{
 
                 // if product already exist in the wishlist just remove it 
               const remove = await wishlistModel.updateOne({userId},{$pull:{ products:productId}});
-             
-            //   product model making wishlist into false
-              await productModel.findByIdAndUpdate(productId,
-                {isWishlist:false},
-                {new:true}
-               )
+
 
             //    check if any products in the wishlist
               const wishListNew= await wishlistModel.findOne({userId});
                if(!wishListNew || wishListNew.products.length === 0){
-
                 // if no products in wishlist just remove it
                 await wishlistModel.deleteOne({userId});
                }
-                res.json({message:'product already exist in wishlist'});
+                res.json({message:'product removed from the wishlist'});
             }else{
                wishList.products.push(productId);
                await wishList.save();
 
-                await productModel.findByIdAndUpdate(productId,
-                {isWishlist:true},
-                {new:true}
-               )
+            
                console.log('product added to wishlist');
                res.json({message:'product added to wishlist successfully'});
             }
@@ -92,11 +83,8 @@ const wishProduct = async(req, res)=>{
             products:[productId]
         })
         await newWishlist.save();
-        await productModel.findByIdAndUpdate(productId,
-            {isWishlist:true},
-            {new:true}
-           )
-        res.json({message:'Wishlist created and product added successfully'});
+       
+        res.json({message:' product added to the wishlist successfully'});
     }
 
     } catch (error) {

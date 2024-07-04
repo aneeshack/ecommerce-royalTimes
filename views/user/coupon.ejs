@@ -1,0 +1,61 @@
+<%- include('../layouts/user/header',{title:"Coupon"}) %>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Start Banner Area -->
+    <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>Wallet</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="/user/home">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="/user/profile">userProfile<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="/user/coupons">coupons</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+
+    <div class="container mt-5">
+        <!-- User Coupons Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h2 class="mb-3">Available Coupons</h2>
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Coupon Code</th>
+                                    <th>Discount</th>
+                                    <th>Expiration Date</th>
+                                    <th>Apply</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>SAVE10</td>
+                                    <td>10% Off</td>
+                                    <td>2024-12-31</td>
+                                    <td><button class="btn btn-success btn-sm">Apply</button></td>
+                                </tr>
+                                <tr>
+                                    <td>FREESHIP</td>
+                                    <td>Free Shipping</td>
+                                    <td>2024-11-30</td>
+                                    <td><button class="btn btn-success btn-sm">Apply</button></td>
+                                </tr>
+                                <!-- Add more coupons as needed -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ <%- include('../layouts/user/footer') %>

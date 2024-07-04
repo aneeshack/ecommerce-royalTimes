@@ -49,7 +49,7 @@
                     <ul class="list-group" id="addressList">
                         <% userData.address.forEach((addr, index)=> { %>
                             <!-- <li class="list-group-item"> -->
-                            <li class="list-group-item "  data-index="<%= index %>">
+                            <li class="list-group-item " data-index="<%= index %>">
                                 <input class="pixel-radio d-flex justify-content-between align-items-center"
                                     type="radio" id="addr_<%= index %>" name="address" value="<%= addr?._id %>">
                                 <label for="addr_<%= addr?._id %>">
@@ -135,11 +135,11 @@
                                     <label for="f-option3">Ship to a different address?</label>
 
                                 </div> -->
-                                <!-- <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea> -->
+                            <!-- <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea> -->
                             <!-- </div> -->
 
             </div>
-           
+
 
             <div class="col-md-6">
                 <!-- <div class="col-lg-4"> -->
@@ -154,62 +154,71 @@
                                 <th scope="col" style="width: 60%;">total</th>
                             </tr>
                         </thead>
-                        
-                            <% if (cartItems && cartItems.length>0) { %>
-                                
-                                <% cartItems.forEach(items=> { %>
-                                    <tbody id="cartItemId" data-cart-item-id="<%= items?._id %>"></tbody>
-                                    <% items?.products?.forEach(product=> { %>
-                                        <tr >
-                                            <td scope="row" style="width: 60%;">
-                                                <%= product?.productId?.productName%>
-                                            </td>
-                                            <td style="width: 60%;"> X <%= product?.quantity %>
-                                            </td>
-                                            <td style="width: 60%;">
-                                                <%= product?.productId?.price * product?.quantity %>
-                                            </td>
-                                        </tr>
 
+                        <% if (cartItems && cartItems.length>0) { %>
+
+                            <% cartItems.forEach(items=> { %>
+                                <tbody id="cartItemId" data-cart-item-id="<%= items?._id %>"></tbody>
+                                <% items?.products?.forEach(product=> { %>
+                                    <tr>
+                                        <td scope="row" style="width: 60%;">
+                                            <%= product?.productId?.productName%>
+                                        </td>
+                                        <td style="width: 60%;"> X <%= product?.quantity %>
+                                        </td>
+                                        <td style="width: 60%;">
+                                            <%= product?.productId?.price * product?.quantity %>
+                                        </td>
+                                    </tr>
+
+                                    <% }) %>
                                         <% }) %>
-                                            <% }) %>
-                                                <% } %>
-                                                    <tr>
-                                                        <td style="width: 60%;">
-                                                            <h4>Sub Total</h4>
-                                                        </td>
-                                                        <td style="width: 60%;"></td>
-                                                        <td style="width: 60%;">
-                                                            <h4 name="totalAmount" id="checkoutTotal">
-                                                                <%= totalAmount %>
-                                                            </h4>
-                                                        </td>
-                                                    </tr>
-                        </tbody>
+                                            <% } %>
+                                                <tr>
+                                                    <td style="width: 60%;">
+                                                        <h4>Sub Total</h4>
+                                                    </td>
+                                                    <td style="width: 60%;"></td>
+                                                    <td style="width: 60%;">
+                                                        <h4 name="totalAmount" id="checkoutTotal">
+                                                            <%= totalAmount %>
+                                                        </h4>
+                                                    </td>
+                                                </tr>
+
+                                                </tbody>
                     </table>
 
-
+                    <div class="cupon_text d-flex align-items-center ">
+                        <input type="text" placeholder="Coupon Code" style="width: 80%; ">
+                        <a class="primary-btn" href="#">Apply</a>
+                        <!-- <a class="gray_btn" href="#">Close Coupon</a> -->
+                    </div>
                     <div class="payment_item-event bg-white">
                         <div class="radion_btn">
-                            <input type="radio" id="f-option4" name="cod">
+                            <input type="radio" id="f-option4" name="paymentMethod" value="COD">
                             <label for="f-option4">Cash On Delivery</label>
                             <div class="check"></div>
                         </div>
                         <p>To use this payment method, simply select "Cash On Delivery" at checkout. Once your order is
                             confirmed, our delivery team will handle the rest.</p>
-                        </p>
                     </div>
-                    <!-- <div class="payment_item">
+                    <div class="payment_item">
                         <div class="radion_btn">
-                            <input type="radio" id="f-option5" name="selector">
-                            <label for="f-option5">Check payments</label>
+                            <input type="radio" id="f-option5" name="paymentMethod" value="Razorpay">
+                            <label for="f-option5">Razorpay</label>
                             <div class="check"></div>
                         </div>
                         <p>Please send a check to Store Name, Store Street, Store Town, Store State /
                             County,
                             Store Postcode.</p>
                     </div>
-                    <div class="payment_item active">
+
+
+
+
+
+                    <!-- <div class="payment_item ">
                         <div class="radion_btn">
                             <input type="radio" id="f-option6" name="selector">
                             <label for="f-option6">Paypal </label>
@@ -219,11 +228,11 @@
                         <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
                             account.</p>
                     </div> -->
-                    <div class="creat_account">
+                    <!-- <div class="creat_account">
                         <input type="checkbox" id="f-option4" name="selector">
                         <label for="f-option4">I’ve read and accept the </label>
                         <a href="#">terms & conditions*</a>
-                    </div>
+                    </div> -->
                     <a id="submitOrderBtn" class="primary-btn" href="/user/confirmation">Place Order</a>
                 </div>
                 <br>
@@ -232,7 +241,7 @@
     </div>
 
 
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="/script/address.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
@@ -383,13 +392,13 @@
                         });
                         addressFormContainer.style.display = 'none';
                         console.log('success data:', data);
-                        
+
                         const newAddress = data.address; // Assuming your server response contains the new or updated address
-                    if (addressIdField.value) {
-                        // Edit existing address
-                        const addressIndex = editAddressBtns[0].getAttribute('data-index'); // Adjust as needed
-                        const addressItem = document.querySelector(`li[data-index="${addressIndex}"]`);
-                        addressItem.innerHTML = `
+                        if (addressIdField.value) {
+                            // Edit existing address
+                            const addressIndex = editAddressBtns[0].getAttribute('data-index'); // Adjust as needed
+                            const addressItem = document.querySelector(`li[data-index="${addressIndex}"]`);
+                            addressItem.innerHTML = `
                             <input class="pixel-radio d-flex justify-content-between align-items-center" type="radio" id="addr_${addressIndex}" name="address" value="${newAddress._id}">
                             <label for="addr_${newAddress._id}">Address ${addressIndex + 1}:</label>
                             <p>
@@ -398,23 +407,23 @@
                             </p>
                             <button type="button" id="editAddress" class="btn btn-outline-secondary text-dark editAddressBtn" data-index="${addressIndex}" data-address='${JSON.stringify(newAddress)}'>Edit Address</button>
                         `;
-                    } else {
-                        // Add new address
-                        const newIndex = addressList.children.length;
-                        const newAddressItem = document.createElement('li');
-                        newAddressItem.className = 'list-group-item';
-                        newAddressItem.setAttribute('data-index', newIndex);
-                        newAddressItem.innerHTML = `
+                        } else {
+                            // Add new address
+                            const newIndex = addressList.children.length;
+                            const newAddressItem = document.createElement('li');
+                            newAddressItem.className = 'list-group-item';
+                            newAddressItem.setAttribute('data-index', newIndex);
+                            newAddressItem.innerHTML = `
                             <input class="pixel-radio d-flex justify-content-between align-items-center" type="radio" id="addr_${newIndex}" name="address" value="${newAddress._id}">
-                            <label for="addr_${newAddress._id}">Address ${newIndex }:</label>
+                            <label for="addr_${newAddress._id}">Address ${newIndex}:</label>
                             <p>
                                 ${newAddress.street}, ${newAddress.city}, ${newAddress.state},
                                 ${newAddress.country}, ${newAddress.pinCode}
                             </p>
                             <button id="editAddress" type="button" class="btn btn-outline-secondary text-dark editAddressBtn" data-index="${newIndex}" data-address='${JSON.stringify(newAddress)}'>Edit Address</button>
                         `;
-                        addressList.appendChild(newAddressItem);
-                    }
+                            addressList.appendChild(newAddressItem);
+                        }
                     } else {
                         const data = await response.json();
                         console.log('error message:', data);
@@ -438,99 +447,272 @@
     </script>
 
     <!-- place order -->
-    <script>
-        document.addEventListener('DOMContentLoaded', async function() {
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', async function () {
             const submitOrderBtn = document.getElementById('submitOrderBtn');
-            
-            submitOrderBtn.addEventListener('click', async function(event) {
+    
+            submitOrderBtn.addEventListener('click', async function (event) {
                 event.preventDefault();
-      
+    
                 const mobileNumber = document.getElementById('num').textContent.trim();
                 const selectedAddress = document.querySelector('input[name="address"]:checked');
                 const addressId = selectedAddress ? selectedAddress.value : null;
-                const paymentMethod = document.querySelector('input[name="cod"]:checked') ? 'COD' : null;
+    
+                // Retrieve selected payment method correctly
+                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
+    
                 const totalAmount = document.getElementById('checkoutTotal').textContent.trim();
-                // const cartItemID = document.getElementById('cartItemId').getAttribute('data-cart-item-id') 
                 const cartItemElement = document.getElementById('cartItemId');
-    if (cartItemElement) {
-        const cartItemID = cartItemElement.getAttribute('data-cart-item-id');
-        console.log('Cart Item ID:', cartItemID);
-        if (cartItemID) {
-          
-            console.log('Cart items ID:', cartItemID);
-       
-                // Prepare order data
-                const orderData = {
-                    mobileNumber,
-                    addressId,
-                    paymentMethod,
-                    cartItemID,
-                    totalAmount
-                };
-                try{
-                // Send order data to backend
-                const response = await fetch('/user/checkout/order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(orderData)
-                })
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        console.log('result',result)
-                        
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: result.success || 'Order placed successfully'
-                        });
-                        window.location.href = '/user/confirmation'; 
-                        
-                    } else if(!response.ok) {
-                        const result = await response.json();
-                        console.log('result',result)
-               
+    
+                if (cartItemElement) {
+                    const cartItemID = cartItemElement.getAttribute('data-cart-item-id');
+    
+                    if (cartItemID) {
+                        // Prepare order data
+                        const orderData = {
+                            mobileNumber,
+                            addressId,
+                            paymentMethod,
+                            cartItemID,
+                            totalAmount
+                        };
+    
+                        try {
+                            // Send order data to backend
+                            const response = await fetch('/user/checkout/order', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(orderData)
+                            });
+    
+                            if (response.ok) {
+                                const result = await response.json();
+                                console.log('result', result);
+    
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: result.success || 'Order placed successfully'
+                                });
+                                window.location.href = '/user/confirmation';
+                            } else {
+                                const result = await response.json();
+                                console.log('result', result);
+    
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: result.error || 'Order placing encountered an error'
+                                });
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+    
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Order submission failed. Please try again.'
+                            });
+                        }
+                    } else {
+                        console.log('No cart items ID found.');
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text: result.error || 'Order placing have some errors '
+                            text: 'No cart items found.'
                         });
-                      
                     }
-                                 
-                }catch(error) {
-                    console.error('catch Error:', error);
-
+                } else {
+                    console.log('No cart items found.');
                     Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No cart items found.'
+                    });
+                }
+            });
+        });
+    </script> -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const submitOrderBtn = document.getElementById('submitOrderBtn');
+
+            submitOrderBtn.addEventListener('click', async function (event) {
+                event.preventDefault();
+
+                const mobileNumber = document.getElementById('num').textContent.trim();
+                const selectedAddress = document.querySelector('input[name="address"]:checked');
+                const addressId = selectedAddress ? selectedAddress.value : null;
+
+                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
+
+                const totalAmount = document.getElementById('checkoutTotal').textContent.trim();
+                const cartItemElement = document.getElementById('cartItemId');
+
+                if (cartItemElement) {
+                    const cartItemID = cartItemElement.getAttribute('data-cart-item-id');
+
+                    if (cartItemID) {
+                        const orderData = {
+                            mobileNumber,
+                            addressId,
+                            paymentMethod,
+                            cartItemID,
+                            totalAmount
+                        };
+
+                        try {
+                            const response = await fetch('/user/checkout/order', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(orderData)
+                            });
+
+                            if (response.ok) {
+                                const result = await response.json();
+
+                                if (result.razorpayOrderId) {
+                                    console.log('result in razorpay:', result.razorpayOrderId,)
+
+                                    openRazorpayCheckout(result.razorpayOrderId, totalAmount, '<%= razorpayKeyId %>', '<%= userData.mobileNumber %>',orderData,cartItemID);
+
+                                } else {
+                                    console.log('error in response ')
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: result.success || 'Order placed successfully'
+                                    });
+                                    window.location.href = '/user/confirmation';
+                                }
+                            } else {
+                                const result = await response.json();
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: result.error || 'Order placing encountered an error'
+                                });
+                            }
+                        } catch (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Order submission failed. Please try again.'
+                            });
+                        }
+                    } else {
+                        Swal.fire({
                             icon: 'error',
                             title: 'Error',
-                            text:  'Order submission failed please try again '
+                            text: 'No cart items found.'
                         });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No cart items found.'
+                    });
                 }
-            } else {
-            console.log('No cart items ID found.');
-            Swal.fire({
-                icon : 'error',
-                title:'Error',
-                text:'no cart items found'
-
-            })
-        }
-    } else {
-        console.log('No cart items found.');
-        Swal.fire({
-                icon : 'error',
-                title:'Error',
-                text:'no cart items found'
-
-            })
-    }
-                });
             });
-     
-        
-        </script>
-   
+
+            function openRazorpayCheckout(orderId, amount, razorpayKeyId, mobileNumber,orderData,cartItemID) {
+                const numericAmount = parseFloat(amount);
+                const options = {
+                    key: `${razorpayKeyId}`,
+                    amount: numericAmount * 100,
+                    currency: 'INR',
+                    name: 'ROYAL TIMES',
+                    description: 'Order Payment',
+                    image: '/images/newPhoto.jpg',
+                    order_id: orderId,
+                    // handler: function (response) {
+                    //     Swal.fire({
+                    //         icon: 'success',
+                    //         title: 'Payment Successful',
+                    //         text: 'Your payment was successful.'
+                    //     }).then(() => {
+                    //         window.location.href = '/user/confirmation';
+                    //     });
+                    // },
+                    handler: async function (response) {
+                        // On successful payment
+                        if (response.razorpay_payment_id) {
+                            // Send payment success status to backend
+                            const paymentData = {
+                                orderId: orderId,
+                                paymentId: response.razorpay_payment_id,
+                                razorpayOrderId: response.razorpay_order_id,
+                                amount: numericAmount,
+                                mobileNumber: mobileNumber,
+                                cartItemID:cartItemID,
+                                orderData:orderData
+                            };
+                            console.log('paymnet:',paymentData,'orderdata:',paymentData.orderData.mobileNumber)
+                            try {
+                               const response = await fetch('/user/checkout/payment', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(paymentData),
+                            })
+                            const data = await response.json();
+                            if(response.ok){
+                                Swal.fire({
+                                        icon: 'success',
+                                        title: 'Payment Successful',
+                                        text: 'Your payment was successful.'
+                                    }).then(() => {
+                                        window.location.href = '/user/confirmation';
+                                    });
+                            }else{
+                                Swal.fire({
+                                        icon: 'error',
+                                        title: 'Payment Error',
+                                        text: 'Payment confirmation failed. Please try again or contact support.'
+                                    });
+                            }
+                            } catch (error) {
+                                console.error('Error confirming payment:', error);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Payment Error',
+                                        text: 'Payment confirmation failed. '
+                                    });
+                            }
+                            
+                                
+                        } else {
+                            // Handle payment failure scenario
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Payment Error',
+                                text: response.error.description || 'Payment failed or was canceled.'
+                            });
+                        }
+                    },
+                    prefill: {
+                        name: '',
+                        email: '',
+                        contact: `${mobileNumber}`
+                    },
+                    theme: {
+                        color: '#3399cc'
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+            }
+        });
+    </script>
+
     <%- include('../layouts/user/footer') %>

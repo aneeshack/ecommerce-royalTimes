@@ -98,13 +98,13 @@
 							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
 							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
 						</div> -->
-								<i class="fa fa-heart wishlist-icon <%= products.isWishlist ? 'fas text-danger heart-icon' : 'far heart-icon' %>"
+								<i class="fa fa-heart far wishlist-icon "
 									data-product-id="<%= products._id %>"></i>
 
 								<div class="card_area d-flex align-items-center">
 
 									<form action="/user/cart" method="POST">
-										<input type="hidden" name="productIds" value="<%= products._id %>"
+										<input type="hidden" name="productId" value="<%= products._id %>"
 											data-stock="<%= products.stock %>">
 										<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
 									</form>
@@ -543,8 +543,7 @@
 										<div class="card h-100 product-card">
 											<a href="/user/product/<%= relatedProduct._id %>">
 												<img src="<%= relatedProduct.images[0] %>" class="card-img-top"
-													alt="<%= relatedProduct.productName %>"
-													data-product-id="<%= relatedProduct._id %>">
+													alt="<%= relatedProduct.productName %>">
 											</a>
 											<div class="availability-label position-absolute top-0 end-0 mt-2 me-2">
 												<% if (relatedProduct.stock>0) { %>
@@ -562,10 +561,7 @@
 												</h5>
 												<p class="card-text">Price: $<%= relatedProduct.price %>
 												</p>
-												<form action="/user/cart" method="POST">
-													<input type="hidden" name="s" value="<%= relatedProduct._id %>">
-													<button class="primary-btn" type="submit">Add to Cart</button>
-												</form>
+
 											</div>
 										</div>
 									</div>
@@ -574,6 +570,12 @@
 							<% } %>
 					</div>
 					<!--================End Product Description Area =================-->
+					<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+					<script
+						src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevateZoom.min.js"></script>
+
+					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
 					<script>
 						document.addEventListener('DOMContentLoaded', function () {
@@ -630,11 +632,7 @@
 						}
 					</script>
 
-					<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-					<script
-						src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevateZoom.min.js"></script>
 
-					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 					<!-- when outof stock it prevent add to cart -->
 					<script>
 						document.addEventListener('DOMContentLoaded', function () {
@@ -645,8 +643,12 @@
 									event.preventDefault();
 
 									const form = button.closest('form');
-									const productId = form.querySelector('input[name="productIds"]').value;
-									const stock = parseInt(form.querySelector('input[name="productIds"]').dataset.stock);
+									if (!form) {
+										console.error('Form not found for the button:', button);
+										return;
+									}
+									const productId = form.querySelector('input[name="productId"]').value;
+									const stock = parseInt(form.querySelector('input[name="productId"]').dataset.stock);
 
 									if (stock === 0) {
 										Swal.fire({
@@ -683,9 +685,9 @@
 					<script>
 
 
-						function fetchProducts() {
+						function fetchProducts(productId) {
 
-							fetch('/user/product/:productId')
+							fetch(`/user/product/:${productId}`)
 								.then(response => {
 									if (!response.ok) {
 										throw new Error('Network response was not ok');
@@ -726,9 +728,9 @@
 								productContainer.appendChild(productCard);
 							});
 						}
-
+						const productId = form.querySelector('input[name="productId"]').value;
 						// Fetch and render products when the page loads
-						document.addEventListener('DOMContentLoaded', fetchProducts);
+						document.addEventListener('DOMContentLoaded', fetchProducts(productId));
 
 					</script>
 

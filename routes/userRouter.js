@@ -10,6 +10,10 @@ const checkoutController = require('../controller/userController/checkoutControl
 const orderController = require('../controller/userController/orderController')
 const forgotPassController = require('../controller/userController/fogotPassController');
 const wishListController = require('../controller/userController/wishListController');
+const userProductController = require('../controller/userController/userProductController');
+const reviewController = require('../controller/userController/reviewController');
+const couponController = require('../controller/userController/couponController');
+
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
 const upload = require('../helpers/userMulter')
@@ -28,7 +32,6 @@ userRouter.get('/auth/google/callback', passport.authenticate('google', {
     failureRedirect: '/user/failure'
 }), googleAuth.successGoogleLogin);
 userRouter.get('/failure',googleAuth.failureGoogleLogin)
-
 
 //user validation routes
 userRouter.get('/home',userController.homePage);
@@ -60,7 +63,7 @@ userRouter.get('/profile',valid.isLogout,userProfileController.profilePage);
 userRouter.post('/profile/:id',upload.single('profileImage'),userProfileController.profileUpdate);
 userRouter.get('/password',valid.isLogout,userProfileController.changePasswordPage);
 userRouter.post('/password/:id',valid.isLogout,userProfileController.changePass);
-
+userRouter.get('/wallet',valid.isLogout,userProfileController.walletPage);
 
 //address controller routes
 userRouter.get('/address',valid.isLogout,addressController.addressManage);
@@ -84,12 +87,21 @@ userRouter.post('/checkout/address/edit', uploadForm.none(),checkoutController.c
 
 // ordering product
 userRouter.post('/checkout/order',orderController.placeOrder);
+userRouter.post('/checkout/payment',orderController.paymentOrder);
 userRouter.get('/confirmation',valid.isLogout,orderController.confirmation);
 
 //order management
 userRouter.get('/orders',valid.isLogout,orderController.orderList);
 userRouter.get('/order/cancel/:orderId/:productId',valid.isLogout,orderController.orderCancel);
-userRouter.post('/order/return',valid.isLogout,orderController.returnProduct);
+userRouter.post('/order/return',orderController.returnProduct);
+
+// reviewing a product
+userRouter.post('/review',reviewController.reviewProduct);
+
+// coupon management
+userRouter.get('/coupons',couponController.couponPage);
+
+
 
 
 // wish list

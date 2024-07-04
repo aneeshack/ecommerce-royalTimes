@@ -147,7 +147,7 @@
 					<div class="sorting mr-auto">
 						<input type="text" id="searchInput" placeholder="Search..." class="form-control"
 							style="display: inline-block; width: 500px;">
-						<button id="searchButton" class="btn btn-primary">Search</button>
+						<!-- <button id="searchButton" class="btn btn-primary">Search</button> -->
 					</div>
 					<div class="pagination">
 						<% if (currentPage> 1) { %>
@@ -222,7 +222,7 @@
 															<button class="primary-btn add-to-cart-btn"
 																type="submit">Add to Cart</button>
 														</form>
-														<i class=" fa-heart wishlist-icon <%= product.isWishlist ? ' fas text-danger' : 'far' %>"
+														<i class=" fa-heart far wishlist-icon "
 															data-product-id="<%= product._id %>"></i>
 													</div>
 												</div>

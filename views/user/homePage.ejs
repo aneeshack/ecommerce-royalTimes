@@ -21,11 +21,11 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-lg-7">
+							<!-- <div class="col-lg-7">
 								<div class="banner-img">
 									<img class="img-fluid" src="/img/banner/maxresdefault.jpg" alt="">
 								</div>
-							</div>
+							</div> -->
 						</div>
 						<!-- single-slide -->
 						<div class="row single-slide">
@@ -40,11 +40,11 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-lg-7">
+							<!-- <div class="col-lg-7">
 								<div class="banner-img">
 									<img class="img-fluid" src="/img/banner/banner-img.png" alt="">
 								</div>
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</div>
@@ -52,6 +52,53 @@
 		</div>
 	</section>
 	<!-- End banner Area -->
+
+	<!-- new arrivals -->
+	 <div class="newArrival container mt-5 ">
+		<h2 class="text-center mb-4">New Arrivals</h2>
+	<div class="row " id="filteredProducts">
+		<div class="arrived">
+		<% if (Array.isArray(products) && products.length>0) { %>
+			<%  const newArrival = products.slice(-3);
+			newArrival.reverse();
+			newArrival.forEach(product=> { 
+				%>
+				<div class="col-md-3 mb-4">
+					<div class="card h-100 product-card">
+						<a href="/user/product/<%= product._id %>">
+							
+							<img src="<%= product.images[0]  %>" class="card-img-top"
+								alt="<%= product.productName %>"
+								data-product-id="<%= product._id %>">
+						</a>
+						
+						<div class="card-body">
+							<h5 class="card-title">
+								<%= product.productName %>
+							</h5>
+							<h6 class="card-text">
+								<%= product.brand.name %>
+							</h6>
+
+							<p class="card-text">Price: $<%= product.price %>
+							</p>
+
+							
+							<i class=" fa-heart wishlist-icon <%= product.isWishlist ? ' fas text-danger' : 'far' %>"
+								data-product-id="<%= product._id %>"></i>
+						</div>
+					</div>
+				</div>
+				<% }); %>
+				<% }else{ %>
+					<p>no new arrivals</p>
+							<% } %>
+						</div>
+	</div>
+</div>
+
+	<!--end of new arrivals -->
+
 
 	<!-- start features Area -->
 	<section class="features-area section_gap">
@@ -109,7 +156,7 @@
         <% products.forEach(product => { %>
             <div class="col-md-4 mb-4">
                 <div class="card h-100 product-card">
-					<a href="/user/product/<%= product._id %>">=
+					<a href="/user/product/<%= product._id %>">
                     <img src="<%= product.images[0] %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
 					</a>
 					<div class="availability-label position-absolute top-0 end-0 mt-2 me-2" >
@@ -129,7 +176,8 @@
 							<input type="hidden" name="productId" value="<%= product._id %>" data-stock="<%= product.stock %>">
 							<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
 						</form>
-						<i class=" fa-heart wishlist-icon <%= product.isWishlist ? ' fas text-danger' : 'far' %>" data-product-id="<%= product._id %>"></i>
+						
+						<i class="far fa-heart wishlist-icon " data-product-id="<%= product._id %>"></i>
                     </div>
                 </div>
             </div>
@@ -147,6 +195,18 @@
 
 
 <style>
+	.arrived{
+		display: flex;
+		justify-content: center;
+	}
+	.newArrival {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #e6e6e6;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
 	/* styles.css */
 .see-more-btn {
     background-color: rgb(220, 118, 24);
@@ -251,7 +311,7 @@ async function addToWishlist(productId){
 		console.log('added products to wishlist:',data);
 		Swal.fire({
 	position: 'bottom',
-	icon: 'success',
+	// icon: 'success',
 	title: data.message|| 'wishlist!',
 	showConfirmButton: false, 
 	timer: 2000 
