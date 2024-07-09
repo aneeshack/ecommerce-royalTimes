@@ -1,11 +1,11 @@
 const userModel = require('../../models/userModel')
-const path=require('path')
-const fs=require('fs')
+const path = require('path')
+const fs = require('fs')
 const bcrypt = require('bcrypt')
 
 //to render user profile
 const profilePage = async (req, res) => {
-    
+
     try {
         if (req.session.isUser) {
             const user = req.session.isUser
@@ -38,7 +38,7 @@ const profileUpdate = async (req, res) => {
                 fs.unlinkSync(imagePath);
             }
             userData.profileImage = req.file.filename;
-            
+
             console.log('Profile image updated:', userData.profileImage);
         }
 
@@ -66,7 +66,7 @@ const changePasswordPage = async (req, res) => {
             const userName = req.session.isUser;
             const userData = await userModel.findOne({ name: userName });
             const userId = userData._id.toString();
-            res.render('user/changepass', { userId ,userData});
+            res.render('user/changepass', { userId, userData });
         }
     } catch (error) {
         console.log('password Page:', error.message);
@@ -117,25 +117,54 @@ const changePass = async (req, res) => {
     }
 }
 
-const walletPage = async(req, res) => {
+
+// rendering wallet page
+const walletPage = async (req, res) => {
     try {
-        if (req.session.isUser) {
-            const user = req.session.isUser
-            const userData = await userModel.findOne({ name: user });
-            res.render('user/userWallet',userData)
-        } else {
-            res.render('404error')
-        }
-      
-        
+
+        const userId = req.session.userId;
+        const userData = await userModel.findById(userId);
+        res.render('user/userWallet', { userData })
+
+
     } catch (error) {
-        
+        console.log('error in showing wallet page:',error.message)
     }
 }
+
+//add fund in wallet
+const addFund = async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const amount = req.body.amount;
+
+        if (!userId || !amount) {
+            console.log('not getting amount')
+            return res.status(400).json({ error: 'User ID and amount are required' });
+        }
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        user.wallet += amount;
+        await user.save();
+
+        res.status(200).json({ success: 'Successfully added funds', amount: user.wallet });
+      
+    } catch (error) {
+        console.log('Error occurred:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
 module.exports = {
     profilePage,
     profileUpdate,
     changePasswordPage,
     changePass,
-    walletPage
+    walletPage,
+    addFund
 }

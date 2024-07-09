@@ -97,6 +97,7 @@ const acceptReturn = async(req, res ) => {
     
         product.status = 'return request accepted'
         await order.save();
+        
         res.json({success: true})
     } catch (error) {
         console.log('error in accept return :',error.message);

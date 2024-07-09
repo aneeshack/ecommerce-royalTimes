@@ -74,7 +74,24 @@
 								<h3>
 									<%= products.productName %>
 								</h3>
-								<h2>$<%= products.price %>.00</h2>
+								<h5>
+									$<%= productOffer ? (products.price - (products.price * productOffer.discountPercentage / 100)).toFixed(2) :
+									(categoryOffer ? (products.price - (products.price * categoryOffer.discountPercentage / 100)).toFixed(2) : products.price.toFixed(2)) %>
+							   <% if (productOffer) { %>
+								&nbsp;
+								   <span style="text-decoration: line-through; color: red;">
+									  $<%= products.price.toFixed(2) %>
+								   </span>
+								   <br>
+								   <span style="color: green;">  <%= productOffer.offerName %> of <%= productOffer.discountPercentage %>%</span>
+							   <% } else if (categoryOffer) { %>
+							
+								   <span style="text-decoration: line-through; color: red;">
+									   $<%= products.price.toFixed(2) %>
+								   </span>
+								   <span style="color: green;"> Offer <%= categoryOffer.offerName %>%</span>
+							   <% } %>
+								</h5>
 								<ul class="list">
 									<li><a class="active" href="#"><span>Category</span>: <%= products.category.name %>
 										</a></li>
@@ -89,7 +106,9 @@
 								<p>Fastrack watches are known for their trendy designs, youthful appeal, and
 									affordability, making them popular among the younger generation. With a focus on
 									style, innovation, and functionality, Fastrack offers a wide range of watches that
-									cater to various tastes and preferences.</p>
+									cater to various tastes and preferences.
+						
+								</p>
 								<!-- <div class="product_count">
 							<label for="qty">Quantity:</label>
 							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">

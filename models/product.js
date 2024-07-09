@@ -2,6 +2,10 @@ const mongoose =require('mongoose');
 
 
 const productSchema = new mongoose.Schema({
+    offer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ProductOffer'
+    },
     productName:{
         type:String,
         required:true
@@ -10,11 +14,6 @@ const productSchema = new mongoose.Schema({
         type:Number,
         required:true,
     },
-    // images:{
-    //     type:[String],
-    //     required:true,
-    //     validate:[arrayLimit,'you can pass only 3 images']
-    // },
     images:{
         type:[String],
 

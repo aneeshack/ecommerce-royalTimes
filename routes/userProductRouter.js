@@ -6,7 +6,7 @@ require('../config/passport')
 
 
 //user routes
-productRouter.get('/:productId',valid.isLogout,userProductController.productDetails);
+productRouter.get('/:productId',userProductController.productDetails);
 
 
 

@@ -22,31 +22,31 @@
                 <table class="table table-hover mb-0">
                     <thead>
                         <tr>
-                            <th>Coupon Description</th>
+                            <th>Coupon Name</th>
                             <th>Coupon Code</th>
-                            <th>Status</th>
-                            <th>Maximum Discount Amount</th>
+                            <th>Discount Percentage</th>
+                            <th>Maximum Discount</th>
+                            <th>Maximum Amount</th>
+                            <th>Start Date</th>
                             <th>Expiry Date</th>
-                            <th>Max Count</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <% if(coupons ) {%>
                         <% locals.coupons.forEach((coupon, index) => { %>
                         <tr>
-                            <td><%= coupon.description %></td>
-                            <td><%= coupon.code %></td>
+                            <td><%= coupon.couponName %></td>
+                            <td><%= coupon.couponCode %></td>
                             <!-- <td><span class="badge badge-success">Active</span></td> -->
                             <td>
-                                <% if (coupon.status === 'active') { %>
-                                <span class="badge badge-success">Active</span>
-                                <% } else { %>
-                                <span class="badge badge-danger">Expired</span>
-                                <% } %>
+                                <%= coupon.discountPercentage %>
                             </td>
                             <td><%= coupon.maxDiscount %></td>
-                            <td><%= coupon.expiryDate %></td>
-                            <td><%= coupon.maxCount %></td>
+                            <td><%= coupon?.maxAmount %></td>
+                            
+                            <td><%= new Date(coupon.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) %></td>
+                            <td><%= new Date(coupon.expiryDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) %></td>
                             <td>
                                 <!-- <button class="btn btn-sm btn-warning">Edit</button>
                                 <button class="btn btn-sm btn-danger">Delete</button>
@@ -59,31 +59,73 @@
                         </tr>
                       
                         <% }) %>
+                        <% }else{ %>
+                            <p>no coupons</p>
+                            <% } %>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+  
     <script>
         document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const type = this.dataset.type;
-                const id = this.dataset.id;
-                const confirmation = confirm(`Are you sure you want to delete this ${type}?`);
-                if (confirmation) {
-                    const url = `/admin/delete${type.charAt(0).toUpperCase() + type.slice(1)}/${id}`;
-                    window.location.href = url;
-                    // window.location.href = `/admin/delete${type.charAt(0).toUpperCase() + type.slice(1)}/${id}`;
-
-                }
-            });
+        button.addEventListener('click', async function() {
+        const type = this.dataset.type;
+        const id = this.dataset.id;
+        
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this category offer!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
         });
-    </script>
 
+        if (result.isConfirmed) {
+            try {
+                const response = await fetch(`/admin/delete${type.charAt(0).toUpperCase() + type.slice(1)}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire(
+                        'Deleted!',
+                        data.success || 'Your coupon offer has been deleted.',
+                        'success'
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        data.error || 'There was an error deleting the coupon offer.',
+                        'error'
+                    );
+                }
+            } catch (error) {
+                Swal.fire(
+                    'Error!',
+                    'There was an error deleting the coupon offer.',
+                    'error'
+                );
+            }
+        }
+    });
+});
+
+    </script>
     <%- include('../layouts/admin/adminFooter') %>
 

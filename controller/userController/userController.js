@@ -3,9 +3,11 @@ const userModel = require('../../models/userModel');
 const product = require('../../models/product');
 const categoryModel = require('../../models/category');
 const brandModel = require('../../models/brand');
-const cartModel = require('../../models/cart')
+const cartModel = require('../../models/cart');
+const productOfferModel = require('../../models/productOffer');
+const categoryOfferModel = require('../../models/categoryOffer');
 const Otp = require('../../models/otp');
-const wishlistModel =require('../../models/wishList');
+const wishlistModel = require('../../models/wishList');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -20,29 +22,69 @@ const cart = require('../../models/cart');
 const homePage = async (req, res) => {
     try {
         const products = await product.find({ isActive: true }).populate('brand');
-     
+
         const user = req.session.isUser;
         const userId = req.session.userId
-   
+
+        let categoryOffers = []; 
+        let productOffers = [];
         if (user) {
             const usercheck = await userModel.findOne({ _id: userId, isActive: true });
             const wishList = await wishlistModel.find();
-            if(usercheck){
-                res.render('user/homePage', { No_icons: false, products: products, user: user , wishList});
-            }else{
-                res.render('user/homePage', { No_icons: true, products: products });
+             productOffers = await productOfferModel.find().populate('products');
+
+             categoryOffers = await categoryOfferModel.find().populate('categories');
+            console.log('category offer are:',categoryOffers,'product offers :',productOffers)
+            // const categoryOffers = await categoryOfferModel.find().populate('categories');
+            console.log('category offer are:', categoryOffers, 'product offers:', productOffers);
+
+            if (usercheck) {
+              
+
+                res.render('user/homePage', { No_icons: false, products: products, user: user, wishList,categoryOffers,productOffers });
+            } else {
+                res.render('user/homePage', { No_icons: true, products: products,categoryOffers,productOffers });
             }
-           
+
         } else {
             // count =0
-            res.render('user/homePage', { No_icons: true, products: products });
+            res.render('user/homePage', { No_icons: true, products: products ,categoryOffers, productOffers });
         }
     } catch (error) {
         console.log('homePage:', error.message)
     }
 }
 
+
+// const homePage = async (req, res) => {
+//     try {
+//         const products = await product.find({ isActive: true }).populate('brand');
+
+//         const user = req.session.isUser;
+//         const userId = req.session.userId
+
+//         if (user) {
+//             const usercheck = await userModel.findOne({ _id: userId, isActive: true });
+//             const wishList = await wishlistModel.find();
+//             if (usercheck) {
+
+//                 res.render('user/homePage', { No_icons: false, products: products, user: user, wishList });
+//             } else {
+//                 res.render('user/homePage', { No_icons: true, products: products });
+//             }
+
+//         } else {
+//             // count =0
+//             res.render('user/homePage', { No_icons: true, products: products });
+//         }
+//     } catch (error) {
+//         console.log('homePage:', error.message)
+//     }
+// }
+
 //render login page
+
+
 const login = (req, res) => {
     try {
         if (!req.session.isUser) {
@@ -69,7 +111,7 @@ const signup = (req, res) => {
 }
 
 
-const otpPage = (req, res )=> {
+const otpPage = (req, res) => {
     res.render('user/otpPage')
 }
 
@@ -87,9 +129,17 @@ const signupAction = async (req, res) => {
         if (!errors.isEmpty()) {
             res.render('user/signup', { errors: errors.array() });
         } else {
-            const { email, name, password, Password_Confirm } = req.body;
+            const { email, name, password, Password_Confirm, referralOffer } = req.body;
             req.session.email = email;
 
+            // Check referral code if provided
+        if (referralOffer) {
+            const referralUser = await userModel.findOne({ referralOffer: referralOffer });
+            if (!referralUser) {
+                console.log('referral code does not match')
+                return res.render('user/signup', { message: "Referral code is not matching" });
+            }
+        }
             //checking if user is already exist or not
             const userExist = await userModel.findOne({ email: email })
             if (userExist) {
@@ -106,8 +156,12 @@ const signupAction = async (req, res) => {
                         email: req.body.email,
                         name: req.body.name,
                         password: req.body.password,
-
                     };
+
+                    // Check if referralOffer is present before saving to session
+                    if (referralOffer) {
+                        req.session.userDetails.referralOffer = referralOffer;
+                    }
 
                     const existingOtp = await Otp.findOneAndDelete({ email: email });
                     //otp generate 
@@ -183,10 +237,17 @@ const verifyOtp = async (req, res) => {
                     //retrieve data from session
                     const userDetailsData = req.session.userDetails;
                     console.log("userdetails data in session:", userDetailsData.name)
+                 
                     const userDetails = new userModel(userDetailsData);
+                    if(userDetailsData.referralOffer){
+                        userDetails.wallet = 1000
+                    }
                     userDetails.save()
                         .then(savedUser => {
                             console.log('user saved successfully:', savedUser)
+                            savedUser.referralOffer = savedUser._id.toString().slice(0, 10);
+
+                            return savedUser.save();
                         })
                         .catch(error => {
                             console.log("error in saving data", error)
@@ -264,19 +325,19 @@ const loginAction = async (req, res) => {
         const password = req.body.password;
         const check = await userModel.findOne({ email: email })
         if (check) {
-            if (check.isActive === true ) {
-                if(check.isGoogleUser === false){
-                    const passwordMatch =  bcrypt.compare(password, check.password);
-                if (passwordMatch) {
-                    req.session.userId = check._id
-                    req.session.isUser = check.name;
-                    res.redirect('/user/home')
+            if (check.isActive === true) {
+                if (check.isGoogleUser === false) {
+                    const passwordMatch = bcrypt.compare(password, check.password);
+                    if (passwordMatch) {
+                        req.session.userId = check._id
+                        req.session.isUser = check.name;
+                        res.redirect('/user/home')
+                    } else {
+                        res.render('user/login', { message: "password not matching.", No_icons: true })
+                    }
                 } else {
-                    res.render('user/login', { message: "password not matching.", No_icons: true })
-                }
-                }else{
                     res.render('user/login', { message: "please signin through google,or signup and try again.", No_icons: true })
-                }             
+                }
             } else {
                 res.render('user/login', { message: "user is blocked by the admin for malpractice.", No_icons: true })
             }
@@ -285,7 +346,7 @@ const loginAction = async (req, res) => {
         }
 
     } catch (error) {
-        console.log('login action:',error.message)
+        console.log('login action:', error.message)
         return res.status(400).json({
             success: false,
             loginMessage: error.message

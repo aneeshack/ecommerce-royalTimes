@@ -70,7 +70,7 @@ const searchProduct = async (req, res) => {
             return res.json({ products: [] })
         }
         
-        const products = await productModel.find({ productName: { $regex: '^' + searchQuery, $options: 'i' } });
+        const products = await productModel.find({ productName: { $regex: '^' + searchQuery, $options: 'i' }, isActive: true});
         res.status(200).json({ products });
 
     } catch (error) {

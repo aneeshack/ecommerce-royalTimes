@@ -2,6 +2,7 @@ const express = require('express');
 const productRouter = express.Router();
 const adminProductController = require('../controller/adminController/adminProductController');
 const adminOrderController = require('../controller/adminController/adminOrderController');
+const offerController = require('../controller/adminController/offerController');
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
 const upload = require('../helpers/productMulter')
@@ -27,6 +28,15 @@ productRouter.post('/orderStatus',adminValid.isAdmin,adminOrderController.orderS
 productRouter.get('/return/:orderId/:productId',adminValid.isAdmin,adminOrderController.returnManagement);
 productRouter.post('/return/:orderId/:productId/accept',adminValid.isAdmin,adminOrderController.acceptReturn);
 productRouter.post('/return/:orderId/:productId/reject',adminValid.isAdmin,adminOrderController.rejectReturn);
+
+
+// product offer management
+productRouter.get('/offerList',offerController.productOfferList);
+productRouter.get('/addOffer/:id',offerController.addProductOfferPage);
+productRouter.post('/saveOffer/:id',offerController.addProductOffer);
+productRouter.delete('/offer/delete/:id',offerController.deleteProductOffer);
+productRouter.get('/editOffer/:id',offerController.editProductOfferPage);
+productRouter.post('/offer/update/:id',offerController.editProductOffer);
 
 
 

@@ -53,7 +53,7 @@ userRouter.post('/forgotPass/verifyOtp',forgotPassController.verifyOtp);
 userRouter.post('/forget/changePass',forgotPassController.changePassword);
 
 //product filtering
-userRouter.get('/category',valid.isLogout,categoryController.categoryPage);
+userRouter.get('/category',categoryController.categoryPage);
 userRouter.get('/filter',valid.isLogout,categoryController.productFilter);
 userRouter.get('/search',valid.isLogout,categoryController.searchProduct);
 
@@ -62,8 +62,11 @@ userRouter.get('/search',valid.isLogout,categoryController.searchProduct);
 userRouter.get('/profile',valid.isLogout,userProfileController.profilePage);
 userRouter.post('/profile/:id',upload.single('profileImage'),userProfileController.profileUpdate);
 userRouter.get('/password',valid.isLogout,userProfileController.changePasswordPage);
-userRouter.post('/password/:id',valid.isLogout,userProfileController.changePass);
+userRouter.post('/password/:id',userProfileController.changePass);
+
 userRouter.get('/wallet',valid.isLogout,userProfileController.walletPage);
+userRouter.post('/wallet/addFund',valid.isLogout,userProfileController.addFund);
+
 
 //address controller routes
 userRouter.get('/address',valid.isLogout,addressController.addressManage);
@@ -99,7 +102,8 @@ userRouter.post('/order/return',orderController.returnProduct);
 userRouter.post('/review',reviewController.reviewProduct);
 
 // coupon management
-userRouter.get('/coupons',couponController.couponPage);
+userRouter.get('/coupons',valid.isLogout,couponController.couponPage);
+userRouter.post('/applyCoupon',couponController.applyCoupon);
 
 
 

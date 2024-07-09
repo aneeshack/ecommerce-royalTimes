@@ -41,6 +41,10 @@ const loginSchema = new mongoose.Schema({
     googleId: {
         type: String
     },
+    wallet: {
+        type: Number,
+        default: 0
+    },
     isGoogleUser: {
         type: Boolean,
         default: false
@@ -49,7 +53,11 @@ const loginSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
-    address: [addressSchema]
+    address: [addressSchema],
+    referralOffer:{
+        type:String,
+        required:false
+    }
 })
 
 

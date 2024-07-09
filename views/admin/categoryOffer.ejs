@@ -1,0 +1,119 @@
+<%- include('../layouts/admin/header',{title:"product offer page"}) %>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Category Offers</h1>
+        <% if(successMessage && successMessage.length >0) { %>
+            <div class="alert alert-success"><%= successMessage %></div>
+        <% } %>
+        <% if(errorMessage && errorMessage.length > 0) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
+        <div class="mb-3">
+            <a href="/admin/categoryOffer/add" class="btn btn-primary">Add Category Offer</a>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Offer Name</th>
+                    <th>Discount Percentage</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="categoryOffersBody">
+                <!-- Category offers will be dynamically inserted here -->
+                <% if(categoryOffer && categoryOffer.length>0) {%>
+                    <% categoryOffer.forEach(category => {%>
+                <tr>
+                   
+                    <td><%= category.categories.name %></td>
+                    <td><%= category.offerName %></td>
+                    <td><%= category.discountPercentage %></td>
+                    <td><%= new Date(category.startDate).toLocaleDateString() %></td>
+                    <td><%= new Date(category.endDate).toLocaleDateString() %></td>
+                    <td> 
+                        <a href="/admin/categoryOffer/edit/<%= category._id %>" class="btn btn-primary btn-sm" id="editCategoryOffer">Edit</a>
+                            <button type="submit" id="deleteCategoryOffer"  data-id="<%= category._id %>" class="btn btn-danger btn-sm deleteCategoryOffer">Delete</button>
+                        <!-- </form> -->
+                    </td>
+                    </tr>
+                 <% })  %>
+                    <% }else{ %>
+                        <td colspan="5" class="text-center"><h4>No category offers found</h4> </td>
+                        <% } %>
+            </tbody>
+        </table>
+        <div id="noOffersMessage" class="text-center" style="display: none;">
+            <h4>No category offers found</h4>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        document.querySelectorAll('.deleteCategoryOffer').forEach(button => {
+            button.addEventListener('click', async () => {
+                const categoryId = button.getAttribute('data-id');
+
+                const { isConfirmed } = await Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You will not be able to recover this category offer!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                });
+
+                if (isConfirmed) {
+                    try {
+                        const response = await fetch(`/admin/categoryOffer/delete/${categoryId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        const data = await response.json();
+                        if (response.ok) {
+                            console.log('Data is:', data);
+                            Swal.fire(
+                                'Deleted!',
+                                data.success || 'Your category offer has been deleted.',
+                                'success'
+                            ).then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            console.log('Failure is:', data);
+                            Swal.fire(
+                                'Error!',
+                                data.error ||'There was a problem deleting.',
+                                'error'
+                            );
+                        }
+                    } catch (error) {
+                        console.log('Error in deleting coupon:', error.message);
+                        Swal.fire(
+                            'Error!',
+                            'There was a problem deleting the category offer.',
+                            'error'
+                        );
+                    }
+                }
+            });
+        });
+
+
+    </script>
+
+
+    <%- include('../layouts/admin/adminFooter') %>

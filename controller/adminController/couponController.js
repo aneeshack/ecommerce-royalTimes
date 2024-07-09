@@ -40,18 +40,17 @@ const editCoupon = async (req, res) => {
 const updateCoupon = async (req, res) => {
     try {
         const id = req.params.id;
-        const { description, code, status, maxDiscount, usageLimitPerUser, maxCount, expiryDate, discountPercentage } = req.body;
-
+        const { couponName, couponCode, startDate, expiryDate, discountPercentage, maxDiscount, maxAmount } = req.body;
+        console.log('details',req.body)
         //update category fields
         const updatedCoupon = await couponModel.findByIdAndUpdate(id, {
-            description,
-            code,
-            status,
-            maxDiscount,
-            usageLimitPerUser,
-            maxCount,
+            couponName,
+            couponCode,
+            startDate,
             expiryDate,
-            discountPercentage
+            discountPercentage,
+            maxDiscount,
+            maxAmount
         }, { new: true });
 
         if (!updatedCoupon) {
@@ -69,48 +68,47 @@ const updateCoupon = async (req, res) => {
 
 }
 
-//creating a coupon 
+// adding new coupon
 const createCoupon = async (req, res) => {
-    const { description, code, status, maxDiscount, usageLimitPerUser, maxCount, expiryDate, discountPercentage } = req.body;
-
+    const { couponName, couponCode, startDate, expiryDate, discountPercentage, maxDiscount,maxAmount } = req.body;
+    console.log('details',req.body)
     try {
         const newCoupon = new couponModel({
-            description,
-            code,
-            status,
-            maxDiscount,
-            usageLimitPerUser,
-            maxCount,
+            couponName,
+            couponCode,
+            startDate,
             expiryDate,
-            discountPercentage
+            discountPercentage,
+            maxDiscount,
+            maxAmount
         });
 
         await newCoupon.save();
+        console.log('product added successfully')
         req.flash('success', 'coupon added successfully.')
-        res.redirect('/admin/coupons'); // Redirect to the list of coupons or some confirmation page
+        res.redirect('/admin/coupons'); 
     } catch (err) {
         console.error(err);
         req.flash('error', 'Error adding coupon.');
-        res.redirect('/admin/addcoupon'); // Redirect back to the form in case of error
+        res.redirect('/admin/addcoupons');
     }
 
 }
 
-
+// delete one coupon
 const deleteCoupon = async (req, res) => {
     try {
-
+        console.log('deleted coupon')
         const coupon = await couponModel.findByIdAndDelete(req.params.id)
         if (!coupon) {
-            req.flash('error', "Error in finding the couponId.");
-            return res.redirect('/admin/coupons')
+            console.log("delete coupon error:", error.message);
+            res.status(400).json({error: 'coupon not find.'})
         }
-        req.flash('success', 'The coupon is deleted successfully');
-        res.redirect('/admin/coupons')
+        console.log('deleted successfully')
+        res.status(200).json({success: 'coupon deleted successfuly'})
     } catch (error) {
         console.log("delete coupon error:", error.message);
-        req.flash('error', "Error in deleting coupon.");
-        res.redirect('/admin/coupons')
+        res.status(400).json({error: 'error in coupon deleting.'})
     }
 }
 

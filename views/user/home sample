@@ -1,2 +1,0 @@
-<h5><strong id="totalAmount<%-item.productId._id%>">$<%= item.quantity
-                                                        *item.productId.price %></strong></h5>

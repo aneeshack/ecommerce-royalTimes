@@ -1,8 +1,8 @@
 <%- include('../layouts/user/header',{title:"Wallet"}) %>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    
-<!-- Start Banner Area -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Start Banner Area -->
     <section class="banner-area organic-breadcrumb">
         <div class="container">
             <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
@@ -26,15 +26,16 @@
                 <div class="card">
                     <div class="card-body text-center">
                         <h3>Wallet Balance</h3>
-                        <h2 class="text-success">$250.00</h2>
-                        <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addFundsModal">Add Funds</button>
+                        <h2 class="text-success">$<%= userData.wallet %>.00</h2>
+                        <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addFundsModal">Add
+                            Funds</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Transaction History Section -->
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -70,10 +71,11 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Add Funds Modal -->
-    <div class="modal fade" id="addFundsModal" tabindex="-1" role="dialog" aria-labelledby="addFundsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addFundsModal" tabindex="-1" role="dialog" aria-labelledby="addFundsModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -83,10 +85,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="addAmount">
                         <div class="form-group">
                             <label for="amount">Amount</label>
-                            <input type="number" class="form-control" id="amount" placeholder="Enter amount">
+                            <input type="number" class="form-control" id="amount" name="wallet"
+                                placeholder="Enter amount" required>
                         </div>
                         <button type="submit" class="btn btn-primary">Add Funds</button>
                     </form>
@@ -94,6 +97,46 @@
             </div>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        document.getElementById('addAmount').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            console.log('enter in the form ')
+            const amount = parseFloat(document.getElementById('amount').value);
+            const userId = '<%= userData._id %>';
+            console.log('amount', amount)
+            try {
+                const response = await fetch('/user/wallet/addFund', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, amount })
+                })
+                const data = await response.json();
+                if (response.ok) {
+                    console.log('data is ok:', data);
+
+                    document.querySelector('.text-success').innerHTML = `$${data.amount}.00`;
+                    $('#addFundsModal').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'updated the wallet amount ',
+                    })
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: ' Error in adding fund',
+                    });
+                    console.log('data is not ok:', data)
+                }
+            } catch (error) {
+                console.log('some error occured')
+            }
+        })
+    </script>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

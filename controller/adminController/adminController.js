@@ -44,10 +44,7 @@ const loginAction = async (req, res) => {
 }
 
 
-//dashboard
-const dashboard = (req, res) => {
-    res.render('admin/dashboard');
-}
+
 
 //Admin Logouot
 const logout = (req, res) => {
@@ -115,7 +112,6 @@ const unblockuser = async (req, res) => {
 module.exports = {
     login,
     loginAction,
-    dashboard,
     logout,
     userList,
     blockuser,

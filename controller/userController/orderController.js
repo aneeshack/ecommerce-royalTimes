@@ -15,12 +15,11 @@ const razorpayInstance = new Razorpay({
 
 
 //placing product order
-
 const placeOrder = async (req, res) => {
     try {
         const userId = req.session.userId;
         const { mobileNumber, addressId, paymentMethod, totalAmount, cartItemID } = req.body;
-
+        console.log('totalamount:',totalAmount,typeof(totalAmount))
         const userData = await userModel.findById(userId);
         if (!userData) {
             console.log('User not found');
@@ -53,55 +52,174 @@ const placeOrder = async (req, res) => {
             return res.status(400).json({ error: 'Please select one payment method to continue' });
         }
 
-        let razorpayOrder = null;
-        if (paymentMethod !== 'COD') {
+        let paymentDetails = {};
+        if (paymentMethod === 'Razorpay') {
             const options = {
-                amount: totalAmount * 100, // amount in the smallest currency unit
-                currency: 'INR',
-                receipt: `order_rcptid_${userId}`,
-                payment_capture: 1
+                        amount: totalAmount * 100, // amount in the smallest currency unit
+                        currency: 'INR',
+                        receipt: `order_rcptid_${userId}`,
+                        payment_capture: 1
+                    };
+                   
+                    razorpayOrder = await razorpayInstance.orders.create(options);
+                    return res.status(200).json({ success: ' razorpay payment placed successfully', razorpayOrderId: razorpayOrder.id });
+                
+
+        } else if(paymentMethod === 'COD' || paymentMethod === 'Wallet'){
+            if (paymentMethod === 'Wallet') {
+                console.log('inside wallet')
+                console.log('wallet amount:',userData.wallet,typeof(userData.wallet))
+                const walletBalance = userData.wallet || 0;
+                if (walletBalance >= totalAmount) {
+                    console.log('sufficient balance in wallet')
+                    userData.wallet -= totalAmount;
+                    await userData.save();
+                    paymentDetails = {
+                        paymentMethod: 'Wallet',
+                        paymentStatus: 'success',
+                        
+                    };
+                    console.log('wallet amouont in paymentdetails is:',paymentDetails.paymentMethod)
+                } else {
+                    console.log('wallet amount is not enough')
+                    return res.status(400).json({ error: 'Insufficient wallet balance.' });
+                }
+            }else{
+                console.log('enter in to cod')
+            paymentDetails = {
+                paymentMethod: 'COD',
+                paymentStatus: 'pending',
             };
-           
-            razorpayOrder = await razorpayInstance.orders.create(options);
-            return res.status(200).json({ success: 'payment placed successfully', razorpayOrderId: razorpayOrder.id });
+        } 
+         // Map cart items to order items
+         const productItems = cart.products.map(product => ({
+            productId: product.productId._id,
+            productName: product.productId.productName,
+            quantity: product.quantity,
+            total: product.total
+        }));
+        console.log('details sin productitems:',productItems)
+        // if cod save the data
+        const newOrder = new orderModel({
+            userId: userId,
+            productItems: productItems,
+            billingAddress: selectedAddress,
+            phone: mobileNumber,
+            paymentMethod: paymentDetails.paymentMethod,
+            totalPrice: totalAmount
+        });
 
-        } else {
-            // Map cart items to order items
-            const productItems = cart.products.map(product => ({
-                productId: product.productId._id,
-                productName: product.productId.productName,
-                quantity: product.quantity,
-                total: product.total
-            }));
-            // if cod save the data
-            const newOrder = new orderModel({
-                userId: userId,
-                productItems: productItems,
-                billingAddress: selectedAddress,
-                phone: mobileNumber,
-                paymentMethod: paymentMethod,
-                totalPrice: totalAmount
-            });
-
-            await newOrder.save();
-            for (const item of productItems) {
-                await productModel.findByIdAndUpdate(
-                    item.productId,
-                    { $inc: { stock: -item.quantity } },
-                    { new: true }
-                );
-            }
-            req.session.newOrder = newOrder._id.toString();
-
-            //  to clear the cart
-            await cartModel.deleteOne({ _id: cartItemID });
-            res.status(200).json({ success: 'Order placed successfully with COD' });
+        await newOrder.save();
+        console.log('new order created')
+        for (const item of productItems) {
+            await productModel.findByIdAndUpdate(
+                item.productId,
+                { $inc: { stock: -item.quantity } },
+                { new: true }
+            );
         }
+        req.session.newOrder = newOrder._id.toString();
+
+        //  to clear the cart
+        await cartModel.deleteOne({ _id: cartItemID });
+        res.status(200).json({ success: 'Order placed successfully',walletPaymentStatus:paymentDetails.paymentStatus });
+    
+
+
+        } 
+           
     } catch (error) {
         console.log('Error in placing order:', error.message);
         res.status(400).json({ error: 'Some errors occurred while placing the order, try again' });
     }
 };
+
+// const placeOrder = async (req, res) => {
+//     try {
+//         const userId = req.session.userId;
+//         const { mobileNumber, addressId,  paymentDetails.aymentMethod, totalAmount, cartItemID } = req.body;
+
+//         const userData = await userModel.findById(userId);
+//         if (!userData) {
+//             console.log('User not found');
+//             return res.status(400).json({ error: 'User not found' });
+//         }
+
+//         const selectedAddress = userData.address.find(addr => addr._id.toString() === addressId);
+//         if (!selectedAddress) {
+//             console.log('Please select one address to continue');
+//             return res.status(400).json({ error: 'Please select one address to continue' });
+//         }
+
+//         if (!mobileNumber) {
+//             console.log('Please enter mobile number to continue');
+//             return res.status(400).json({ error: 'Please enter mobile number to continue' });
+//         }
+
+//         if (!cartItemID) {
+//             console.log('There are no cart items for ordering');
+//             return res.status(400).json({ error: 'There are no cart items for ordering' });
+//         }
+
+//         const cart = await cartModel.findById(cartItemID).populate('products.productId');
+//         if (!cart) {
+//             console.log('Cart not found');
+//             return res.status(400).json({ error: 'Cart not found' });
+//         }
+
+//         if (!paymentMethod) {
+//             return res.status(400).json({ error: 'Please select one payment method to continue' });
+//         }
+
+//         let razorpayOrder = null;
+//         if (paymentMethod !== 'COD') {
+//             const options = {
+//                 amount: totalAmount * 100, // amount in the smallest currency unit
+//                 currency: 'INR',
+//                 receipt: `order_rcptid_${userId}`,
+//                 payment_capture: 1
+//             };
+           
+//             razorpayOrder = await razorpayInstance.orders.create(options);
+//             return res.status(200).json({ success: 'payment placed successfully', razorpayOrderId: razorpayOrder.id });
+
+//         } else {
+//             // Map cart items to order items
+//             const productItems = cart.products.map(product => ({
+//                 productId: product.productId._id,
+//                 productName: product.productId.productName,
+//                 quantity: product.quantity,
+//                 total: product.total
+//             }));
+//             // if cod save the data
+//             const newOrder = new orderModel({
+//                 userId: userId,
+//                 productItems: productItems,
+//                 billingAddress: selectedAddress,
+//                 phone: mobileNumber,
+//                 paymentMethod: paymentMethod,
+//                 totalPrice: totalAmount
+//             });
+
+//             await newOrder.save();
+//             for (const item of productItems) {
+//                 await productModel.findByIdAndUpdate(
+//                     item.productId,
+//                     { $inc: { stock: -item.quantity } },
+//                     { new: true }
+//                 );
+//             }
+//             req.session.newOrder = newOrder._id.toString();
+
+//             //  to clear the cart
+//             await cartModel.deleteOne({ _id: cartItemID });
+//             res.status(200).json({ success: 'Order placed successfully with COD' });
+//         }
+//     } catch (error) {
+//         console.log('Error in placing order:', error.message);
+//         res.status(400).json({ error: 'Some errors occurred while placing the order, try again' });
+//     }
+// };
 
 //redirecting while payment done through razorpay
 const paymentOrder = async (req, res) => {
@@ -208,11 +326,14 @@ const orderCancel = async (req, res) => {
     try {
         console.log('order cancel')
         const { orderId, productId } = req.params;
+        const userId = req.session.userId;
         const order = await orderModel.findById(orderId);
-
+        
         if (order) {
             const productUpdate = order.productItems.find(item => item.productId.toString() === productId);
             if (productUpdate) {
+                console.log('productupdate:',productUpdate.total)
+            
                 const updatedProduct = await productModel.findByIdAndUpdate(
                     productId,
                     { $inc: { stock: productUpdate.quantity } },
@@ -222,6 +343,15 @@ const orderCancel = async (req, res) => {
                 // Update the status of the product in productItems array
                 productUpdate.status = 'Cancelled';
                 await order.save();
+
+
+                if (order.paymentMethod === 'Razorpay') {
+                    const total = productUpdate.total;
+                    const userData = await userModel.findById(userId);
+                    userData.wallet += total;
+                    await userData.save();
+                }
+               
                 res.status(200).json({ message: 'Order and product updated successfully', order });
             } else {
                 console.log('products not found in order schema:')

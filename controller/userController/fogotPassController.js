@@ -166,7 +166,9 @@ const changePassword = async(req, res) => {
         const { newpassword, confirmPassword } = req.body;
         const email = req.session.email;
         const user = await userModel.findOne({email});
-        user.password = newpassword;
+        
+        const hashedPassword = await bcrypt.hash(newpassword, 10);
+        user.password = hashedPassword;
         await user.save();
         if (!user) {
             return res.status(404).json({ message: 'User not found.' });

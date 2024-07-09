@@ -104,6 +104,36 @@
                                                             <button class="btn btn-danger btn-sm" id="returnBtn"
                                                                 onclick="showReturnModal('<%= orderItem._id %>', '<%= product.productId._id %>')">Return</button>
 
+                                                                <!-- Return Modal -->
+            <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="returnForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="returnModalLabel">Return Product</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="orderId" id="orderId">
+                                <input type="hidden" name="productId" id="productId">
+                                <div class="form-group">
+                                    <label for="returnReason">Reason for Return</label>
+                                    <textarea class="form-control" id="returnReason" name="returnReason" rows="3"
+                                        required></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Submit Return Request</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
 
                                                             <% } else if (['Cancelled', 'Return Requested'
                                                                 , 'return request accepted' , 'return request rejected'
@@ -244,7 +274,7 @@
             document.getElementById('orderId').value = orderId;
             document.getElementById('productId').value = productId;
             $('#returnModal').modal('show');
-        };
+        
 
         document.getElementById('returnForm').addEventListener('submit', function (event) {
             event.preventDefault();
@@ -279,12 +309,13 @@
                 })
                 .catch(error => console.error('Error:', error));
         });
+    };
     </script>
 
 
     <!-- // Function to cancel a product using fetch with SweetAlert confirmation -->
     <script>
-        const cancelProduct = (orderId, productId) => {
+        const cancelProduct = (orderId, productId)=>{
 
             // Show SweetAlert confirmation dialog
             console.log('order cancel')
@@ -329,7 +360,7 @@
                         });
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     // User clicked on "No, keep it" button
-                    Swal.fire('Cancelled', 'Your product cancellation request was canceled :)', 'info');
+                    Swal.fire('Cancelled', 'Your product cancellation request was canceled ', 'info');
                 }
             });
         };
@@ -377,7 +408,7 @@
                     });
                 }
             } catch (error) {
-
+                console.log('error occurred:',error.message);
             }
         }
 

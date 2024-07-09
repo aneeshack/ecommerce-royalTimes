@@ -21,6 +21,8 @@
                     <button class="btn btn-success mr-2" onclick="acceptReturn('<%= orderId %>', '<%= productId %>')">Accept Return</button>
                     <% } else if (product.status === 'return request accepted') { %>
                     <button class="btn btn-danger" onclick="rejectReturn('<%= orderId %>', '<%= productId %>')">Reject Return</button>
+                    <% } else if (product.status === 'Cancelled') { %>
+                        <h3>product Cancelled</h3>
                     <% }else{ %>
                         <button class="btn btn-success mr-2" onclick="acceptReturn('<%= orderId %>', '<%= productId %>')">Accept Return</button>
                         <button class="btn btn-danger" onclick="rejectReturn('<%= orderId %>', '<%= productId %>')">Reject Return</button>

@@ -1,5 +1,7 @@
 require('express');
 const product = require('../../models/product');
+const productOfferModel = require('../../models/productOffer');
+const categoryOfferModel = require('../../models/categoryOffer');
 const mongoose = require('mongoose');
 
 //product detail showing page
@@ -21,26 +23,50 @@ const productDetails = async (req, res) => {
         if (!product_details) {
             console.log('product details not found')
             return res.status(404).json({ error: 'Product not found' });
-        } else {
-            const relatedProducts = await product.find({ category: product_details.category })
-            console.log('related products',relatedProducts)
-            res.render('user/productDetails', { products: product_details, user ,relatedProducts})
+        } 
+            // const relatedProducts = await product.find({ category: product_details.category })
+            // console.log('related products',relatedProducts)
+            // res.render('user/productDetails', { products: product_details, user ,relatedProducts})
+        
+            // Fetch product offer if exists
+        const productOffer = await productOfferModel.findOne({ products: productId });
+        console.log('pro offer:',productOffer)
+        // Fetch category offer if exists
+        const categoryOffer = await categoryOfferModel.findOne({ categories: product_details.category._id });
+        console.log('cat off:',categoryOffer);
+        // Determine the final price
+        let finalPrice = product_details.price;
+        let offerPercentage = 0;
+        let offerType = '';
+
+        if (productOffer) {
+            finalPrice = product_details.price - (product_details.price * productOffer.discountPercentage / 100);
+            offerPercentage = productOffer.discountPercentage;
+            offerType = 'product';
+        } else if (categoryOffer) {
+            finalPrice = product_details.price - (product_details.price * categoryOffer.discountPercentage / 100);
+            offerPercentage = categoryOffer.discountPercentage;
+            offerType = 'category';
         }
+
+        const relatedProducts = await product.find({ category: product_details.category });
+        console.log('related products', relatedProducts);
+
+        res.render('user/productDetails', { 
+            products: product_details, 
+            user, 
+            productOffer,
+            categoryOffer,
+            relatedProducts, 
+            finalPrice: finalPrice.toFixed(2), 
+            offerPercentage, 
+            offerType 
+        });
 
     } catch (error) {
         console.log("product adding error:", error.message)
     }
 }
-
-
-// //filter products based on category price and brand
-// const productFilter = async (req, res) => {
-//     try {
-//         console.log('hello this is product filter')
-//     } catch (error) {
-//         console.log('error in filtering:',error.message);
-//     }
-// }
 
 
 module.exports = {

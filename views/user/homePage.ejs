@@ -152,46 +152,73 @@
 <!-- Dynamically render product details -->
 <div id="productContainer" class="container">
     <div class="row">
-		<% if (Array.isArray(products)) { %>
-        <% products.forEach(product => { %>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 product-card">
-					<a href="/user/product/<%= product._id %>">
-                    <img src="<%= product.images[0] %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
-					</a>
-					<div class="availability-label position-absolute top-0 end-0 mt-2 me-2" >
-						<% if (product.stock>0) { %>
-							<span class="badge badge-success ">In Stock</span>
-						<% } else { %>
-							<span class="badge badge-danger  fs-5">Out of Stock</span>
-						<% } %>
-					</div>
-                    <div class="card-body">
-                        <h5 class="card-title"><%= product.productName %></h5>
-						<h5 class="card-title"><%= product.brand.name %></h5>
-                        <p class="card-text">Price: $<%= product.price %></p>
-                        <!-- <a href="/user/cart" class="btn btn-primary">Add to Cart</a> -->
+        <% if (Array.isArray(products)) { %>
+            <% products.forEach(product => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 product-card">
+                        <a href="/user/product/<%= product._id %>">
+                            <img src="<%= product.images[0] %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
+                        </a>
+                        <div class="availability-label position-absolute top-0 end-0 mt-2 me-2">
+                            <% if (product.stock > 0) { %>
+                                <span class="badge badge-success">In Stock</span>
+                            <% } else { %>
+                                <span class="badge badge-danger fs-5">Out of Stock</span>
+                            <% } %>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title"><%= product.productName %></h5>
+                            <h5 class="card-title"><%= product.brand.name %></h5>
+                            <p class="card-text">
+                                Price:
+                                <% 
+                                    let finalPrice = product.price;
+									let productOffer = Array.isArray(productOffers) ? productOffers.find(offer => offer.products && offer.products._id.toString() === product._id.toString()) : null;
+									let categoryOffer = Array.isArray(categoryOffers) ? categoryOffers.find(offer => offer.categories && offer.categories._id.toString() === product.category._id.toString()) : null;
 
-						<form action="/user/cart" method="POST">
-							<input type="hidden" name="productId" value="<%= product._id %>" data-stock="<%= product.stock %>">
-							<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
-						</form>
-						
-						<i class="far fa-heart wishlist-icon " data-product-id="<%= product._id %>"></i>
+                                    if (productOffer) {
+                                        finalPrice = (product.price - (product.price * productOffer.discountPercentage / 100)).toFixed(2);
+                                    } else if (categoryOffer) {
+                                        finalPrice = (product.price - (product.price * categoryOffer.discountPercentage / 100)).toFixed(2);
+                                    } else {
+                                        finalPrice = product.price;
+                                    }
+                                %>
+                                $<%= finalPrice %>
+                                &nbsp;
+                                <% if (productOffer) { %>
+                                    <span style="text-decoration: line-through; color: red;">
+                                        $<%= product.price.toFixed(2) %>
+                                    </span>
+                                    <br>
+                                    <span style="color: green;"> <%= productOffer.offerName %> of <%= productOffer.discountPercentage %>%</span>
+                                <% } else if (categoryOffer) { %>
+                                    <span style="text-decoration: line-through; color: red;">
+                                        $<%= product.price.toFixed(2) %>
+                                    </span>
+                                    <br>
+                                    <span style="color: green;"> <%= categoryOffer.offerName %> of <%= categoryOffer.discountPercentage %>%</span>
+                                <% } %>
+                            </p>
+
+                            <form action="/user/cart" method="POST">
+                                <input type="hidden" name="productId" value="<%= product._id %>" data-stock="<%= product.stock %>">
+                                <button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
+                            </form>
+                            <i class="far fa-heart wishlist-icon" data-product-id="<%= product._id %>"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <% }); %>
-	</div>
-	<div class="text-right">
-		<a href="/user/category" class="btn btn-success see-more-btn">See More</a>
-	</div>
+            <% }); %>
+        <% } else { %>
+            <p>No products found.</p>
+        <% } %>
+    </div>
+    <div class="text-right">
+        <a href="/user/category" class="btn btn-success see-more-btn">See More</a>
+    </div>
 </div>
-<% } else { %>
-	<p>No products found.</p>
-<% } %>
-</div>
-</div>
+
 
 
 <style>
@@ -287,7 +314,7 @@
 		   
 			this.classList.toggle('far');
 			this.classList.toggle('fas');
-			this.classList.toggle('text-danger');
+			// this.classList.toggle('text-danger');
 
 		   
 			const productId = this.getAttribute('data-product-id');

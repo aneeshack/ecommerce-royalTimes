@@ -122,9 +122,16 @@
                                 <br>
                                 <button class="btn btn-primary" id="cancelButton">cancel</button>
                             </li>
-
-
-
+                          
+                            <div class="cupon_area mt-5">
+                                <div class="check_title">
+                                    <h2>Have a coupon? <a href="/user/coupons">Click here to enter your code</a></h2>
+                                </div>
+                                <input type="text" id="couponCode" placeholder="Enter coupon code">
+                                <button class="tp_btn" id="applyCouponBtn">Apply Coupon</button>
+                                <button class="tp_btn bg-danger btn-sm " id="removeCouponBtn">Remove Coupon</button>
+                                <p id="couponMessage" style="color: red;"></p>
+                            </div>
                             <!-- modal used for showing to add address -->
                             <!-- <button id="openModalBtn" class="primary-btn mt-5">Add Shipping Address</button>
 
@@ -174,6 +181,28 @@
                                     <% }) %>
                                         <% }) %>
                                             <% } %>
+                                              <tr>
+                                                <td style="width: 60%;">
+                                                    <h5>Grand Total</h5>
+                                                </td>
+                                                <td style="width: 60%;"></td>
+                                                <td style="width: 60%;">
+                                                    <h4 name="grandTotal" id="grandTotal">
+                                                        $<%= totalAmount %>
+                                                    </h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 60%;">
+                                                    <h5>Coupon Amount</h5>
+                                                </td>
+                                                <td style="width: 60%;"></td>
+                                                <td style="width: 60%;">
+                                                    <h4 name="couponDiscount" id="couponAmount">
+                                                        $0.00
+                                                    </h4>
+                                                </td>
+                                            </tr>
                                                 <tr>
                                                     <td style="width: 60%;">
                                                         <h4>Sub Total</h4>
@@ -189,12 +218,8 @@
                                                 </tbody>
                     </table>
 
-                    <div class="cupon_text d-flex align-items-center ">
-                        <input type="text" placeholder="Coupon Code" style="width: 80%; ">
-                        <a class="primary-btn" href="#">Apply</a>
-                        <!-- <a class="gray_btn" href="#">Close Coupon</a> -->
-                    </div>
-                    <div class="payment_item-event bg-white">
+                  
+                    <!-- <div class="payment_item-event bg-white">
                         <div class="radion_btn">
                             <input type="radio" id="f-option4" name="paymentMethod" value="COD">
                             <label for="f-option4">Cash On Delivery</label>
@@ -206,6 +231,7 @@
                     <div class="payment_item">
                         <div class="radion_btn">
                             <input type="radio" id="f-option5" name="paymentMethod" value="Razorpay">
+                            <img src="/img/product/card.jpg" alt="">
                             <label for="f-option5">Razorpay</label>
                             <div class="check"></div>
                         </div>
@@ -213,21 +239,59 @@
                             County,
                             Store Postcode.</p>
                     </div>
-
-
-
-
-
-                    <!-- <div class="payment_item ">
+                    <div class="payment_item ">
                         <div class="radion_btn">
                             <input type="radio" id="f-option6" name="selector">
-                            <label for="f-option6">Paypal </label>
-                            <img src="/img/product/card.jpg" alt="">
+                            <label for="f-option6">Wallet </label>
+                            
                             <div class="check"></div>
                         </div>
                         <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
                             account.</p>
                     </div> -->
+
+
+
+
+                    <div class="container mt-5">
+                        <h2>Select Payment Method</h2>
+                
+                        <!-- Cash On Delivery -->
+                        <div class="payment_item-event bg-white p-3 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="cod" name="paymentMethod" value="COD">
+                                <label class="form-check-label" for="cod">
+                                    Cash On Delivery
+                                </label>
+                            </div>
+                            <p>To use this payment method, simply select "Cash On Delivery" at checkout. Once your order is confirmed, our delivery team will handle the rest.</p>
+                        </div>
+                
+                        <!-- Razorpay -->
+                        <div class="payment_item bg-white p-3 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="razorpay" name="paymentMethod" value="Razorpay">
+                                <label class="form-check-label" for="razorpay">
+                                    <img src="/img/product/card.jpg" alt="Razorpay" style="width: 50px; margin-right: 10px;">
+                                    Razorpay
+                                </label>
+                            </div>
+                            <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
+                        </div>
+                
+                        <!-- Wallet -->
+                        <div class="payment_item bg-white p-3 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" id="wallet" name="paymentMethod" value="Wallet">
+                                <label class="form-check-label" for="wallet">
+                                    Wallet
+                                </label>
+                            </div>
+                            <p>Pay via Wallet; you can pay with your credit card if you don’t have a Wallet account.</p>
+                        </div>
+                    </div>
+
+
                     <!-- <div class="creat_account">
                         <input type="checkbox" id="f-option4" name="selector">
                         <label for="f-option4">I’ve read and accept the </label>
@@ -244,6 +308,69 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="/script/address.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <!-- remove coupon -->
+     <script>
+         document.getElementById('removeCouponBtn').addEventListener('click', async () => {
+            window.location.href = '/user/checkout';
+         })
+     </script>
+    <!-- add coupon code -->
+    <script>
+        document.getElementById('applyCouponBtn').addEventListener('click', async () => {
+    const couponCode = document.getElementById('couponCode').value;
+    const grandTotalElement  = document.getElementById('grandTotal');
+    const couponAmount = document.getElementById('couponAmount');
+    const checkoutTotalElement  = document.getElementById('checkoutTotal');
+
+    const totalAmount  = parseFloat(grandTotalElement.textContent.replace('$', ''));
+    const couponMessage = document.getElementById('couponMessage');
+
+    try {
+        const response = await fetch('/user/applyCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ couponCode, totalAmount })
+        });
+
+        const data = await response.json();
+        if(response.ok){
+
+            couponMessage.textContent = data.success ||'Coupon applied successfully';
+            couponMessage.style.color = 'green';
+           couponAmount.textContent = `$${data.discountAmount}`;
+               checkoutTotalElement.textContent = `$${data.newTotal}`;
+            console.log('value is getting:',data)
+        }else{
+            console.log('response is not correct')
+            couponMessage.textContent = data.error ;
+            couponMessage.style.color = 'red';
+        }
+        // if (!response.ok) {
+        //     console.log('error in response:',data)
+        //     // throw new Error(await response.text());
+        //     couponMessage.textContent = data.error;
+        //     couponMessage.style.color = 'red';
+        // }else{
+        //     console.log('data after success:',data)
+        
+        // // couponAmount.textContent = `$${data.discountAmount}`;
+        // // checkoutTotalElement.textContent = `$${data.newTotal}`;
+
+        // // document.getElementById('WalletAmount').textContent = `$${data.discountAmount}`;
+        // couponMessage.textContent = 'Coupon applied successfully';
+        // couponMessage.style.color = 'green';
+        // }
+       
+    } catch (error) {
+        couponMessage.textContent = error.message;
+        couponMessage.style.color = 'red';
+    }
+});
+
+    </script>
 
     <!-- add mobile number -->
     <script>
@@ -447,96 +574,6 @@
     </script>
 
     <!-- place order -->
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            const submitOrderBtn = document.getElementById('submitOrderBtn');
-    
-            submitOrderBtn.addEventListener('click', async function (event) {
-                event.preventDefault();
-    
-                const mobileNumber = document.getElementById('num').textContent.trim();
-                const selectedAddress = document.querySelector('input[name="address"]:checked');
-                const addressId = selectedAddress ? selectedAddress.value : null;
-    
-                // Retrieve selected payment method correctly
-                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-                const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
-    
-                const totalAmount = document.getElementById('checkoutTotal').textContent.trim();
-                const cartItemElement = document.getElementById('cartItemId');
-    
-                if (cartItemElement) {
-                    const cartItemID = cartItemElement.getAttribute('data-cart-item-id');
-    
-                    if (cartItemID) {
-                        // Prepare order data
-                        const orderData = {
-                            mobileNumber,
-                            addressId,
-                            paymentMethod,
-                            cartItemID,
-                            totalAmount
-                        };
-    
-                        try {
-                            // Send order data to backend
-                            const response = await fetch('/user/checkout/order', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(orderData)
-                            });
-    
-                            if (response.ok) {
-                                const result = await response.json();
-                                console.log('result', result);
-    
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Success',
-                                    text: result.success || 'Order placed successfully'
-                                });
-                                window.location.href = '/user/confirmation';
-                            } else {
-                                const result = await response.json();
-                                console.log('result', result);
-    
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: result.error || 'Order placing encountered an error'
-                                });
-                            }
-                        } catch (error) {
-                            console.error('Error:', error);
-    
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Order submission failed. Please try again.'
-                            });
-                        }
-                    } else {
-                        console.log('No cart items ID found.');
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'No cart items found.'
-                        });
-                    }
-                } else {
-                    console.log('No cart items found.');
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'No cart items found.'
-                    });
-                }
-            });
-        });
-    </script> -->
-
     <script>
         document.addEventListener('DOMContentLoaded', async function () {
             const submitOrderBtn = document.getElementById('submitOrderBtn');
@@ -550,6 +587,200 @@
 
                 const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
                 const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
+
+                
+
+                const totalAmountElement = document.getElementById('checkoutTotal');
+                const totalAmount = parseFloat(totalAmountElement.textContent.replace('$', '').trim());
+
+                const cartItemElement = document.getElementById('cartItemId');
+
+                if (cartItemElement) {
+                    const cartItemID = cartItemElement.getAttribute('data-cart-item-id');
+
+                    if (cartItemID) {
+                        const orderData = {
+                            mobileNumber,
+                            addressId,
+                            paymentMethod,
+                            cartItemID,
+                            totalAmount
+                        };
+
+                        try {
+                            const response = await fetch('/user/checkout/order', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(orderData)
+                            });
+
+                            if (response.ok) {
+                                const result = await response.json();
+
+                                if(paymentMethod === 'Wallet'){
+                                    if(result.walletPaymentStatus === 'success'){
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Payment Successful',
+                                            text: 'Your payment was successful.'
+                                        }).then(() => {
+                                            window.location.href = '/user/confirmation';
+                                        });
+                                    }
+                                 else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Payment Error',
+                                            text: 'Insufficient wallet balance or payment error.'
+                                        });
+                                    }
+
+                                } else if (result.razorpayOrderId) {
+                                    console.log('result in razorpay:', result.razorpayOrderId,)
+
+                                    openRazorpayCheckout(result.razorpayOrderId, totalAmount, '<%= razorpayKeyId %>', '<%= userData.mobileNumber %>',orderData,cartItemID);
+
+                                } else {
+                                    console.log('error in response ')
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: result.success || 'Order placed successfully'
+                                    });
+                                    window.location.href = '/user/confirmation';
+                                }
+                                
+                            } else {
+                                const result = await response.json();
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: result.error || 'Order placing encountered an error'
+                                });
+                            }
+                        } catch (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Order submission failed. Please try again.'
+                            });
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No cart items found.'
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No cart items found.'
+                    });
+                }
+            });
+
+            function openRazorpayCheckout(orderId, amount, razorpayKeyId, mobileNumber,orderData,cartItemID) {
+                const numericAmount = parseFloat(amount);
+                const options = {
+                    key: `${razorpayKeyId}`,
+                    amount: numericAmount * 100,
+                    currency: 'INR',
+                    name: 'ROYAL TIMES',
+                    description: 'Order Payment',
+                    image: '/images/newPhoto.jpg',
+                    order_id: orderId,
+                    handler: async function (response) {
+                        // On successful payment
+                        if (response.razorpay_payment_id) {
+                            // Send payment success status to backend
+                            const paymentData = {
+                                orderId: orderId,
+                                paymentId: response.razorpay_payment_id,
+                                razorpayOrderId: response.razorpay_order_id,
+                                amount: numericAmount,
+                                mobileNumber: mobileNumber,
+                                cartItemID:cartItemID,
+                                orderData:orderData
+                            };
+                            console.log('paymnet:',paymentData,'orderdata:',paymentData.orderData.mobileNumber)
+                            try {
+                               const response = await fetch('/user/checkout/payment', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(paymentData),
+                            })
+                            const data = await response.json();
+                            if(response.ok){
+                                Swal.fire({
+                                        icon: 'success',
+                                        title: 'Payment Successful',
+                                        text: 'Your payment was successful.'
+                                    }).then(() => {
+                                        window.location.href = '/user/confirmation';
+                                    });
+                            }else{
+                                Swal.fire({
+                                        icon: 'error',
+                                        title: 'Payment Error',
+                                        text: 'Payment confirmation failed. Please try again or contact support.'
+                                    });
+                            }
+                            } catch (error) {
+                                console.error('Error confirming payment:', error);
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Payment Error',
+                                        text: 'Payment confirmation failed. '
+                                    });
+                            }
+                            
+                                
+                        } else {
+                            // Handle payment failure scenario
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Payment Error',
+                                text: response.error.description || 'Payment failed or was canceled.'
+                            });
+                        }
+                    },
+                    prefill: {
+                        name: '',
+                        email: '',
+                        contact: `${mobileNumber}`
+                    },
+                    theme: {
+                        color: '#3399cc'
+                    }
+                };
+
+                const rzp = new Razorpay(options);
+                rzp.open();
+            }
+        });
+    </script>
+
+<!-- 
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const submitOrderBtn = document.getElementById('submitOrderBtn');
+
+            submitOrderBtn.addEventListener('click', async function (event) {
+                event.preventDefault();
+
+                const mobileNumber = document.getElementById('num').textContent.trim();
+                const selectedAddress = document.querySelector('input[name="address"]:checked');
+                const addressId = selectedAddress ? selectedAddress.value : null;
+
+                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
+               
 
                 const totalAmount = document.getElementById('checkoutTotal').textContent.trim();
                 const cartItemElement = document.getElementById('cartItemId');
@@ -713,6 +944,6 @@
                 rzp.open();
             }
         });
-    </script>
+    </script> -->
 
     <%- include('../layouts/user/footer') %>
