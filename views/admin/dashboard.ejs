@@ -7,7 +7,104 @@
 
     <body>
         <div class="container">
-            <h1>Admin Dashboard</h1>
+            <!-- <h1>Admin Dashboard</h1> -->
+            <!-- Page Heading -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                        class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
+            <div class="mt-4">
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reportModal" onclick="setReportType('pdf')">Sales Report(PDF)</button>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#reportModal" onclick="setReportType('excel')">Sales Report(EXCEL)</button>
+            </div>
+            </div>
+            <!-- Content Row -->
+            <div class="row">
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        Earnings (Monthly)</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Earnings (Annual)</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                    </div>
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-auto">
+                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="progress progress-sm mr-2">
+                                                <div class="progress-bar bg-info" role="progressbar"
+                                                    style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                    aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Requests Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        Pending Requests</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h2>Orders</h2>
 
 
@@ -38,13 +135,11 @@
 
             <!-- <button id="fetchOrdersButton" class="btn btn-primary mt-2">Fetch Orders</button> -->
             <canvas id="orderChart"></canvas>
-
-            <div class="mt-4">
-            <!-- <button class="btn btn-danger" onclick="downloadReport('pdf')">Download PDF</button>
-            <button class="btn btn-success" onclick="downloadReport('excel')">Download Excel</button> -->
+<!-- 
+            <div class="mt-4"></div>
             <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#reportModal" onclick="setReportType('pdf')">Download PDF</button>
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#reportModal" onclick="setReportType('excel')">Download Excel</button>
-            </div>
+            </div> -->
         </div>
        
 
@@ -99,6 +194,100 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary " id="closeButton" data-bs-dismiss="modal">Close</button>
                 <button type="button" id="generateReportButton" class="btn btn-primary">Generate Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- HTML for Best Selling Tables -->
+<div class="container mt-5">
+    <div class="row">
+        <!-- Best Selling Products Table -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Best Selling Products (Top 10)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="bestSellingProductsTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Sales</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% topProducts.forEach(product=> { %>
+                                    <tr>
+                                        <td><%= product.productName %></td>
+                                        <td><%= product.totalSales %></td>
+                                    </tr>
+                                    <% }) %>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Best Selling Categories Table -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Best Selling Categories (Top 10)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="bestSellingCategoriesTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Category Name</th>
+                                    <th>Sales</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% topCategories.forEach(function(category) { %>
+                                    <tr>
+                                        <td><%= category.categoryName %></td>
+                                        <td><%= category.totalSales %></td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Best Selling Brands Table -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Best Selling Brands (Top 10)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="bestSellingBrandsTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Brand Name</th>
+                                    <th>Sales</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% topBrands.forEach(function(brand) { %>
+                                    <tr>
+                                        <td><%= brand.brandName %></td>
+                                        <td><%= brand.totalSales %></td>
+                                    </tr>
+                                    <% }) %>
+                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -332,8 +521,8 @@ document.getElementById('generateReportButton').addEventListener('click', async(
                 // throw new Error('Network response was not ok');
                 const error = await response.json();
                 Swal.fire({
-                  icon: 'error',
-                  title: 'Error!',
+                //   icon: 'error',
+                //   title: 'Error!',
                   text: error.message ||'There was an error generating the report..',
                   showConfirmButton: false,
                   timer: 2000

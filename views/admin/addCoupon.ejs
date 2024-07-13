@@ -41,7 +41,7 @@
                     </div>
                     <div class="form-group">
                         <label for="maxDiscount">Maximum amount</label>
-                        <input type="number" class="form-control" id="maxAmount" name="maxAmount" placeholder="Enter maximum amount to which give discount" required value="<%= coupon?.maxDiscount || '' %>">
+                        <input type="number" class="form-control" id="maxAmount" name="maxAmount" placeholder="Enter maximum amount to which give discount" required value="<%= coupon?.maxAmount || '' %>">
                     </div>
                     <button type="submit" class="btn btn-primary"><%= editMode ? "Update Coupon" : "Add Coupon" %></button>
                 </form>

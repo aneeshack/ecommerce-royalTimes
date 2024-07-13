@@ -5,6 +5,8 @@ const ExcelJS = require('exceljs');
 const PDFDocument = require('pdfkit');
 const path = require('path');
 const fs = require('fs');
+const { getEnabledCategories } = require('trace_events');
+// const { default: products } = require('razorpay/dist/types/products');
 
 //dashboard
 const dashboard = async (req, res) => {
@@ -21,9 +23,106 @@ const dashboard = async (req, res) => {
                 $lte: endOfDay
             }
         });
+
+        // aggregation for top 10 best-selling products
+        const topProducts = await orderModel.aggregate([
+            { $unwind: "$productItems" },
+            { $group: { _id: '$productItems.productId', totalSales: { $sum: '$productItems.quantity' } } },
+            { $sort: { totalSales: -1 } },
+            { $limit: 10 },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'productDetails'
+                }
+            },
+            { $unwind: '$productDetails' },
+            {
+                $project: {
+                    _id: 1,
+                    totalSales: 1,
+                    productName: '$productDetails.productName'
+                }
+            }
+        ])
+        console.log('product details is:', topProducts)
+
+        // aggregation for top 10 best-selling getEnabledCategories
+        const topCategories = await orderModel.aggregate([
+            { $unwind: '$productItems' },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'productItems.productId',
+                    foreignField: '_id',
+                    as: 'productDetails'
+                }
+            },
+            { $unwind: '$productDetails' },
+            
+            {
+                $group: {
+                    _id: '$productDetails.category',
+                    totalSales: { $sum: '$productItems.quantity' }
+                }
+            },
+            { $sort: { totalSales: -1 } },
+            { $limit: 10 },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'categoryDetails'
+                }
+            },
+            { $unwind: '$categoryDetails' },
+            {
+                $project: {
+                    _id: 1,
+                    totalSales: 1,
+                    categoryName: '$categoryDetails.name'
+                }
+            }
+        ])
+        console.log('category items:', topCategories)
+
+        // Aggregation for top 10 best-selling brands
+      // Aggregation for top 10 best-selling brands
+      const topBrands = await orderModel.aggregate([
+        { $unwind: "$productItems" },
+        { $lookup: {
+            from: "products",
+            localField: "productItems.productId",
+            foreignField: "_id",
+            as: "productDetails"
+        }},
+        { $unwind: "$productDetails" },
+        { $group: { _id: "$productDetails.brand", totalSales: { $sum: "$productItems.quantity" } } },
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 },
+        { $lookup: {
+            from: "brands",
+            localField: "_id",
+            foreignField: "_id",
+            as: "brandDetails"
+        }},
+        { $unwind: "$brandDetails" },
+        { $project: { _id: 1, totalSales: 1, brandName: "$brandDetails.name" } }
+    ]);
+
+        console.log('brand items:', topBrands)
+
         console.log('today orders:', JSON.stringify(todayOrders))
         console.log('Orders fetched for today:', JSON.stringify(todayOrders, null, 2));
-        res.render('admin/dashboard', { orderData: JSON.stringify(todayOrders) });
+        res.render('admin/dashboard', {
+            orderData: JSON.stringify(todayOrders),
+            topProducts,
+            topCategories,
+            topBrands
+        });
     } catch (error) {
         console.error('error while loading dashboard:', error);
         res.status(500).send('Server error');
@@ -120,7 +219,7 @@ const salesReport = async (req, res) => {
 
         if (!orders || orders.length === 0) {
             console.log('no orders found');
-            return res.status(404).json({ error: 'No orders found' });
+            return res.status(404).json({ message: 'No purchase found in this interval' });
         }
 
         if (reportType === 'pdf') {
@@ -152,7 +251,7 @@ const generatePDFReport = (orders, startDate, endDate, interval, res) => {
     const totalDiscount = orders.reduce((total, order) => total + order.couponDiscount, 0);
 
     pdfDoc.fontSize(10).text(`Total Amount: ${totalSales.toFixed(2)}`, { align: 'right' }).moveDown();
-   
+
     const pageWidth = 540;
     const colWidthOrderID = pageWidth * 0.2;
     const colWidthDateOrdered = pageWidth * 0.2;
@@ -189,10 +288,10 @@ const generatePDFReport = (orders, startDate, endDate, interval, res) => {
         pdfDoc.moveDown();
     });
 
-  
+
     pdfDoc.fontSize(10).text(`Discount: ${totalDiscount.toFixed(2)}`, { align: 'right' }).moveDown();
     pdfDoc.fontSize(10).text(`Total Amount: ${totalSales.toFixed(2)}`, { align: 'right' }).moveDown();
-    
+
 
     pdfDoc.end();
 };
@@ -226,10 +325,10 @@ const generateExcelReport = (orders, startDate, endDate, interval, res) => {
 
     const totalDiscount = orders.reduce((total, order) => total + order.couponDiscount, 0);
     const totalSales = orders.reduce((total, order) => total + order.totalPrice, 0);
-    
+
 
     worksheet.addRow({});
-    worksheet.addRow({ totalPrice: `Total Sales: ${totalSales.toFixed(2)}` });
+    worksheet.addRow({ totalPrice: `Total Amount: ${totalSales.toFixed(2)}` });
     worksheet.addRow({ couponDiscount: `Total Discount: ${totalDiscount.toFixed(2)}` });
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
