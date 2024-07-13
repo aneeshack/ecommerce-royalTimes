@@ -4,7 +4,8 @@
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Edit Offer for <%= productOffer?.products?.productName %></h1>
-        <form id="categoryOfferEdit" action="/admin/product/offer/update/<%= productOffer._id %>" method="POST">
+        <form id="categoryOfferEdit" action="/admin/product/offer/update/<%= productOffer?._id %>" method="POST">
+            <input type="hidden" name="productId" value="<%= productOffer?.products?._id %>">
             <div class="form-group">
                 <label for="offerName">Offer Name</label>
                 <input type="text" class="form-control" id="offerName" name="offerName" value="<%= productOffer ? productOffer.offerName : '' %>" required>

@@ -33,6 +33,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                           
                             <% if(wishlists && wishlists.length>0) {%>
                                 <% wishlists.forEach(wish=>{ %>
                                     <% wish.products.forEach(product => {%>
@@ -50,6 +51,9 @@
                                 </td>
                                 <td>
                                     <h5>$<%= product.price %>.00</h5>
+                                    <% if (product.adjustedPrice && product.adjustedPrice < product.price) { %>
+                                        <p>Offer Price: $<%= product.adjustedPrice %></p>
+                                    <% } %>
                                 </td>
                                
                                 <!-- <td>

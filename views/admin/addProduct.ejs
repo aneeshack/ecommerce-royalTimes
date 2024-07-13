@@ -112,7 +112,7 @@
                   <label for="productBrand">Brand</label>
                   <select class="form-control" id="productBrand" name="brand" required>
                     <% brands.forEach(brand=> { %>
-                      <option value="<%= brand._id %>" >
+                      <option value="<%= brand._id %>" <%= editMode && product.brand && product.brand.equals(brand._id) ? 'selected' : '' %>>
                         <%= brand.name %>
                       </option>
                       <% }) %>
@@ -122,7 +122,7 @@
                   <label for="productCategory">Category</label>
                   <select class="form-control" id="productCategory" name="category" required>
                     <% categories.forEach(category=> { %>
-                      <option value="<%= category._id %>">
+                      <option value="<%= category._id %>" <%= editMode && product.category && product.category.equals(category._id) ? 'selected' : '' %>>
                         <%= category.name %>
                       </option>
                       <% }) %>

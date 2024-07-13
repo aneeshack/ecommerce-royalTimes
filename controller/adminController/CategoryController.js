@@ -87,7 +87,7 @@ const deleteCategory = async(req,res) =>{
 const categoryOfferList = async(req, res)=> {
     try {
         const categoryOffer = await categoryOfferModel.find().populate('categories');
-        console.log(categoryOffer)
+        console.log('cat off is:',categoryOffer)
         res.render('admin/categoryOffer',{categoryOffer})
     } catch (error) {
         console.log('error in category offer listing:',error.message);

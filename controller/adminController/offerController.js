@@ -105,6 +105,7 @@ const editProductOfferPage = async(req, res) => {
         const productOfferId = req.params.id;
         console.log('product id:',productOfferId);
         const productOffer  = await productOfferModel.findById(productOfferId).populate('products');
+        console.log("........",productOffer.products._id);
         const products = await productModel.find();
         if (!productOffer) {
             return res.status(404).send('product offer not found');
@@ -119,10 +120,11 @@ const editProductOffer = async(req, res) => {
     try {
         const productOfferId = req.params.id;
         console.log('product id is:',productOfferId);
-        const { offerName, discountPercentage, startDate, endDate} = req.body;
+        const { offerName, discountPercentage, startDate, endDate,productId} = req.body;
+        
         console.log('value in product offers are:',req.body);
         const updateOffer = await productOfferModel.findByIdAndUpdate(productOfferId,{
-            products:productOfferId,
+            products:productId,
             offerName,
             discountPercentage,
             startDate,

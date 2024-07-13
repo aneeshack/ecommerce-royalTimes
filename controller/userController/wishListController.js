@@ -1,29 +1,28 @@
 const productModel = require('../../models/product');
 const wishlistModel = require('../../models/wishList');
+const productOfferModel = require('../../models/productOffer');
+const categoryOfferModel = require('../../models/categoryOffer');
 
+// //wishlist page showing
+// const wishList = async (req, res) => {
+//     try {
+//         const userId = req.session.userId;
+//         if (!userId) {
+//             return res.redirect('/user/login', { message: "Please log in to view your wishlist." });
+//         }
+//         const wishlist = await wishlistModel.findOne({ userId }).populate('products');
 
-//wishlist page showing
-const wishList = async (req, res) => {
-    try {
-        const userId = req.session.userId;
-        if (!userId) {
-            return res.redirect('/user/login', { message: "Please log in to view your wishlist." });
-        }
-        const wishlist = await wishlistModel.findOne({ userId }).populate('products');
+//         if (!wishlist || wishlist.products.length === 0) {
+//             return res.render('user/wishList', { wishlists: [] });
+//         }
 
-        if (!wishlist || wishlist.products.length === 0) {
-            return res.render('user/wishList', { wishlists: [] });
-        }
+//         res.render('user/wishList', { wishlists: [wishlist] });
+//     } catch (error) {
+//         console.log('error in wishlist page:', error.message)
+//     }
+// }
 
-        res.render('user/wishList', { wishlists: [wishlist] });
-    } catch (error) {
-        console.log('error in wishlist page:', error.message)
-    }
-}
-
-
-
-// product added to wishlist
+// // product added to wishlist
 const wishProduct = async (req, res) => {
     try {
 
@@ -71,6 +70,58 @@ const wishProduct = async (req, res) => {
         res.status(500).json({ message: 'Error adding product to wishlist' });
     }
 }
+
+// //wishlist page showing
+const wishList = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        if (!userId) {
+            return res.redirect('/user/login', { message: "Please log in to view your wishlist." });
+        }
+        const wishlist = await wishlistModel.findOne({ userId }).populate('products');
+
+        if (!wishlist || wishlist.products.length === 0) {
+            return res.render('user/wishList', { wishlists: [] });
+        }
+
+        // Recalculate prices based on the latest offers
+        for (let item of wishlist.products) {
+            const { adjustedPrice, appliedOffer } = await getAdjustedPrice(item._id);
+            item.adjustedPrice = adjustedPrice; // Adding the adjusted price to the product
+        }
+
+        res.render('user/wishList', { wishlists: [wishlist] });
+    } catch (error) {
+        console.log('error in wishlist page:', error.message);
+        res.status(500).render('500error', { message: 'Error displaying wishlist' });
+    }
+};
+
+const getAdjustedPrice = async (productId) => {
+    let adjustedPrice;
+    let appliedOffer = null;
+
+    const productItem = await productModel.findById(productId);
+    if (productItem) {
+        const productPrice = productItem.price;
+
+        const productOffer = await productOfferModel.findOne({ products: productId });
+        if (productOffer) {
+            adjustedPrice = productPrice * ((100 - productOffer.discountPercentage) / 100);
+            appliedOffer = 'product';
+        } else {
+            const categoryOffer = await categoryOfferModel.findOne({ categories: productItem.category });
+            if (categoryOffer) {
+                adjustedPrice = productPrice * ((100 - categoryOffer.discountPercentage) / 100);
+                appliedOffer = 'category';
+            } else {
+                adjustedPrice = productPrice;
+            }
+        }
+    }
+
+    return { adjustedPrice, appliedOffer };
+};
 
 
 // delete item in wishlist
