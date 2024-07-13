@@ -58,7 +58,7 @@
                                         <th scope="col">Status</th>
                                         <th scope="col">Payment Mode</th>
                                         <th scope="col">Actions</th>
-                                        <!-- <th scope="col"></th> -->
+                                        <th scope="col">Invoice</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -92,6 +92,11 @@
                                                                         %>
                                                                         <span class="text-danger">Return Request
                                                                             Rejected</span>
+                                                                            <% } else if
+                                                                        (product?.status==='product returned' ) {
+                                                                        %>
+                                                                        <span class="text-danger">Product Returned
+                                                                            </span>
                                                                         <% }else{ %>
                                                                             <%= product?.status %>
                                                                                 <% } %>
@@ -136,26 +141,23 @@
 
 
                                                             <% } else if (['Cancelled', 'Return Requested'
-                                                                , 'return request accepted' , 'return request rejected'
+                                                                , 'return request accepted' , 'return request rejected','product returned'
                                                                 ].includes(product.status)) { %>
                                                                 <span>
                                                                     <% if (product.status==='Cancelled' ) { %>
                                                                         <span class="text-muted">Cancelled</span>
-                                                                        <% } else if
-                                                                            (product.status==='Return Requested' ) { %>
+                                                                        <% } else if(product.status==='Return Requested' ) { %>
                                                                             <span class="text-danger">Return
                                                                                 Requested</span>
-                                                                            <% } else if
-                                                                                (product.status==='return request accepted'
-                                                                                ) { %>
+                                                                            <% } else if(product.status==='return request accepted') { %>
                                                                                 <span class="text-danger">Return Request
                                                                                     Accepted</span>
-                                                                                <% } else if
-                                                                                    (product.status==='return request rejected'
-                                                                                    ) { %>
-                                                                                    <span class="text-danger">Return
-                                                                                        Request Rejected</span>
-                                                                                    <% } %>
+                                                                            <% } else if(product.status==='product returned') { %>
+                                                                            <span class="text-danger">Product Returned 
+                                                                                    </span>
+                                                                            <% } else if(product.status==='return request rejected' ) { %>
+                                                                                    <span class="text-danger">Return Request Rejected</span>
+                                                                            <% } %>
                                                                 </span>
                                                                 <% } else { %>
                                                                     <button
@@ -247,7 +249,12 @@
                                                                             <% }else{ %>
                                                                                 <% } %>
                                                     </td>
-
+                                                    <td>
+                                                        
+                                                                        <% if (product.status !== 'product returned') { %>
+                                                                        <button onclick="invoiceDownload('<%= orderItem._id %>','<%= product.productId._id %>')" class="btn btn-success btn-sm">Download Invoice</button>
+                                                                        <% } %>
+                                                                        </td>
                                                 </tr>
                                                 <% }); %>
                                                     <% }); %>
@@ -269,6 +276,56 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        async function invoiceDownload(orderId, productId){
+            const url = `/user/order/downloadInvoice/${orderId}/${productId}`;
+        // window.open(url, '_blank');
+        try {
+            const response =  await fetch(url,{
+                method: 'GET',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+
+            })
+            if(response.ok){
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `invoice_${orderId}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                Swal.fire({
+                    position: 'bottom',
+                    icon: 'success',
+                    title: 'Success in downloading',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }else{
+                const data = await response.json();
+                Swal.fire({
+                    position: 'bottom',
+                    icon: 'error',
+                    title: data.error || 'Error in downloading',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }
+        } catch (error) {
+            console.log('some errors occures:',error.message)
+            Swal.fire({
+                        position: 'bottom',
+                        icon: 'Error',
+                        title: data.error || 'error in downloading invoice!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+        }
+        }
+    </script>
     <script>
         const showReturnModal = (orderId, productId) => {
             document.getElementById('orderId').value = orderId;
@@ -385,7 +442,13 @@
                     },
                     body: JSON.stringify({ rating, review, productId, userId })
                 })
-                const data = await response.json();
+                const data = await reSwal.fire({
+                        position: 'bottom',
+                        icon: 'error',
+                        title: data.error,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });sponse.json();
                 if (response.ok) {
                     console.log('success')
                     $('#reviewModal').modal('hide');
@@ -399,13 +462,7 @@
 
                 } else {
                     console.log('error in review')
-                    Swal.fire({
-                        position: 'bottom',
-                        icon: 'error',
-                        title: data.error,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
+                    
                 }
             } catch (error) {
                 console.log('error occurred:',error.message);

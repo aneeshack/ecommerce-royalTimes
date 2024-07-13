@@ -49,5 +49,6 @@ adminRouter.post('/categoryOffer/update/:id',categoryController.editCategoryOffe
 
 // dashboard managements
 adminRouter.get('/dashboard', adminValid.isAdmin, dashboardController.dashboard);
-adminRouter.get('/orders',dashboardController.chartUpdate);
+adminRouter.get('/orders',adminValid.isAdmin,dashboardController.chartUpdate);
+adminRouter.get('/reports',adminValid.isAdmin,dashboardController.salesReport);
 module.exports = adminRouter;

@@ -3,20 +3,35 @@ const productOffer = require('../../models/productOffer');
 const productOfferModel = require('../../models/productOffer');
 
 // showing product list
+// const productOfferList = async(req, res) => {
+//     try {
+//         console.log('Fetching product offer list');
+//         const products = await productModel.find().populate('offer');
+//         // const productOffer = await offerModel.find();
+//         console.log('product are:',products)
+
+//         res.render('admin/productOfferList', { products: products });
+//     } catch (error) {
+//         console.error("Error in getting product list:", error);
+//         res.render("admin/productOfferList");
+//     }
+// }
+
+// showing product list
 const productOfferList = async(req, res) => {
     try {
         console.log('Fetching product offer list');
         const products = await productModel.find().populate('offer');
+        const productOff = await productOfferModel.find().populate('products');
         // const productOffer = await offerModel.find();
         console.log('product are:',products)
 
-        res.render('admin/productOfferList', { products: products });
+        res.render('admin/productOfferList', { products: products ,productOff});
     } catch (error) {
         console.error("Error in getting product list:", error);
         res.render("admin/productOfferList");
     }
 }
-
 // product offer adding page
 const addProductOfferPage = async(req, res) =>{
     try {
@@ -68,6 +83,8 @@ const deleteProductOffer = async(req, res) => {
         console.log('cat',productId);
         console.log('deleting product offer')
         const ProductOffer = await productOfferModel.findByIdAndDelete(productId);
+        // const ProductOffer = await productOfferModel.products.find(productId);
+        // console.log('product offer :')
         console.log('products are:',productOffer);
         if(!ProductOffer){
             console.log('ProductOffer is not found')

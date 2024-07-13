@@ -16,7 +16,7 @@ const checkoutPage = async (req, res) => {
                 let totalAmount = 0;
                 cartItems.forEach(cartItem => {
                     cartItem.products.forEach(product => {
-                        totalAmount += product.productId.price * product.quantity;
+                        totalAmount += product.offerPrice * product.quantity;
                     });
                 });
 

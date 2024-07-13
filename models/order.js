@@ -29,8 +29,25 @@ const productSchema = new mongoose.Schema({
 const orderSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'userlogins',
+        ref: 'userLogin',
         required: true
+    },
+    userName:{
+        type:String,
+        default:true
+    },
+    couponDiscount:{
+        type : Number,
+        required: false
+    },
+    totalQuantity: {
+        type :Number
+    },
+    originalPrice:{
+        type: Number
+    },
+    totalPrice: {
+        type: Number
     },
     productItems: [productSchema],
     billingAddress: [addressSchema],
@@ -38,14 +55,13 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+   
     // status: {
     //     type: String,
     //     required: true,
     //     default: 'Pending'
     // },
-    totalPrice: {
-        type: Number
-    },
+    
     paymentMethod: {
         type: String,
         required: true,

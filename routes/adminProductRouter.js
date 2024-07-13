@@ -28,6 +28,7 @@ productRouter.post('/orderStatus',adminValid.isAdmin,adminOrderController.orderS
 productRouter.get('/return/:orderId/:productId',adminValid.isAdmin,adminOrderController.returnManagement);
 productRouter.post('/return/:orderId/:productId/accept',adminValid.isAdmin,adminOrderController.acceptReturn);
 productRouter.post('/return/:orderId/:productId/reject',adminValid.isAdmin,adminOrderController.rejectReturn);
+productRouter.post('/return/:orderId/:productId/returned',adminValid.isAdmin,adminOrderController.productReturned);
 
 
 // product offer management

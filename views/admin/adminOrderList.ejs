@@ -44,7 +44,7 @@
                                         <%= orderItem.dateOrdered.toDateString() %>
                                     </td>
                                     <td>
-                                        <%= product.quantity %>
+                                        <%= orderItem.userName %>
                                     </td>
                                     <td>
                                         <%= product.total %>
@@ -54,7 +54,7 @@
 
                                     </td>
                                     <td>
-                                        <% if (['Return Requested', 'return request accepted', 'return request rejected','Cancelled'].includes(product.status)) { %>
+                                        <% if (['Return Requested', 'return request accepted', 'return request rejected','Cancelled','product returned'].includes(product.status)) { %>
                                             <a href="/admin/product/return/<%= orderItem._id %>/<%= product._id %>" class="text-danger">
                                                 <%= product.status %>
                                             </a>

@@ -63,7 +63,8 @@ const returnManagement = async(req, res) => {
         productId: productId,
         product:product,
         productDetails,
-        imageUrl:productDetails.images[0]
+        imageUrl:productDetails.images[0],
+        billingAddress: order.billingAddress[0] 
         // Pass other necessary data to render the page
     });
     } catch (error) {
@@ -138,10 +139,44 @@ const rejectReturn = async(req, res ) => {
 }
 
 
+//product return request rejected
+const productReturned = async(req, res ) => {
+    try {
+        
+    const orderId = req.params.orderId;
+    const productId = req.params.productId;
+
+    const order =await orderModel.findOne({
+        _id:orderId,
+        'productItems._id':productId
+    })
+
+    if(!order){
+        console.log('order not found');
+        return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const product = order.productItems.find(item => item._id.toString() === productId)
+
+    if(!product){
+        console.log('product not found');
+        return res.status(404).json({ message: 'Product not found in order' });
+    }
+        product.status = 'product returned'
+        await order.save();
+        res.json({success: true})
+
+    } catch (error) {
+        console.log('error in accept return :',error.message);
+        return res.status(404).json({ message: 'Error occured, while retuned status updating.' });
+    }
+}
+
 module.exports = {
     orderList,
     orderStatus,
     returnManagement,
     acceptReturn,
-    rejectReturn
+    rejectReturn,
+    productReturned
 }

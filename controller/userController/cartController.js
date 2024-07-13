@@ -1,6 +1,8 @@
 require('express');
 const productModel = require('../../models/product');
-const cartModel = require('../../models/cart')
+const cartModel = require('../../models/cart');
+const categoryOfferModel = require('../../models/categoryOffer');
+const productOfferModel = require('../../models/productOffer');
 const helpers = require('../userController/helper');
 
 //adding products to the cart list
@@ -13,8 +15,31 @@ const addToCart = async (req, res) => {
         if (!productItem) {
             res.status(500).render('404error')
         } else {
-            const productPrice = productItem.price
-
+          const productOffer = await productOfferModel.findOne().populate('products');
+          const productPrice = productItem.price;
+          let adjustedPrice = productItem.price;
+          let appliedOffer = null;
+  
+          // Check if the product offer exists and applies to the product
+          if (productOffer  && productOffer.products._id.equals(productId)) {
+                  adjustedPrice = productPrice*((100-productOffer.discountPercentage)/100) ; // Assuming `offerPrice` is the discounted price
+                  console.log('product offer price:',adjustedPrice)
+                  appliedOffer = 'product';           
+          }
+  
+          // If no product offer, check for category offer
+          if (!appliedOffer) {
+              const categoryOffer = await categoryOfferModel.findOne().populate('categories');
+              if (categoryOffer && categoryOffer.categories._id.equals(productItem.category)) {
+                  adjustedPrice = productPrice*((100-categoryOffer.discountPercentage)/100) ; // Assuming `offerPrice` is the discounted price
+                  console.log('category offer is:',adjustedPrice)
+                  appliedOffer = 'category';
+              }
+          }
+  
+          console.log('Adjusted price:', adjustedPrice);
+       
+      
             //check if product exist in the cart already
             const productExists = await helpers.cartProductData(userId, productId)
           
@@ -26,16 +51,16 @@ const addToCart = async (req, res) => {
                 //check if user already exist in the cart
                 let cart = await cartModel.findOne({ userId });
                 if (cart) {
-                    cart.products.push({ productId, quantity: 1, total: productPrice });
-                    const grandAmount = cart.grandTotal + productPrice
+                    cart.products.push({ productId, quantity: 1, total: adjustedPrice, offerPrice:adjustedPrice });
+                    const grandAmount = cart.grandTotal + adjustedPrice
                     cart.grandTotal = grandAmount
                     await cart.save();
                     res.redirect('/user/cart');
                 } else {
                     cart = new cartModel({
                         userId: userId,
-                        products: [{ productId, quantity: 1, total: productPrice }],
-                        grandTotal: productPrice
+                        products: [{ productId, quantity: 1, total: adjustedPrice, offerPrice: adjustedPrice }],
+                        grandTotal: adjustedPrice
                     })
                     await cart.save();
                     res.redirect('/user/cart');
@@ -47,7 +72,6 @@ const addToCart = async (req, res) => {
         res.status(500).render('404error', { message: 'Error in adding product to cart' })
     }
 }
-
 
 //showing cart page
 const cartPage = async (req, res) => {
@@ -87,14 +111,14 @@ const updateQuantity = async (req, res) => {
         if (cart) {
             const product = cart.products.find(p => p.productId._id.toString() === productId);
             if (product) {
-                let productTotal = product.productId.price * quantity
-
+                let productTotal = product.offerPrice * quantity
+                console.log('product total:',productTotal)
                 product.quantity = quantity;
                 product.total = productTotal;
 
                 //finding the grand total of all the products
                 let grandT = cart.products.reduce((acc, curr) => {
-                    acc = acc + (curr.productId.price * curr.quantity)
+                    acc = acc + (curr.offerPrice * curr.quantity)
                     return acc
                 }, 0)
                 cart.grandTotal = grandT
@@ -114,8 +138,6 @@ const updateQuantity = async (req, res) => {
         res.status(500).json({ error: 'Error in updating quantity.' })
     }
 }
-
-
 // Deleting a product from the cart
 const deleteCart = async (req, res) => {
     try {
@@ -138,7 +160,7 @@ const deleteCart = async (req, res) => {
         // Calculate the new grand total based on the remaining products
         let grandTotal = 0;
         for (const item of updatedCart.products) {
-            grandTotal += item.quantity * item.productId.price;
+            grandTotal += item.quantity * item.offerPrice;
         }
 
         // Update the grand total in the cart

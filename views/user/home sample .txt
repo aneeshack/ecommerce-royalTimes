@@ -1,479 +1,455 @@
 
+<%- include('../layouts/user/header',{title:"Royal Times"}) %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<%- include('../layouts/admin/header',{title:"Dashboard"}) %>
-    
-                    <!-- Begin Page Content -->
-                <div class="container-fluid">
+	<!-- start banner Area -->
+	<section class="banner-area">
+		<div class="container">
+			<div class="row fullscreen align-items-center justify-content-start">
+				<div class="col-lg-12">
+					<div class="active-banner-slider owl-carousel">
+						<!-- single-slide -->
+						<div class="row single-slide align-items-center d-flex">
+							<div class="col-lg-5 col-md-6">
+								<div class="banner-content">
+									<h1> <br>Collection!</h1>
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+									<div class="add-bag d-flex align-items-center">
+										<a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
+										<span class="add-text text-uppercase">Add to Bag</span>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="col-lg-7">
+								<div class="banner-img">
+									<img class="img-fluid" src="/img/banner/maxresdefault.jpg" alt="">
+								</div>
+							</div> -->
+						</div>
+						<!-- single-slide -->
+						<div class="row single-slide">
+							<div class="col-lg-5">
+								<div class="banner-content">
+									<h1>Nike New <br>Collection!</h1>
+									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.</p>
+									<div class="add-bag d-flex align-items-center">
+										<a class="add-btn" href=""><span class="lnr lnr-cross"></span></a>
+										<span class="add-text text-uppercase">Add to Bag</span>
+									</div>
+								</div>
+							</div>
+							<!-- <div class="col-lg-7">
+								<div class="banner-img">
+									<img class="img-fluid" src="/img/banner/banner-img.png" alt="">
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End banner Area -->
 
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
-                    </div>
+	<!-- new arrivals -->
+	 <div class="newArrival container mt-5 ">
+		<h2 class="text-center mb-4">New Arrivals</h2>
+	<div class="row " id="filteredProducts">
+		<div class="arrived">
+		<% if (Array.isArray(products) && products.length>0) { %>
+			<%  const newArrival = products.slice(-3);
+			newArrival.reverse();
+			newArrival.forEach(product=> { 
+				%>
+				<div class="col-md-3 mb-4">
+					<div class="card h-100 product-card">
+						<a href="/user/product/<%= product._id %>">
+							
+							<img src="<%= product.images[0]  %>" class="card-img-top"
+								alt="<%= product.productName %>"
+								data-product-id="<%= product._id %>">
+						</a>
+						
+						<div class="card-body">
+							<h5 class="card-title">
+								<%= product.productName %>
+							</h5>
+							<h6 class="card-text">
+								<%= product.brand.name %>
+							</h6>
 
-                    <!-- Content Row -->
-                    <div class="row">
+							<p class="card-text">Price: $<%= product.price %>
+							</p>
 
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+							
+							<i class=" fa-heart wishlist-icon <%= product.isWishlist ? ' fas text-danger' : 'far' %>"
+								data-product-id="<%= product._id %>"></i>
+						</div>
+					</div>
+				</div>
+				<% }); %>
+				<% }else{ %>
+					<p>no new arrivals</p>
+							<% } %>
+						</div>
+	</div>
+</div>
 
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Earnings (Annual)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Pending Requests</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-
-                    <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Content Column -->
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Project Card Example -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
-                                </div>
-                                <div class="card-body">
-                                    <h4 class="small font-weight-bold">Server Migration <span
-                                            class="float-right">20%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Sales Tracking <span
-                                            class="float-right">40%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Customer Database <span
-                                            class="float-right">60%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Payout Details <span
-                                            class="float-right">80%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Account Setup <span
-                                            class="float-right">Complete!</span></h4>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Color System -->
-                            <div class="row">
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-primary text-white shadow">
-                                        <div class="card-body">
-                                            Primary
-                                            <div class="text-white-50 small">#4e73df</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-success text-white shadow">
-                                        <div class="card-body">
-                                            Success
-                                            <div class="text-white-50 small">#1cc88a</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-info text-white shadow">
-                                        <div class="card-body">
-                                            Info
-                                            <div class="text-white-50 small">#36b9cc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-warning text-white shadow">
-                                        <div class="card-body">
-                                            Warning
-                                            <div class="text-white-50 small">#f6c23e</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-danger text-white shadow">
-                                        <div class="card-body">
-                                            Danger
-                                            <div class="text-white-50 small">#e74a3b</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-secondary text-white shadow">
-                                        <div class="card-body">
-                                            Secondary
-                                            <div class="text-white-50 small">#858796</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-light text-black shadow">
-                                        <div class="card-body">
-                                            Light
-                                            <div class="text-black-50 small">#f8f9fc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-dark text-white shadow">
-                                        <div class="card-body">
-                                            Dark
-                                            <div class="text-white-50 small">#5a5c69</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-lg-6 mb-4">
-
-                            <!-- Illustrations -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                                            src="/img/undraw_posting_photo.svg" alt="...">
-                                    </div>
-                                    <p>Add some quality, svg illustrations to your project courtesy of <a
-                                            target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                                        constantly updated collection of beautiful svg images that you can use
-                                        completely free and without attribution!</p>
-                                    <a target="_blank" rel="nofollow" href="https://undraw.co/">Browse Illustrations on
-                                        unDraw &rarr;</a>
-                                </div>
-                            </div>
-
-                            <!-- Approach -->
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
-                                </div>
-                                <div class="card-body">
-                                    <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                                        CSS bloat and poor page performance. Custom CSS classes are used to create
-                                        custom components and custom utility classes.</p>
-                                    <p class="mb-0">Before working with this theme, you should become familiar with the
-                                        Bootstrap framework, especially the utility classes.</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
-                <!-- /.container-fluid -->
-
-            </div>
-            <!-- End of Main Content -->
-
-            <%- include('../layouts/admin/adminFooter') %>
+	<!--end of new arrivals -->
 
 
-
-
+	<!-- start features Area -->
+	<section class="features-area section_gap">
+		<div class="container">
+			<div class="row features-inner">
+				<!-- single features -->
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="single-features">
+						<div class="f-icon">
+							<img src="/img/features/f-icon1.png" alt="">
+						</div>
+						<h6>Free Delivery</h6>
+						<p>Free Shipping on all order</p>
+					</div>
+				</div>
+				<!-- single features -->
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="single-features">
+						<div class="f-icon">
+							<img src="/img/features/f-icon2.png" alt="">
+						</div>
+						<h6>Return Policy</h6>
+						<p>Free Shipping on all order</p>
+					</div>
+				</div>
+				<!-- single features -->
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="single-features">
+						<div class="f-icon">
+							<img src="/img/features/f-icon3.png" alt="">
+						</div>
+						<h6>24/7 Support</h6>
+						<p>Free Shipping on all order</p>
+					</div>
+				</div>
+				<!-- single features -->
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="single-features">
+						<div class="f-icon">
+							<img src="/img/features/f-icon4.png" alt="">
+						</div>
+						<h6>Secure Payment</h6>
+						<p>Free Shipping on all order</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- end features Area -->
 
 <!-- Dynamically render product details -->
 <div id="productContainer" class="container">
     <div class="row">
-		<% if (Array.isArray(products)) { %>
-        <% products.forEach(product => { %>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 product-card">
-					<a href="/user/product/<%= product._id %>">
-                    <img src="<%= product.images[0] %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
-					</a>
-					<div class="availability-label position-absolute top-0 end-0 mt-2 me-2" >
-						<% if (product.stock>0) { %>
-							<span class="badge badge-success ">In Stock</span>
-						<% } else { %>
-							<span class="badge badge-danger  fs-5">Out of Stock</span>
-						<% } %>
-					</div>
-                    <div class="card-body">
-                        <h5 class="card-title"><%= product.productName %></h5>
-						<h5 class="card-title"><%= product.brand.name %></h5>
-                        <p class="card-text">Price: $<%= product.price %></p>
-						<p class="card-text">Price:
-							$<%= productOffer ? (products.price - (products.price * productOffer.discountPercentage / 100)).toFixed(2) :
-									(categoryOffer ? (products.price - (products.price * categoryOffer.discountPercentage / 100)).toFixed(2) : products.price.toFixed(2)) %>
-							   <% if (productOffer) { %>
-								&nbsp;
-								   <span style="text-decoration: line-through; color: red;">
-									  $<%= products.price.toFixed(2) %>
-								   </span>
-								   <br>
-								   <span style="color: green;">  <%= productOffer.offerName %> of <%= productOffer.discountPercentage %>%</span>
-							   <% } else if (categoryOffer) { %>
-							
-								   <span style="text-decoration: line-through; color: red;">
-									   $<%= products.price.toFixed(2) %>
-								   </span>
-								   <span style="color: green;"> Offer <%= categoryOffer.offerName %>%</span>
-							   <% } %>
-						</p>
-                        <!-- <a href="/user/cart" class="btn btn-primary">Add to Cart</a> -->
+        <% if (Array.isArray(products)) { %>
+            <% products.forEach(product => { %>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 product-card">
+                        <a href="/user/product/<%= product._id %>">
+                            <img src="<%= product.images[0] %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
+                        </a>
+                        <div class="availability-label position-absolute top-0 end-0 mt-2 me-2">
+                            <% if (product.stock > 0) { %>
+                                <span class="badge badge-success">In Stock</span>
+                            <% } else { %>
+                                <span class="badge badge-danger fs-5">Out of Stock</span>
+                            <% } %>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title"><%= product.productName %></h5>
+                            <h5 class="card-title"><%= product.brand.name %></h5>
+                            <p class="card-text">
+                                Price:
+                                <% 
+                                    let finalPrice = product.price;
+									let productOffer = Array.isArray(productOffers) ? productOffers.find(offer => offer.products && offer.products._id.toString() === product._id.toString()) : null;
+									let categoryOffer = Array.isArray(categoryOffers) ? categoryOffers.find(offer => offer.categories && offer.categories._id.toString() === product.category._id.toString()) : null;
 
-						<form action="/user/cart" method="POST">
-							<input type="hidden" name="productId" value="<%= product._id %>" data-stock="<%= product.stock %>">
-							<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
-						</form>
-						
-						<i class="far fa-heart wishlist-icon " data-product-id="<%= product._id %>"></i>
+                                    if (productOffer) {
+                                        finalPrice = (product.price - (product.price * productOffer.discountPercentage / 100)).toFixed(2);
+                                    } else if (categoryOffer) {
+                                        finalPrice = (product.price - (product.price * categoryOffer.discountPercentage / 100)).toFixed(2);
+                                    } else {
+                                        finalPrice = product.price;
+                                    }
+                                %>
+                                $<%= finalPrice %>
+                                &nbsp;
+                                <% if (productOffer) { %>
+                                    <span style="text-decoration: line-through; color: red;">
+                                        $<%= product.price.toFixed(2) %>
+                                    </span>
+                                    <br>
+                                    <span style="color: green;"> <%= productOffer.offerName %> of <%= productOffer.discountPercentage %>%</span>
+                                <% } else if (categoryOffer) { %>
+                                    <span style="text-decoration: line-through; color: red;">
+                                        $<%= product.price.toFixed(2) %>
+                                    </span>
+                                    <br>
+                                    <span style="color: green;"> <%= categoryOffer.offerName %> of <%= categoryOffer.discountPercentage %>%</span>
+                                <% } %>
+                            </p>
+
+                            <form action="/user/cart" method="POST">
+                                <input type="hidden" name="productId" value="<%= product._id %>" data-stock="<%= product.stock %>">
+                                <button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
+                            </form>
+                            <i class="far fa-heart wishlist-icon" data-product-id="<%= product._id %>"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <% }); %>
-	</div>
-	<div class="text-right">
-		<a href="/user/category" class="btn btn-success see-more-btn">See More</a>
-	</div>
-</div>
-<% } else { %>
-	<p>No products found.</p>
-<% } %>
-</div>
+            <% }); %>
+        <% } else { %>
+            <p>No products found.</p>
+        <% } %>
+    </div>
+    <div class="text-right">
+        <a href="/user/category" class="btn btn-success see-more-btn">See More</a>
+    </div>
 </div>
 
 
 
+<style>
+	.arrived{
+		display: flex;
+		justify-content: center;
+	}
+	.newArrival {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #e6e6e6;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+	/* styles.css */
+.see-more-btn {
+    background-color: rgb(220, 118, 24);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.see-more-btn:hover {
+    background-color: rgb(210, 109, 32); /* Optional: Change color on hover */
+}
+
+.text-right {
+    text-align: right;
+}
+.availability-label .badge {
+    font-size: 1.2rem; /* Custom font size */
+    /* Additional custom styles */
+}
+.wishlist-icon {
+        cursor: pointer;
+        font-size: 24px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #ccc;
+    }
+
+    .wishlist-icon.text-danger {
+        color: red;
+    }
+</style>
 
 
 
 
 
+	<!-- Start brand Area -->
+	<section class="brand-area section_gap">
+		<div class="container">
+			<div class="row">
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/1.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/2.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/3.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/4.png" alt="">
+				</a>
+				<a class="col single-img" href="#">
+					<img class="img-fluid d-block mx-auto" src="img/brand/5.png" alt="">
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<!--end of dynamically render product details -->
 
 
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+	<!-- adding items to wishlist -->
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+	const wishlistIcons = document.querySelectorAll('.wishlist-icon');
+
+	wishlistIcons.forEach(icon => {
+		icon.addEventListener('click', function () {
+		   
+			this.classList.toggle('far');
+			this.classList.toggle('fas');
+			// this.classList.toggle('text-danger');
+
+		   
+			const productId = this.getAttribute('data-product-id');
+			addToWishlist({productId});
+		});
+	});
+});
+
+async function addToWishlist(productId){
+	try {
+		const response = await fetch('/user/wish',{
+		method :'POST',
+		headers:{
+			'Content-Type' : 'application/json',
+		},
+		body: JSON.stringify(productId) 
+
+	})
+	const data = await response.json();
+	if(response.ok){
+		console.log('added products to wishlist:',data);
+		Swal.fire({
+	position: 'bottom',
+	// icon: 'success',
+	title: data.message|| 'wishlist!',
+	showConfirmButton: false, 
+	timer: 2000 
+});
+	}else{
+		console.log(' error in adding products to wishlist:',data);
+		Swal.fire({
+	position: 'bottom',
+	icon: 'error',
+	title: data.message, 
+	showConfirmButton: false, 
+	timer: 3000 
+});
+	}
+	} catch (error) {
+		console.log('error occured while adding to wishlist',error.message);
+	}
+	
+}
+</script>
+
+<!-- when outof stock it prevent add to cart -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+	const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+
+	addToCartButtons.forEach(button => {
+		button.addEventListener('click', function (event) {
+			event.preventDefault(); 
+			
+			const form = button.closest('form'); 
+			const productId = form.querySelector('input[name="productId"]').value;
+			const stock = parseInt(form.querySelector('input[name="productId"]').dataset.stock);
+
+			if (stock === 0) {
+				Swal.fire({
+					icon: 'info',
+					title: 'Out of Stock',
+					text: 'This product is currently out of stock.',
+					confirmButtonText: 'OK'
+				});
+			} else {
+				form.submit(); 
+			}
+		});
+	});
+});
+</script>
+
+	<script>
+
+		// Assuming you have a function to fetch product data from your backend
+function fetchProducts() {
+    // Fetch products data from backend API
+    fetch('/user/home') // Assuming this is the correct API endpoint to fetch products
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parse response as JSON
+        })
+        .then(products => renderProducts(products)) // Pass products to renderProducts function
+        .catch(error => console.log('Error fetching products:', error));
+}
 
 
+function renderProducts(products) {
+    const productContainer = document.getElementById('productContainer');
+    // Clear previous content
+    productContainer.innerHTML = '';
 
-<!-- Dynamically render product details -->
-<div id="productContainer" class="container">
-    <div class="row">
-		<% if (Array.isArray(products)) { %>
-        <% products.forEach(product => { %>
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 product-card">
-					<a href="/user/product/<%= product._id %>">
-                    <img src="<%= product.images[0] %>" class="card-img-top" alt="<%= product.productName %>" data-product-id="<%= product._id %>">
-					</a>
-					<div class="availability-label position-absolute top-0 end-0 mt-2 me-2" >
-						<% if (product.stock>0) { %>
-							<span class="badge badge-success ">In Stock</span>
-						<% } else { %>
-							<span class="badge badge-danger  fs-5">Out of Stock</span>
-						<% } %>
-					</div>
-                    <div class="card-body">
-                        <h5 class="card-title"><%= product.productName %></h5>
-						<h5 class="card-title"><%= product.brand.name %></h5>
-                        <p class="card-text">Price: $<%= product.price %></p>
-						<p class="card-text">Price:
-							$<%= productOffers ? (products.price - (products.price * productOffers.discountPercentage / 100)).toFixed(2) :
-									(categoryOffer ? (products.price - (products.price * categoryOffer.discountPercentage / 100)).toFixed(2) : products.price.toFixed(2)) %>
-							   <% if (productOffers) { %>
-								&nbsp;
-								   <span style="text-decoration: line-through; color: red;">
-									  $<%= products.price.toFixed(2) %>
-								   </span>
-								   <br>
-								   <span style="color: green;">  <%= productOffers.offerName %> of <%= productOffers.discountPercentage %>%</span>
-							   <% } else if (categoryOffer) { %>
-							
-								   <span style="text-decoration: line-through; color: red;">
-									   $<%= products.price.toFixed(2) %>
-								   </span>
-								   <span style="color: green;"> Offer <%= categoryOffer.offerName %>%</span>
-							   <% } %>
-						</p>
-                        <!-- <a href="/user/cart" class="btn btn-primary">Add to Cart</a> -->
+    products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
 
-						<form action="/user/cart" method="POST">
-							<input type="hidden" name="productId" value="<%= product._id %>" data-stock="<%= product.stock %>">
-							<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
-						</form>
-						
-						<i class="far fa-heart wishlist-icon " data-product-id="<%= product._id %>"></i>
-                    </div>
-                </div>
-            </div>
-        <% }); %>
-	</div>
-	<div class="text-right">
-		<a href="/user/category" class="btn btn-success see-more-btn">See More</a>
-	</div>
-</div>
-<% } else { %>
-	<p>No products found.</p>
-<% } %>
-</div>
-</div>
+        // Create elements for product details (name, image, price, etc.)
+        const productName = document.createElement('h4');
+        productName.textContent = product.productName;
+
+        const productImage = document.createElement('img');
+        productImage.src = product.images[0];
+        productImage.alt = product.productName;
+
+        const productPrice = document.createElement('p');
+        productPrice.textContent = `Price: $${product.price}`;
+
+        // Append elements to productCard
+        productCard.appendChild(productName);
+        productCard.appendChild(productImage);
+        productCard.appendChild(productPrice);
+
+
+        // Append productCard to productContainer
+        productContainer.appendChild(productCard);
+    });
+}
+ // Fetch and render products when the page loads
+ document.addEventListener('DOMContentLoaded', () => {
+        const productContainer = document.getElementById('productContainer');
+
+        productContainer.addEventListener('click', (event) => {
+            const clickedElement = event.target;
+            if (clickedElement.tagName === 'IMG' && clickedElement.dataset.productId) {
+                const productId = clickedElement.dataset.productId;
+                window.location.href = `/user/product/${productId}`;
+            }
+        });
+
+        fetchProducts(); // Call fetchProducts to load products initially
+    });
+
+	</script>
+	
+	<%- include('../layouts/user/footer') %>

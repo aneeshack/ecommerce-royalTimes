@@ -172,14 +172,15 @@
                             <p class="card-text">
                                 Price:
                                 <% 
-                                    let finalPrice = product.price;
+                                    // let finalPrice = product.price;
+                                    let finalPrice ;
 									let productOffer = Array.isArray(productOffers) ? productOffers.find(offer => offer.products && offer.products._id.toString() === product._id.toString()) : null;
 									let categoryOffer = Array.isArray(categoryOffers) ? categoryOffers.find(offer => offer.categories && offer.categories._id.toString() === product.category._id.toString()) : null;
 
                                     if (productOffer) {
-                                        finalPrice = (product.price - (product.price * productOffer.discountPercentage / 100)).toFixed(2);
+                                        finalPrice = (product.price - (product.price * (productOffer.discountPercentage) / 100)).toFixed(2);
                                     } else if (categoryOffer) {
-                                        finalPrice = (product.price - (product.price * categoryOffer.discountPercentage / 100)).toFixed(2);
+                                        finalPrice = (product.price - (product.price * (categoryOffer.discountPercentage) / 100)).toFixed(2);
                                     } else {
                                         finalPrice = product.price;
                                     }

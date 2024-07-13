@@ -3,7 +3,7 @@ const cartModel = require('../../models/cart')
 const orderModel = require('../../models/order');
 const productModel = require('../../models/product');
 const productReturn = require('../../models/returnProduct')
-// const razorpayService = require('../../helpers/razorpay');
+const easyinvoice = require('easyinvoice');
 const mongoose = require('mongoose')
 const Razorpay = require('razorpay');
 
@@ -18,8 +18,10 @@ const razorpayInstance = new Razorpay({
 const placeOrder = async (req, res) => {
     try {
         const userId = req.session.userId;
-        const { mobileNumber, addressId, paymentMethod, totalAmount, cartItemID } = req.body;
-        console.log('totalamount:',totalAmount,typeof(totalAmount))
+        // const userName = req.session.isUser;
+        // console.log('username:',userName)
+        const { mobileNumber, addressId, paymentMethod, totalAmount, cartItemID, userName, grandTotal, couponAmount } = req.body;
+        console.log('totalamount:', totalAmount, typeof (totalAmount), 'usernaem:', userName)
         const userData = await userModel.findById(userId);
         if (!userData) {
             console.log('User not found');
@@ -55,20 +57,20 @@ const placeOrder = async (req, res) => {
         let paymentDetails = {};
         if (paymentMethod === 'Razorpay') {
             const options = {
-                        amount: totalAmount * 100, // amount in the smallest currency unit
-                        currency: 'INR',
-                        receipt: `order_rcptid_${userId}`,
-                        payment_capture: 1
-                    };
-                   
-                    razorpayOrder = await razorpayInstance.orders.create(options);
-                    return res.status(200).json({ success: ' razorpay payment placed successfully', razorpayOrderId: razorpayOrder.id });
-                
+                amount: totalAmount * 100, // amount in the smallest currency unit
+                currency: 'INR',
+                receipt: `order_rcptid_${userId}`,
+                payment_capture: 1
+            };
 
-        } else if(paymentMethod === 'COD' || paymentMethod === 'Wallet'){
+            razorpayOrder = await razorpayInstance.orders.create(options);
+            return res.status(200).json({ success: ' razorpay payment placed successfully', razorpayOrderId: razorpayOrder.id });
+
+
+        } else if (paymentMethod === 'COD' || paymentMethod === 'Wallet') {
             if (paymentMethod === 'Wallet') {
                 console.log('inside wallet')
-                console.log('wallet amount:',userData.wallet,typeof(userData.wallet))
+                console.log('wallet amount:', userData.wallet, typeof (userData.wallet))
                 const walletBalance = userData.wallet || 0;
                 if (walletBalance >= totalAmount) {
                     console.log('sufficient balance in wallet')
@@ -77,160 +79,76 @@ const placeOrder = async (req, res) => {
                     paymentDetails = {
                         paymentMethod: 'Wallet',
                         paymentStatus: 'success',
-                        
+
                     };
-                    console.log('wallet amouont in paymentdetails is:',paymentDetails.paymentMethod)
+                    console.log('wallet amouont in paymentdetails is:', paymentDetails.paymentMethod)
                 } else {
                     console.log('wallet amount is not enough')
                     return res.status(400).json({ error: 'Insufficient wallet balance.' });
                 }
-            }else{
+            } else {
                 console.log('enter in to cod')
-            paymentDetails = {
-                paymentMethod: 'COD',
-                paymentStatus: 'pending',
-            };
-        } 
-         // Map cart items to order items
-         const productItems = cart.products.map(product => ({
-            productId: product.productId._id,
-            productName: product.productId.productName,
-            quantity: product.quantity,
-            total: product.total
-        }));
-        console.log('details sin productitems:',productItems)
-        // if cod save the data
-        const newOrder = new orderModel({
-            userId: userId,
-            productItems: productItems,
-            billingAddress: selectedAddress,
-            phone: mobileNumber,
-            paymentMethod: paymentDetails.paymentMethod,
-            totalPrice: totalAmount
-        });
+                paymentDetails = {
+                    paymentMethod: 'COD',
+                    paymentStatus: 'pending',
+                };
+            }
+            // Map cart items to order items
+            const productItems = cart.products.map(product => ({
+                productId: product.productId._id,
+                productName: product.productId.productName,
+                quantity: product.quantity,
+                total: product.total
+            }));
+            console.log('details sin productitems:', productItems)
+            // if cod save the data
+            const newOrder = new orderModel({
+                userId: userId,
+                productItems: productItems,
+                billingAddress: selectedAddress,
+                phone: mobileNumber,
+                paymentMethod: paymentDetails.paymentMethod,
+                totalPrice: totalAmount,
+                userName: userName,
+                originalPrice: grandTotal,
+                couponDiscount: couponAmount
+            });
 
-        await newOrder.save();
-        console.log('new order created')
-        for (const item of productItems) {
-            await productModel.findByIdAndUpdate(
-                item.productId,
-                { $inc: { stock: -item.quantity } },
-                { new: true }
-            );
+            await newOrder.save();
+            console.log('new order created')
+            for (const item of productItems) {
+                await productModel.findByIdAndUpdate(
+                    item.productId,
+                    { $inc: { stock: -item.quantity } },
+                    { new: true }
+                );
+            }
+            req.session.newOrder = newOrder._id.toString();
+
+            //  to clear the cart
+            await cartModel.deleteOne({ _id: cartItemID });
+            res.status(200).json({ success: 'Order placed successfully', walletPaymentStatus: paymentDetails.paymentStatus });
+
+
+
         }
-        req.session.newOrder = newOrder._id.toString();
 
-        //  to clear the cart
-        await cartModel.deleteOne({ _id: cartItemID });
-        res.status(200).json({ success: 'Order placed successfully',walletPaymentStatus:paymentDetails.paymentStatus });
-    
-
-
-        } 
-           
     } catch (error) {
         console.log('Error in placing order:', error.message);
         res.status(400).json({ error: 'Some errors occurred while placing the order, try again' });
     }
 };
 
-// const placeOrder = async (req, res) => {
-//     try {
-//         const userId = req.session.userId;
-//         const { mobileNumber, addressId,  paymentDetails.aymentMethod, totalAmount, cartItemID } = req.body;
-
-//         const userData = await userModel.findById(userId);
-//         if (!userData) {
-//             console.log('User not found');
-//             return res.status(400).json({ error: 'User not found' });
-//         }
-
-//         const selectedAddress = userData.address.find(addr => addr._id.toString() === addressId);
-//         if (!selectedAddress) {
-//             console.log('Please select one address to continue');
-//             return res.status(400).json({ error: 'Please select one address to continue' });
-//         }
-
-//         if (!mobileNumber) {
-//             console.log('Please enter mobile number to continue');
-//             return res.status(400).json({ error: 'Please enter mobile number to continue' });
-//         }
-
-//         if (!cartItemID) {
-//             console.log('There are no cart items for ordering');
-//             return res.status(400).json({ error: 'There are no cart items for ordering' });
-//         }
-
-//         const cart = await cartModel.findById(cartItemID).populate('products.productId');
-//         if (!cart) {
-//             console.log('Cart not found');
-//             return res.status(400).json({ error: 'Cart not found' });
-//         }
-
-//         if (!paymentMethod) {
-//             return res.status(400).json({ error: 'Please select one payment method to continue' });
-//         }
-
-//         let razorpayOrder = null;
-//         if (paymentMethod !== 'COD') {
-//             const options = {
-//                 amount: totalAmount * 100, // amount in the smallest currency unit
-//                 currency: 'INR',
-//                 receipt: `order_rcptid_${userId}`,
-//                 payment_capture: 1
-//             };
-           
-//             razorpayOrder = await razorpayInstance.orders.create(options);
-//             return res.status(200).json({ success: 'payment placed successfully', razorpayOrderId: razorpayOrder.id });
-
-//         } else {
-//             // Map cart items to order items
-//             const productItems = cart.products.map(product => ({
-//                 productId: product.productId._id,
-//                 productName: product.productId.productName,
-//                 quantity: product.quantity,
-//                 total: product.total
-//             }));
-//             // if cod save the data
-//             const newOrder = new orderModel({
-//                 userId: userId,
-//                 productItems: productItems,
-//                 billingAddress: selectedAddress,
-//                 phone: mobileNumber,
-//                 paymentMethod: paymentMethod,
-//                 totalPrice: totalAmount
-//             });
-
-//             await newOrder.save();
-//             for (const item of productItems) {
-//                 await productModel.findByIdAndUpdate(
-//                     item.productId,
-//                     { $inc: { stock: -item.quantity } },
-//                     { new: true }
-//                 );
-//             }
-//             req.session.newOrder = newOrder._id.toString();
-
-//             //  to clear the cart
-//             await cartModel.deleteOne({ _id: cartItemID });
-//             res.status(200).json({ success: 'Order placed successfully with COD' });
-//         }
-//     } catch (error) {
-//         console.log('Error in placing order:', error.message);
-//         res.status(400).json({ error: 'Some errors occurred while placing the order, try again' });
-//     }
-// };
-
-//redirecting while payment done through razorpay
+// place order using razorpay
 const paymentOrder = async (req, res) => {
     try {
         const userId = req.session.userId;
 
-        const paymentData= req.body;
+        const paymentData = req.body;
         const orderData = paymentData.orderData;
-        const { mobileNumber, addressId, paymentMethod, cartItemID, totalAmount } = orderData;
+        const { mobileNumber, addressId, paymentMethod, cartItemID, totalAmount, userName, grandTotal, couponAmount } = orderData;
         const { orderId, paymentId, razorpayOrderId, amount } = paymentData;
-
+        console.log('order:', orderData)
         const userData = await userModel.findById(userId);
         const selectedAddress = userData.address.find(addr => addr._id.toString() === addressId);
         const cart = await cartModel.findById(cartItemID).populate('products.productId');
@@ -249,12 +167,14 @@ const paymentOrder = async (req, res) => {
             phone: mobileNumber,
             paymentMethod: paymentMethod,
             totalPrice: totalAmount,
-
+            userName: userName,
+            originalPrice: grandTotal,
+            couponDiscount: couponAmount
 
         });
 
-        await newOrder.save();
-
+        const orderIs = await newOrder.save();
+        console.log('order:', orderIs)
         // Decrease the quantity of each product in the order
         for (const item of productItems) {
             await productModel.findByIdAndUpdate(
@@ -300,9 +220,6 @@ const confirmation = async (req, res) => {
 }
 
 
-
-
-
 //showing all the order of the user
 const orderList = async (req, res) => {
     try {
@@ -328,12 +245,12 @@ const orderCancel = async (req, res) => {
         const { orderId, productId } = req.params;
         const userId = req.session.userId;
         const order = await orderModel.findById(orderId);
-        
+
         if (order) {
             const productUpdate = order.productItems.find(item => item.productId.toString() === productId);
             if (productUpdate) {
-                console.log('productupdate:',productUpdate.total)
-            
+                console.log('productupdate:', productUpdate.total)
+
                 const updatedProduct = await productModel.findByIdAndUpdate(
                     productId,
                     { $inc: { stock: productUpdate.quantity } },
@@ -351,7 +268,7 @@ const orderCancel = async (req, res) => {
                     userData.wallet += total;
                     await userData.save();
                 }
-               
+
                 res.status(200).json({ message: 'Order and product updated successfully', order });
             } else {
                 console.log('products not found in order schema:')
@@ -400,11 +317,84 @@ const returnProduct = async (req, res) => {
 }
 
 
+// downloading order invoice of products
+const downloadInvoice = async (req, res) => {
+    try {
+        const { orderId, productId } = req.params;
+        console.log('orderid, productId:', orderId, productId);
+        const order = await orderModel.findById(orderId).populate('productItems.productId');
+
+        if (!order) {
+            console.log('no order found');
+            return res.status(404).send('Order not found');
+        }
+
+        const product = order.productItems.find(item => item.productId._id.toString() === productId);
+
+        if (!product) {
+            console.log('product is not found')
+            return res.status(404).send('Product not found in this order');
+        }
+
+        // Extracting the address information
+        const billingAddress = order.billingAddress[0] || {};
+
+        const invoiceData = {
+            "documentTitle": "INVOICE",
+            "currency": "USD",
+            "taxNotation": "vat",
+            "marginTop": 25,
+            "marginRight": 25,
+            "marginLeft": 25,
+            "marginBottom": 25,
+            "sender": {
+                "company": "ROYAL TIMES",
+                "address": "Kadalundi",
+                "zip": "12345",
+                "city": "kozhikode",
+                "country": "India"
+            },
+            "client": {
+                "company": order.userName,
+                "address": billingAddress.street || "Client Address",
+                "PinCode": billingAddress.pinCode || "12345",
+                "city": billingAddress.city || "City",
+                "country": billingAddress.country || "Country"
+            },
+            "invoiceNumber": order._id.toString(),
+            "invoiceDate": order.dateOrdered.toDateString(),
+            "products": [
+                {
+                    "quantity": product.quantity,
+                    "description": product.productId.productName,
+                    "tax": 0,
+                    "price": product.total
+                }
+            ],
+            "bottomNotice": "Thank you for your business."
+        };
+
+        const result = await easyinvoice.createInvoice(invoiceData);
+        const pdfBuffer = Buffer.from(result.pdf, 'base64');
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="invoice_${orderId}.pdf"`);
+        // res.send(result.pdf);
+        res.send(pdfBuffer);
+        console.log('completed it')
+        // res.status(200).json({success:'sucessfully downloaded'})
+    } catch (error) {
+        console.log('download invoice:', error.message);
+        res.status(400).json({ error: 'some errors occured while creating invoice' })
+    }
+}
+
 module.exports = {
     placeOrder,
     confirmation,
     orderList,
     orderCancel,
     returnProduct,
-    paymentOrder
+    paymentOrder,
+    downloadInvoice
 }

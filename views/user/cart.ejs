@@ -35,6 +35,7 @@
                         <tbody>
                             <% if(cartItems &&cartItems.products && cartItems.products.length>0) { %>
                                 <% cartItems.products.forEach(item=> { %>
+                                    <% if (item.productId && item.productId.isActive === true) { %>
                                     <tr>
                                         <td>
                                             <div class="media">
@@ -51,7 +52,9 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <h5>$<%= item?.productId?.price %>.00 </h5>
+                                          
+                                            <h5>$<%= item?.offerPrice %>.00 </h5>
+                                  
                                         </td>
                                         <td>
                                             <div class="product_count">
@@ -59,11 +62,11 @@
                                                     maxlength="12" value="<%= item?.quantity %>" title="Quantity:"
                                                     class="input-text qty" max="<%= item?.productId?.stock %>">
                                                 <button
-                                                    onclick="changeQuantity('<%= item?.productId?._id %>', 1,'<%= item?.productId?.price %>')"
+                                                    onclick="changeQuantity('<%= item?.productId?._id %>', 1,'<%= item?.offerPrice %>')"
                                                     class="increase items-count" type="button"><i
                                                         class="lnr lnr-chevron-up"></i></button>
                                                 <button
-                                                    onclick="changeQuantity('<%= item?.productId?._id %>', -1,'<%= item?.productId?.price %>')"
+                                                    onclick="changeQuantity('<%= item?.productId?._id %>', -1,'<%= item?.offerPrice %>')"
                                                     class="reduced items-count" type="button"><i
                                                         class="lnr lnr-chevron-down"></i></button>
                                             </div>
@@ -79,7 +82,7 @@
                                                 data-type="product" data-id="<%= item?.productId?._id %>">Remove</button>
                                         </td>
                                         </td>
-
+                                        <% } %>
                                         <% }) %>
                                     </tr>
                                     <% }else{ %>
