@@ -13,6 +13,7 @@ const wishListController = require('../controller/userController/wishListControl
 const userProductController = require('../controller/userController/userProductController');
 const reviewController = require('../controller/userController/reviewController');
 const couponController = require('../controller/userController/couponController');
+const failedOrderController = require('../controller/userController/failedOrderController');
 
 const valid = require('../middleware/userValidation');
 const passport = require('passport')
@@ -91,7 +92,13 @@ userRouter.post('/checkout/address/edit', uploadForm.none(),checkoutController.c
 // ordering product
 userRouter.post('/checkout/order',orderController.placeOrder);
 userRouter.post('/checkout/payment',orderController.paymentOrder);
+userRouter.post('/checkout/failedPayment',orderController.failedPayment);
 userRouter.get('/confirmation',valid.isLogout,orderController.confirmation);
+
+// failed order management
+userRouter.get('/failed/payment',failedOrderController.failedPaymentPage);
+userRouter.post('/retryPayment',failedOrderController.retryPayment);
+userRouter.post('/repaymentSuccess',failedOrderController.repaymentSuccess);
 
 //order management
 userRouter.get('/orders',valid.isLogout,orderController.orderList);
@@ -105,7 +112,6 @@ userRouter.post('/review',reviewController.reviewProduct);
 // coupon management
 userRouter.get('/coupons',valid.isLogout,couponController.couponPage);
 userRouter.post('/applyCoupon',couponController.applyCoupon);
-
 
 
 

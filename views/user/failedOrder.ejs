@@ -1,0 +1,136 @@
+<%- include('../layouts/user/header',{title:"user-orders"}) %>
+    <!-- <link rel="stylesheet" href="/path/to/bootstrap.min.css"> -->
+    <style>
+        .failed-order {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .failed-order h4 {
+            margin-bottom: 10px;
+        }
+        .failed-order .product-item {
+            margin-bottom: 10px;
+        }
+        .product-item img {
+            max-width: 80px;
+        }
+    </style>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+      <!-- Start Banner Area -->
+      <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>User Profile</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="#">User<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="profile.html">failedPayment</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+    <div class="container mt-5">
+        <h2 >Failed Payments</h2>
+
+        <% if (failedOrder && failedOrder.length > 0) { %>
+            <% failedOrder.forEach(order => { %>
+                <div class="failed-order">
+                    <h4 style="color: red;">Order ID: <%= order._id %></h4>
+                    <p>Date Ordered: <%= new Date(order.dateOrdered).toLocaleDateString() %></p>
+                    <p>Total Price: $<%= order.totalPrice %></p>
+                    <p>Payment Method: <%= order.paymentMethod %></p>
+                    <p>Phone: <%= order.phone %></p>
+                    <div class="product-items">
+                        <% order.productItems.forEach(item => { %>
+                            <div class="product-item">
+                                <img src="<%= item.productId.images[0] %>" alt="Product Image">
+                                <p><strong><%= item.productId.name %></strong></p>
+                                <p>Quantity: <%= item.quantity %></p>
+                                <p>Price: $<%= item.total %></p>
+                            </div>
+                        <% }) %>
+                    </div>
+                    <button class="btn btn-danger" onclick="retryPayment('<%= order._id %>')">Retry Payment</button>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>No failed payments found.</p>
+        <% } %>
+    </div>
+
+    <script src="/path/to/jquery.min.js"></script>
+    <script src="/path/to/bootstrap.min.js"></script>
+
+    <script>
+        function retryPayment(orderId) {
+            fetch(`/user/retryPayment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify( {orderId} )
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const options = {
+                        key: data.key_id, // Your Razorpay key ID
+                        amount: data.amount, // Amount in paise
+                        currency: data.currency,
+                        name: 'ROYAL TIMES',
+                        description: "Order Repayment",
+                        order_id: data.order_id,
+                        handler: function (response) {
+                            // Handle the response from Razorpay
+                            fetch(`/user/repaymentSuccess`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    orderId: orderId,
+                                    paymentId: response.razorpay_payment_id,
+                                    signature: response.razorpay_signature
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.success) {
+                                    alert('Payment successful!');
+                                    window.location.href ='/user/orders'
+                                    // location.reload();
+                                } else {
+                                    alert('Payment failed!');
+                                    location.reload();
+                                }
+                            });
+                        },
+                        prefill: {
+                            name: "User Name",
+                            email: "user@example.com",
+                            contact: "9999999999"
+                        },
+                        theme: {
+                            color: "#3399cc"
+                        }
+                    };
+                    const paymentObject = new Razorpay(options);
+                    paymentObject.open();
+                } else {
+                    alert('Failed to initiate payment.');
+                }
+            });
+        }
+    </script>
+ 
+ 
+
+<%- include('../layouts/user/footer') %>

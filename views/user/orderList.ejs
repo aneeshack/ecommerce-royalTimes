@@ -47,6 +47,15 @@
                     <div class="col-md-9">
                         <h2>My Orders</h2>
 
+                            <!-- Button for Failed Payments -->
+                        <% if (failedOrder && failedOrder.length > 0) { %>
+                            <div class="text-right mb-3">
+                                <a href="/user/failed/payment" class="btn btn-danger">View Failed Payments</a>
+                            </div>
+                        <% } %>
+                        
+
+                        <h3>All Orders</h3>
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead class="thead-light ">

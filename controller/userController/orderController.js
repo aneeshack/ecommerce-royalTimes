@@ -4,6 +4,7 @@ const orderModel = require('../../models/order');
 const productModel = require('../../models/product');
 const productReturn = require('../../models/returnProduct')
 const walletModel = require('../../models/wallet');
+const failedOrderModel = require('../../models/failedOrder');
 const easyinvoice = require('easyinvoice');
 const mongoose = require('mongoose')
 const Razorpay = require('razorpay');
@@ -58,7 +59,7 @@ const placeOrder = async (req, res) => {
         let paymentDetails = {};
         if (paymentMethod === 'Razorpay') {
             const options = {
-                amount: totalAmount * 100, // amount in the smallest currency unit
+                amount: totalAmount * 100, 
                 currency: 'INR',
                 receipt: `order_rcptid_${userId}`,
                 payment_capture: 1
@@ -145,6 +146,7 @@ const placeOrder = async (req, res) => {
         res.status(400).json({ error: 'Some errors occurred while placing the order, try again' });
     }
 };
+
 // place order using razorpay
 const paymentOrder = async (req, res) => {
     try {
@@ -201,6 +203,63 @@ const paymentOrder = async (req, res) => {
     }
 }
 
+// for failed payment through razorpay
+const failedPayment = async(req, res) => {
+    try {
+        console.log('inside failed payment')
+        const userId = req.session.userId;
+
+        const paymentData = req.body;
+        const orderData = paymentData.orderData;
+        const { mobileNumber, addressId, paymentMethod, cartItemID, totalAmount, userName, grandTotal, couponAmount } = orderData;
+        const { orderId, paymentId, razorpayOrderId, amount } = paymentData;
+        console.log('order:', orderData)
+        const userData = await userModel.findById(userId);
+        const selectedAddress = userData.address.find(addr => addr._id.toString() === addressId);
+        const cart = await cartModel.findById(cartItemID).populate('products.productId');
+
+        const productItems = cart.products.map(product => ({
+            productId: product.productId._id,
+            productName: product.productId.productName,
+            quantity: product.quantity,
+            total: product.total
+        }));
+
+        const newOrder = new failedOrderModel({
+            userId: userId,
+            productItems: productItems,
+            billingAddress: selectedAddress,
+            phone: mobileNumber,
+            paymentMethod: paymentMethod,
+            totalPrice: totalAmount,
+            userName: userName,
+            originalPrice: grandTotal,
+            couponDiscount: couponAmount
+
+        });
+
+        const orderIs = await newOrder.save();
+        console.log('order:', orderIs)
+        // Decrease the quantity of each product in the order
+        // for (const item of productItems) {
+        //     await productModel.findByIdAndUpdate(
+        //         item.productId,
+        //         { $inc: { stock: -item.quantity } },
+        //         { new: true }
+        //     );
+        // }
+        req.session.newOrder = newOrder._id.toString();
+        //  to clear the cart
+        await cartModel.deleteOne({ _id: cartItemID });
+        res.status(200).json({ success: ''  });
+
+
+    } catch (error) {
+        console.log('some error while updating the payment:', error.message);
+        res.status(400).json({ error: 'Error in placing razorpay.' })
+    }
+}
+
 //render confirmation page
 const confirmation = async (req, res) => {
     try {
@@ -232,9 +291,10 @@ const orderList = async (req, res) => {
         if (req.session.isUser) {
             const userId = req.session.userId;
             const userData = await userModel.findOne({ name: req.session.isUser });
-            const order = await orderModel.find({ userId }).populate('productItems.productId');;
-
-            res.render('user/orderList', { order, userData })
+            const order = await orderModel.find({ userId }).populate('productItems.productId');
+            const failedOrder = await failedOrderModel.find({userId}).populate('productItems.productId');
+            console.log('failed orders:',failedOrder)
+            res.render('user/orderList', { order, userData ,failedOrder})
         } else {
             res.redirect('/user/login')
         }
@@ -244,53 +304,6 @@ const orderList = async (req, res) => {
 
 }
 
-//api for cancel the products
-// const orderCancel = async (req, res) => {
-//     try {
-//         console.log('order cancel')
-//         const { orderId, productId } = req.params;
-//         const userId = req.session.userId;
-//         const order = await orderModel.findById(orderId);
-
-//         if (order) {
-//             const productUpdate = order.productItems.find(item => item.productId.toString() === productId);
-//             if (productUpdate) {
-//                 console.log('productupdate:', productUpdate.total)
-
-//                 const updatedProduct = await productModel.findByIdAndUpdate(
-//                     productId,
-//                     { $inc: { stock: productUpdate.quantity } },
-//                     { new: true }
-//                 )
-
-//                 // Update the status of the product in productItems array
-//                 productUpdate.status = 'Cancelled';
-//                 await order.save();
-
-
-//                 if (order.paymentMethod === 'Razorpay' ||order.paymentMethod === 'Wallet' ) {
-//                     const total = productUpdate.total;
-//                     const userData = await userModel.findById(userId);
-//                     userData.wallet += total;
-//                     await userData.save();
-                    
-//                 }
-
-//                 res.status(200).json({ message: 'Order and product updated successfully', order });
-//             } else {
-//                 console.log('products not found in order schema:')
-//                 return res.status(404).json({ message: 'product not found in the order.' })
-//             }
-//         } else {
-//             console.log('order is not found')
-//             return res.status(404).json({ message: 'order not found.' })
-
-//         }
-//     } catch (error) {
-//         console.log('error in cancel order:', error.message);
-//         res.status(400).json({ message: 'error occured while cancelling the order' })
-//     }
-// }
 
 //api for cancel the products
 const orderCancel = async (req, res) => {
@@ -463,6 +476,7 @@ const downloadInvoice = async (req, res) => {
     }
 }
 
+
 module.exports = {
     placeOrder,
     confirmation,
@@ -470,5 +484,6 @@ module.exports = {
     orderCancel,
     returnProduct,
     paymentOrder,
-    downloadInvoice
+    downloadInvoice,
+    failedPayment
 }

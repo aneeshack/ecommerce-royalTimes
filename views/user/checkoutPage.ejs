@@ -220,44 +220,12 @@
                     </table>
 
 
-                    <!-- <div class="payment_item-event bg-white">
-                        <div class="radion_btn">
-                            <input type="radio" id="f-option4" name="paymentMethod" value="COD">
-                            <label for="f-option4">Cash On Delivery</label>
-                            <div class="check"></div>
-                        </div>
-                        <p>To use this payment method, simply select "Cash On Delivery" at checkout. Once your order is
-                            confirmed, our delivery team will handle the rest.</p>
-                    </div>
-                    <div class="payment_item">
-                        <div class="radion_btn">
-                            <input type="radio" id="f-option5" name="paymentMethod" value="Razorpay">
-                            <img src="/img/product/card.jpg" alt="">
-                            <label for="f-option5">Razorpay</label>
-                            <div class="check"></div>
-                        </div>
-                        <p>Please send a check to Store Name, Store Street, Store Town, Store State /
-                            County,
-                            Store Postcode.</p>
-                    </div>
-                    <div class="payment_item ">
-                        <div class="radion_btn">
-                            <input type="radio" id="f-option6" name="selector">
-                            <label for="f-option6">Wallet </label>
-                            
-                            <div class="check"></div>
-                        </div>
-                        <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
-                            account.</p>
-                    </div> -->
-
-
-
 
                     <div class="container mt-5">
                         <h2>Select Payment Method</h2>
 
                         <!-- Cash On Delivery -->
+                        <% if (totalAmount <= 1000) { %>
                         <div class="payment_item-event bg-white p-3 mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" id="cod" name="paymentMethod" value="COD">
@@ -268,7 +236,7 @@
                             <p>To use this payment method, simply select "Cash On Delivery" at checkout. Once your order
                                 is confirmed, our delivery team will handle the rest.</p>
                         </div>
-
+                        <% } %>
                         <!-- Razorpay -->
                         <div class="payment_item bg-white p-3 mb-3">
                             <div class="form-check">
@@ -321,6 +289,7 @@
             window.location.href = '/user/checkout';
         })
     </script>
+
     <!-- add coupon code -->
     <script>
         document.getElementById('applyCouponBtn').addEventListener('click', async () => {
@@ -684,88 +653,110 @@
                 }
             });
 
-            function openRazorpayCheckout(orderId, amount, razorpayKeyId, mobileNumber, orderData, cartItemID) {
-                const numericAmount = parseFloat(amount);
-                const options = {
-                    key: `${razorpayKeyId}`,
-                    amount: numericAmount * 100,
-                    currency: 'INR',
-                    name: 'ROYAL TIMES',
-                    description: 'Order Payment',
-                    image: '/images/newPhoto.jpg',
-                    order_id: orderId,
-                    handler: async function (response) {
-                        // On successful payment
-                        if (response.razorpay_payment_id) {
-                            // Send payment success status to backend
-                            const paymentData = {
-                                orderId: orderId,
-                                paymentId: response.razorpay_payment_id,
-                                razorpayOrderId: response.razorpay_order_id,
-                                amount: numericAmount,
-                                mobileNumber: mobileNumber,
-                                cartItemID: cartItemID,
-                                orderData: orderData
-                            };
-                            console.log('paymnet:', paymentData, 'orderdata:', paymentData.orderData.mobileNumber)
-                            try {
-                                const response = await fetch('/user/checkout/payment', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify(paymentData),
-                                })
-                                const data = await response.json();
-                                if (response.ok) {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Payment Successful',
-                                        text: 'Your payment was successful.'
-                                    }).then(() => {
-                                        window.location.href = '/user/confirmation';
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Payment Error',
-                                        text: 'Payment confirmation failed. Please try again or contact support.'
-                                    });
-                                }
-                            } catch (error) {
-                                console.error('Error confirming payment:', error);
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Payment Error',
-                                    text: 'Payment confirmation failed. '
-                                });
-                            }
+       
+        
+function openRazorpayCheckout(orderId, amount, razorpayKeyId, mobileNumber, orderData, cartItemID) {
+    const numericAmount = parseFloat(amount);
+    let paymentData = {  // Define paymentData in the outer scope
+        orderId: orderId,
+        paymentId: '',
+        razorpayOrderId: '',
+        amount: numericAmount,
+        mobileNumber: mobileNumber,
+        cartItemID: cartItemID,
+        orderData: orderData
+    };
 
-
-                        } else {
-                            // Handle payment failure scenario
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Payment Error',
-                                text: response.error.description || 'Payment failed or was canceled.'
-                            });
-                        }
-                    },
-                    prefill: {
-                        name: '',
-                        email: '',
-                        contact: `${mobileNumber}`
-                    },
-                    theme: {
-                        color: '#3399cc'
+    const options = {
+        key: `${razorpayKeyId}`,
+        amount: numericAmount * 100,
+        currency: 'INR',
+        name: 'ROYAL TIMES',
+        description: 'Order Payment',
+        image: '/images/newPhoto.jpg',
+        order_id: orderId,
+        handler: async function (response) {
+            if (response.razorpay_payment_id) {
+                paymentData.paymentId = response.razorpay_payment_id;
+                paymentData.razorpayOrderId = response.razorpay_order_id;
+                try {
+                    const res = await fetch('/user/checkout/payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(paymentData),
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Payment Successful',
+                            text: 'Your payment was successful.'
+                        }).then(() => {
+                            window.location.href = '/user/confirmation';
+                        });
+                    } else {
+                        console.log('Payment successful API sending error');
                     }
-                };
-
-                const rzp = new Razorpay(options);
-                rzp.open();
+                } catch (error) {
+                    console.error('Error confirming payment:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Payment Error',
+                        text: 'Payment confirmation failed.'
+                    });
+                }
+            } else {
+                console.log('Failed Razorpay');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Payment Error',
+                    text: response.error.description || 'Payment failed or was canceled.'
+                }).then(() => {
+                    window.location.href = '/user/orders';
+                });
             }
-        });
-    </script>
+        },
+        prefill: {
+            name: '',
+            email: '',
+            contact: `${mobileNumber}`
+        },
+        theme: {
+            color: '#3399cc'
+        }
+    };
+
+    const rzp = new Razorpay(options);
+
+    rzp.on('payment.failed', async function (response) {
+        if (paymentData) {
+            console.log('Payment data exists');
+            try {
+                await fetch('/user/checkout/failedPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(paymentData),
+                });
+                console.log('Failed payment data sent to the server');
+            } catch (error) {
+                console.error('Error sending failed payment data:', error);
+            }
+        } else {
+            console.log('Payment data does not exist');
+        }
+        // Redirect to failed payment page
+        window.location.href = '/user/failed/payment';
+    });
+
+    rzp.open();
+}
+
+})
+        </script>
 
    
     <%- include('../layouts/user/footer') %>
