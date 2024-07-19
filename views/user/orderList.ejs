@@ -1,4 +1,4 @@
-<%- include('../layouts/user/header',{title:"user-profile"}) %>
+<%- include('../layouts/user/header',{title:"user-orders"}) %>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
@@ -110,34 +110,34 @@
                                                                 onclick="showReturnModal('<%= orderItem._id %>', '<%= product.productId._id %>')">Return</button>
 
                                                                 <!-- Return Modal -->
-            <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form id="returnForm">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="returnModalLabel">Return Product</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="hidden" name="orderId" id="orderId">
-                                <input type="hidden" name="productId" id="productId">
-                                <div class="form-group">
-                                    <label for="returnReason">Reason for Return</label>
-                                    <textarea class="form-control" id="returnReason" name="returnReason" rows="3"
-                                        required></textarea>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Submit Return Request</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                                                <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <form id="returnForm">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="returnModalLabel">Return Product</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <input type="hidden" name="orderId" id="orderId">
+                                                                    <input type="hidden" name="productId" id="productId">
+                                                                    <div class="form-group">
+                                                                        <label for="returnReason">Reason for Return</label>
+                                                                        <textarea class="form-control" id="returnReason" name="returnReason" rows="3"
+                                                                            required></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" class="btn btn-primary">Submit Return Request</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
 
                                                             <% } else if (['Cancelled', 'Return Requested'

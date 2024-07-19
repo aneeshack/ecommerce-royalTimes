@@ -26,16 +26,16 @@
                 <div class="card">
                     <div class="card-body text-center">
                         <h3>Wallet Balance</h3>
-                        <h2 class="text-success">$<%= userData.wallet %>.00</h2>
-                        <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addFundsModal">Add
-                            Funds</button>
+                        <h2 class="text-success">₹<%= userData.wallet %>.00</h2>
+                        <!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addFundsModal">Add
+                            Funds</button> -->
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Transaction History Section -->
-        <!-- <div class="row">
+        <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
@@ -52,26 +52,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>2024-07-01</td>
-                                    <td>Purchase at Store X</td>
-                                    <td class="text-danger">-$50.00</td>
-                                    <td>$200.00</td>
-                                </tr>
-                                <tr>
-                                    <td>2024-06-25</td>
-                                    <td>Refund from Store Y</td>
-                                    <td class="text-success">+$30.00</td>
-                                    <td>$250.00</td>
-                                </tr>
-                                <!-- Add more transactions as needed -->
+                                <% if(wallet && wallet.length > 0) { %>
+                                    <% 
+                                    let balance = 0; // Initialize running balance
+                                    wallet.forEach(item => {
+                                        // Calculate the running balance
+                                        if(item.type === 'credit') {
+                                            balance += item.amount;
+                                        } else {
+                                            balance -= item.amount;
+                                        }
+                                    %>
+                                    <tr>
+                                        <td><%= item.date.toLocaleString() %></td>
+                                        <td><%= item.description %></td>
+                                        <td class="<%= item.type === 'credit' ? 'text-success' : 'text-danger' %>">
+                                            <%= item.type === 'credit' ? '+' : '-' %>₹<%= item.amount.toFixed(2) %>
+                                        </td>
+                                        <td>
+                                            ₹<%= balance.toFixed(2) %>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="4">No transactions found.</td>
+                                    </tr>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 
     <!-- Add Funds Modal -->
     <div class="modal fade" id="addFundsModal" tabindex="-1" role="dialog" aria-labelledby="addFundsModalLabel"

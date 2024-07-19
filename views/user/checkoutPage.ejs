@@ -131,6 +131,7 @@
                                 <button class="tp_btn" id="applyCouponBtn">Apply Coupon</button>
                                 <button class="tp_btn bg-danger btn-sm " id="removeCouponBtn">Remove Coupon</button>
                                 <p id="couponMessage" style="color: red;"></p>
+                                <!-- <p style="color: red;"> Note: Orders with an applied coupon cannot be canceled, modified, or returned.</p> -->
                             </div>
                             <!-- modal used for showing to add address -->
                             <!-- <button id="openModalBtn" class="primary-btn mt-5">Add Shipping Address</button>
@@ -188,7 +189,7 @@
                                                     <td style="width: 60%;"></td>
                                                     <td style="width: 60%;">
                                                         <h4 name="grandTotal" id="grandTotal">
-                                                            $<%= totalAmount %>
+                                                            ₹<%= totalAmount %>
                                                         </h4>
                                                     </td>
                                                 </tr>
@@ -199,7 +200,7 @@
                                                     <td style="width: 60%;"></td>
                                                     <td style="width: 60%;">
                                                         <h4 name="couponDiscount" id="couponAmount">
-                                                            $0.00
+                                                            ₹0.00
                                                         </h4>
                                                     </td>
                                                 </tr>
@@ -328,7 +329,7 @@
             const couponAmount = document.getElementById('couponAmount');
             const checkoutTotalElement = document.getElementById('checkoutTotal');
 
-            const totalAmount = parseFloat(grandTotalElement.textContent.replace('$', ''));
+            const totalAmount = parseFloat(grandTotalElement.textContent.replace('₹', ''));
             const couponMessage = document.getElementById('couponMessage');
 
             try {
@@ -345,29 +346,15 @@
 
                     couponMessage.textContent = data.success || 'Coupon applied successfully';
                     couponMessage.style.color = 'green';
-                    couponAmount.textContent = `$${data.discountAmount}`;
-                    checkoutTotalElement.textContent = `$${data.newTotal}`;
+                    couponAmount.textContent = `₹${data.discountAmount}`;
+                    checkoutTotalElement.textContent = `₹${data.newTotal}`;
                     console.log('value is getting:', data)
                 } else {
                     console.log('response is not correct')
                     couponMessage.textContent = data.error;
                     couponMessage.style.color = 'red';
                 }
-                // if (!response.ok) {
-                //     console.log('error in response:',data)
-                //     // throw new Error(await response.text());
-                //     couponMessage.textContent = data.error;
-                //     couponMessage.style.color = 'red';
-                // }else{
-                //     console.log('data after success:',data)
-
-                // // couponAmount.textContent = `$${data.discountAmount}`;
-                // // checkoutTotalElement.textContent = `$${data.newTotal}`;
-
-                // // document.getElementById('WalletAmount').textContent = `$${data.discountAmount}`;
-                // couponMessage.textContent = 'Coupon applied successfully';
-                // couponMessage.style.color = 'green';
-                // }
+              
 
             } catch (error) {
                 couponMessage.textContent = error.message;
@@ -597,12 +584,12 @@
                 const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
 
                 const totalgrandTotal= document.getElementById('grandTotal');
-                const grandTotal = parseFloat(totalgrandTotal.textContent.replace('$', '').trim());
+                const grandTotal = parseFloat(totalgrandTotal.textContent.replace('₹', '').trim());
                 const totalcouponAmount = document.getElementById('couponAmount');
-                const couponAmount = parseFloat(totalcouponAmount.textContent.replace('$', '').trim());
+                const couponAmount = parseFloat(totalcouponAmount.textContent.replace('₹', '').trim());
 
                 const totalAmountElement = document.getElementById('checkoutTotal');
-                const totalAmount = parseFloat(totalAmountElement.textContent.replace('$', '').trim());
+                const totalAmount = parseFloat(totalAmountElement.textContent.replace('₹', '').trim());
 
                 const cartItemElement = document.getElementById('cartItemId');
 
@@ -780,184 +767,5 @@
         });
     </script>
 
-    <!-- 
-    <script>
-        document.addEventListener('DOMContentLoaded', async function () {
-            const submitOrderBtn = document.getElementById('submitOrderBtn');
-
-            submitOrderBtn.addEventListener('click', async function (event) {
-                event.preventDefault();
-
-                const mobileNumber = document.getElementById('num').textContent.trim();
-                const selectedAddress = document.querySelector('input[name="address"]:checked');
-                const addressId = selectedAddress ? selectedAddress.value : null;
-
-                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-                const paymentMethod = selectedPaymentMethod ? selectedPaymentMethod.value : null;
-               
-
-                const totalAmount = document.getElementById('checkoutTotal').textContent.trim();
-                const cartItemElement = document.getElementById('cartItemId');
-
-                if (cartItemElement) {
-                    const cartItemID = cartItemElement.getAttribute('data-cart-item-id');
-
-                    if (cartItemID) {
-                        const orderData = {
-                            mobileNumber,
-                            addressId,
-                            paymentMethod,
-                            cartItemID,
-                            totalAmount
-                        };
-
-                        try {
-                            const response = await fetch('/user/checkout/order', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(orderData)
-                            });
-
-                            if (response.ok) {
-                                const result = await response.json();
-
-                                if (result.razorpayOrderId) {
-                                    console.log('result in razorpay:', result.razorpayOrderId,)
-
-                                    openRazorpayCheckout(result.razorpayOrderId, totalAmount, '<%= razorpayKeyId %>', '<%= userData.mobileNumber %>',orderData,cartItemID);
-
-                                } else {
-                                    console.log('error in response ')
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Success',
-                                        text: result.success || 'Order placed successfully'
-                                    });
-                                    window.location.href = '/user/confirmation';
-                                }
-                            } else {
-                                const result = await response.json();
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: result.error || 'Order placing encountered an error'
-                                });
-                            }
-                        } catch (error) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: 'Order submission failed. Please try again.'
-                            });
-                        }
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'No cart items found.'
-                        });
-                    }
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'No cart items found.'
-                    });
-                }
-            });
-
-            function openRazorpayCheckout(orderId, amount, razorpayKeyId, mobileNumber,orderData,cartItemID) {
-                const numericAmount = parseFloat(amount);
-                const options = {
-                    key: `${razorpayKeyId}`,
-                    amount: numericAmount * 100,
-                    currency: 'INR',
-                    name: 'ROYAL TIMES',
-                    description: 'Order Payment',
-                    image: '/images/newPhoto.jpg',
-                    order_id: orderId,
-                    // handler: function (response) {
-                    //     Swal.fire({
-                    //         icon: 'success',
-                    //         title: 'Payment Successful',
-                    //         text: 'Your payment was successful.'
-                    //     }).then(() => {
-                    //         window.location.href = '/user/confirmation';
-                    //     });
-                    // },
-                    handler: async function (response) {
-                        // On successful payment
-                        if (response.razorpay_payment_id) {
-                            // Send payment success status to backend
-                            const paymentData = {
-                                orderId: orderId,
-                                paymentId: response.razorpay_payment_id,
-                                razorpayOrderId: response.razorpay_order_id,
-                                amount: numericAmount,
-                                mobileNumber: mobileNumber,
-                                cartItemID:cartItemID,
-                                orderData:orderData
-                            };
-                            console.log('paymnet:',paymentData,'orderdata:',paymentData.orderData.mobileNumber)
-                            try {
-                               const response = await fetch('/user/checkout/payment', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify(paymentData),
-                            })
-                            const data = await response.json();
-                            if(response.ok){
-                                Swal.fire({
-                                        icon: 'success',
-                                        title: 'Payment Successful',
-                                        text: 'Your payment was successful.'
-                                    }).then(() => {
-                                        window.location.href = '/user/confirmation';
-                                    });
-                            }else{
-                                Swal.fire({
-                                        icon: 'error',
-                                        title: 'Payment Error',
-                                        text: 'Payment confirmation failed. Please try again or contact support.'
-                                    });
-                            }
-                            } catch (error) {
-                                console.error('Error confirming payment:', error);
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Payment Error',
-                                        text: 'Payment confirmation failed. '
-                                    });
-                            }
-                            
-                                
-                        } else {
-                            // Handle payment failure scenario
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Payment Error',
-                                text: response.error.description || 'Payment failed or was canceled.'
-                            });
-                        }
-                    },
-                    prefill: {
-                        name: '',
-                        email: '',
-                        contact: `${mobileNumber}`
-                    },
-                    theme: {
-                        color: '#3399cc'
-                    }
-                };
-
-                const rzp = new Razorpay(options);
-                rzp.open();
-            }
-        });
-    </script> -->
-
+   
     <%- include('../layouts/user/footer') %>

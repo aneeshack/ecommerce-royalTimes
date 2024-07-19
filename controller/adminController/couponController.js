@@ -42,6 +42,11 @@ const updateCoupon = async (req, res) => {
         const id = req.params.id;
         const { couponName, couponCode, startDate, expiryDate, discountPercentage, maxDiscount, maxAmount } = req.body;
         console.log('details',req.body)
+        if (isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 90) {
+            req.flash('error', 'Discount percentage must be a number between 0 and 90.');
+            // return res.redirect('/admin/addcoupons');
+            return res.redirect(`/admin/editCoupon/${id}`); 
+        }
         //update category fields
         const updatedCoupon = await couponModel.findByIdAndUpdate(id, {
             couponName,
@@ -72,6 +77,10 @@ const updateCoupon = async (req, res) => {
 const createCoupon = async (req, res) => {
     const { couponName, couponCode, startDate, expiryDate, discountPercentage, maxDiscount,maxAmount } = req.body;
     console.log('details',req.body)
+    if (isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 90) {
+        req.flash('error', 'Discount percentage must be a number between 0 and 90.');
+        return res.redirect('/admin/addcoupons');
+    }
     try {
         const newCoupon = new couponModel({
             couponName,

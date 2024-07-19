@@ -1,5 +1,6 @@
 const orderModel = require('../../models/order');
 const userModel = require('../../models/userModel');
+const walletModel = require('../../models/wallet');
 
  
 //admin getting all user orders
@@ -167,13 +168,21 @@ const productReturned = async(req, res ) => {
         console.log('product not found');
         return res.status(404).json({ message: 'Product not found in order' });
     }
-    if (order.paymentMethod === 'Razorpay') {
+
         const total = product.total;
         const userData = await userModel.findById(order.userId);
         userData.wallet += total;
         await userData.save();
+        // // Save wallet transaction
+        const wallet = new walletModel({
+            userId: order.userId,
+            amount: total,
+            type: 'credit',
+            description: 'Product returned'
+        });
+        await wallet.save();
         console.log('Wallet updated successfully');
-    }
+    
         product.status = 'product returned'
         await order.save();
         res.json({success: true})
@@ -185,7 +194,6 @@ const productReturned = async(req, res ) => {
         return res.status(404).json({ message: 'Error occured, while retuned status updating.' });
     }
 }
-
 module.exports = {
     orderList,
     orderStatus,

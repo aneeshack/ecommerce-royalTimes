@@ -11,7 +11,6 @@ const adminValid = require('../middleware/adminValidation');
 adminRouter.get('/login', adminController.login);
 adminRouter.post('/login', adminController.loginAction);
 adminRouter.get('/logout', adminValid.isAdmin, adminController.logout);
-// adminRouter.get('/dashboard', adminValid.isAdmin, dashboardController.dashboard);
 
 //admin control user routes
 adminRouter.get('/usersList', adminValid.isAdmin, adminController.userList);

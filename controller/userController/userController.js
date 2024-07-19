@@ -8,6 +8,7 @@ const productOfferModel = require('../../models/productOffer');
 const categoryOfferModel = require('../../models/categoryOffer');
 const Otp = require('../../models/otp');
 const wishlistModel = require('../../models/wishList');
+const walletModel = require('../../models/wallet');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -17,6 +18,7 @@ const mailer = require('./GoogleAuthController');
 const fs = require('fs');
 const path = require('path');
 const cart = require('../../models/cart');
+const { error } = require('console');
 
 //render homepage
 const homePage = async (req, res) => {
@@ -54,35 +56,6 @@ const homePage = async (req, res) => {
         console.log('homePage:', error.message)
     }
 }
-
-
-// const homePage = async (req, res) => {
-//     try {
-//         const products = await product.find({ isActive: true }).populate('brand');
-
-//         const user = req.session.isUser;
-//         const userId = req.session.userId
-
-//         if (user) {
-//             const usercheck = await userModel.findOne({ _id: userId, isActive: true });
-//             const wishList = await wishlistModel.find();
-//             if (usercheck) {
-
-//                 res.render('user/homePage', { No_icons: false, products: products, user: user, wishList });
-//             } else {
-//                 res.render('user/homePage', { No_icons: true, products: products });
-//             }
-
-//         } else {
-//             // count =0
-//             res.render('user/homePage', { No_icons: true, products: products });
-//         }
-//     } catch (error) {
-//         console.log('homePage:', error.message)
-//     }
-// }
-
-//render login page
 
 
 const login = (req, res) => {
@@ -185,7 +158,7 @@ const signupAction = async (req, res) => {
                     setTimeout(async () => {
                         try {
                             await Otp.findOneAndDelete({ otp: userOtp.otp });
-                            res.render('user/otpPage', { show: "Otp time out, resend otp.", isError: true })
+                            // res.render('user/otpPage', { show: "Otp time out, resend otp.", isError: true })
 
                         } catch (error) {
                             console.log('2 minutes error:', error.message);
@@ -216,8 +189,7 @@ const verifyOtp = async (req, res) => {
         const missingOrInvalidDigit = otpDigits.some(digit => !digit || isNaN(digit));
         if (missingOrInvalidDigit) {
             console.log("Invalid OTP digits:", otpDigits);
-            res.render('user/otpPage', { show: "Invalid otp.", isError: true })
-            return;
+            return res.status(400).json({error:"Invalid otp." })
         }
         const enteredOtp = otpDigits.join('');
         const email = req.session.email;
@@ -225,13 +197,11 @@ const verifyOtp = async (req, res) => {
         //retrieve otp data from database
         const userValue = await Otp.findOne({ email })
 
-        //if retrieve data from data base check otp and enter to home page
         if (userValue) {
             if (userValue.email === email) {
                 const otpMatch = await bcrypt.compare(enteredOtp, userValue.otp);
                 console.log(otpMatch)
                 if (otpMatch) {
-                    console.log("otp is matching");
                     await Otp.findOneAndDelete({ otp: userValue.otp });
 
                     //retrieve data from session
@@ -240,7 +210,14 @@ const verifyOtp = async (req, res) => {
                  
                     const userDetails = new userModel(userDetailsData);
                     if(userDetailsData.referralOffer){
-                        userDetails.wallet = 1000
+                        userDetails.wallet = 1000;
+                        const wallet = new walletModel({
+                            userId:userDetails._id,
+                            amount:1000,
+                            type: 'credit',
+                            description: 'Referral Offer',
+                        })
+                        await wallet.save()
                     }
                     userDetails.save()
                         .then(savedUser => {
@@ -252,70 +229,135 @@ const verifyOtp = async (req, res) => {
                         .catch(error => {
                             console.log("error in saving data", error)
                         })
-                    // const cart = await cartModel.findOne({ userId: userId });
-                    // let count = cart.products.length;
-                    // req.session.countCart = count
+          
                     req.session.userId = userDetails._id;
                     req.session.isUser = userDetailsData.name;
-                    res.redirect('/user/home')
+
+                    res.status(200).json({success:'successful'})
                 } else {
                     console.log("otp not match");
-                    res.render('user/otpPage', { show: "otp is not matching, please enter the correct otp.", isError: true })
+                    res.status(400).json({error:"Invalid otp." })
                 }
             } else {
-                res.render('user/otpPage', { show: "Invalid otp.", isError: true })
+                res.status(400).json({error:"Invalid otp." })
             }
         } else {
-            res.render('user/otpPage', { show: "Invalid otp.", isError: true })
+            res.status(400).json({error:"Invalid otp." })
         }
     } catch (error) {
         console.log("verify otp:", error.message)
+        res.status(400).json({error:"error in verify otp." })
     }
 }
 
+
 //resend otp 
+// const resendOtp = async (req, res) => {
+//     try {
+//         //retrieve data from session
+//         console.log('resend otp')
+//         if (req.session.userDetails) {
+//             const { email, name } = req.session.userDetails;
+
+//             //find and delete old otp data
+//             const existingOtp = await Otp.findOneAndDelete({ email: email });
+
+//             //generate otp
+//             const g_otp = (await randomOtp()).toString();
+//             const hashedOtp = await bcrypt.hash(g_otp, 10);
+//             const message = '<p> Hi <b>' + name + '</b>, </br> <h4>' + g_otp + '</h4> </p>'
+
+//             //save otp in model
+//             const otpData = new Otp({
+//                 email: email,
+//                 otp: hashedOtp,
+//                 Date: new Date()
+//             })
+//             const userOtp = await otpData.save();
+//             //send email containing otp
+//             mailer.sendMail(email, 'Otp Verification', message);
+//             res.render('user/otpPage', { show: "otp resend successfully.please check your email.", isError: false })
+
+//             // deleting the doc after 2 min
+//             setTimeout(async () => {
+//                 try {
+//                     await Otp.findOneAndDelete({ otp: userOtp.otp });
+//                     //  res.render('user/otpPage',{show:"otp verifying timeout. resend otp.",isError:true}) 
+//                     console.log('otp deleted after 2 minutes');
+//                 } catch (error) {
+//                     console.log('2 minutes error:', error.message);
+//                 }
+//             }, 120000);
+//         } else {
+//             res.render('user/otpPage', { show: "invalid otp.", isError: true })
+//         }
+//     } catch (error) {
+//         console.log("resend error: ", error.message)
+//     }
+// }
+
+
+const MAX_RESEND_ATTEMPTS = 3; 
+let resendAttempts = {}; 
+
 const resendOtp = async (req, res) => {
     try {
-        //retrieve data from session
         if (req.session.userDetails) {
             const { email, name } = req.session.userDetails;
 
-            //find and delete old otp data
+            // Check if there are already resend attempts for this email
+            if (!resendAttempts[email]) {
+                resendAttempts[email] = {
+                    count: 1,
+                    lastAttempt: Date.now()
+                };
+            } else {
+                // Check if maximum resend attempts have been reached
+                const { count } = resendAttempts[email];
+                if (count >= MAX_RESEND_ATTEMPTS) {
+                    console.log('time expired')
+                    res.status(200).json({ success: 'redirect to signup' });
+                } else {
+                    resendAttempts[email].count++;
+                }
+            }
+
+            // Find and delete old OTP data
             const existingOtp = await Otp.findOneAndDelete({ email: email });
 
-            //generate otp
             const g_otp = (await randomOtp()).toString();
             const hashedOtp = await bcrypt.hash(g_otp, 10);
-            const message = '<p> Hi <b>' + name + '</b>, </br> <h4>' + g_otp + '</h4> </p>'
+            const message = `<p> Hi <b>${name}</b>, </br> <h4>${g_otp}</h4> </p>`;
 
-            //save otp in model
             const otpData = new Otp({
                 email: email,
                 otp: hashedOtp,
                 Date: new Date()
-            })
+            });
             const userOtp = await otpData.save();
-            //send email containing otp
-            mailer.sendMail(email, 'Otp Verification', message);
-            res.render('user/otpPage', { show: "otp resend successfully.please check your email.", isError: false })
 
-            // deleting the doc after 2 min
+            // Send email containing OTP
+            mailer.sendMail(email, 'OTP Verification', message);
+            res.render('user/otpPage', { show: "OTP resent successfully. Please check your email.", isError: false });
+
+            
             setTimeout(async () => {
                 try {
                     await Otp.findOneAndDelete({ otp: userOtp.otp });
-                    //  res.render('user/otpPage',{show:"otp verifying timeout. resend otp.",isError:true}) 
-                    console.log('otp deleted after 2 minutes');
+                    // console.log('OTP deleted after 2 minutes');
                 } catch (error) {
                     console.log('2 minutes error:', error.message);
                 }
             }, 120000);
+            console.log('otp resend successfully')
         } else {
-            res.render('user/otpPage', { show: "invalid otp.", isError: true })
+            res.status(500).json({ error: 'Internal server error' });
         }
     } catch (error) {
-        console.log("resend error: ", error.message)
+        console.log("Resend error:", error.message);
+        res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
 
 //login user
 const loginAction = async (req, res) => {

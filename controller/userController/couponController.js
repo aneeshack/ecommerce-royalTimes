@@ -5,7 +5,11 @@ const orderModel = require('../../models/order');
 const couponPage = async(req, res) => {
     try {
         const userId = req.session.userId;
-        const coupons = await couponModel.find();
+        const currentDate = new Date(); 
+        // const coupons = await couponModel.find();
+        const coupons = await couponModel.find({
+            startDate: { $lte: currentDate }
+        });
         console.log('showing all the coupons:',coupons)
         res.render('user/coupon',{coupons});
     } catch (error) {

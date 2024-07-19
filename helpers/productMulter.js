@@ -4,10 +4,13 @@ const path = require('path')
 
 const storage = multer.diskStorage({
     destination:function (req,file,cb) {
+        console.log("___________________________*******",file);
         if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' ||file.mimetype === 'image/jpg'){
             cb(null,path.join(__dirname,'../public/images/product'))     
 
-        }
+        }else {
+            cb(new Error('Invalid file type'), false);
+          }
     },
     filename:function (req,file,cb) {
         const name = Date.now()+''+file.originalname;
@@ -17,6 +20,7 @@ const storage = multer.diskStorage({
 })
 
 const filefilter = (req,file,cb)=>{
+    console.log(file,"file from multer")
     if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' ||file.mimetype === 'image/jpg'){
         cb(null,true)     
     }else{
@@ -27,7 +31,7 @@ const filefilter = (req,file,cb)=>{
 const upload = multer({
     storage:storage,
     fileFilter:filefilter,
-    limits: { files: 3 } 
+    limits: { files:10}
 })
 
 module.exports = upload;

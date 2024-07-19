@@ -1,4 +1,5 @@
-const userModel = require('../../models/userModel')
+const userModel = require('../../models/userModel');
+const walletModel = require('../../models/wallet');
 const path = require('path')
 const fs = require('fs')
 const bcrypt = require('bcrypt')
@@ -124,7 +125,9 @@ const walletPage = async (req, res) => {
 
         const userId = req.session.userId;
         const userData = await userModel.findById(userId);
-        res.render('user/userWallet', { userData })
+        const wallet = await walletModel.find({userId:userId})
+        
+        res.render('user/userWallet', { userData,wallet,currentWalletBalance: userData.wallet  })
 
 
     } catch (error) {

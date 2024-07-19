@@ -8,7 +8,8 @@ const brandModel = require('../../models/brand')
 const upload = require('../../helpers/productMulter');
 const { check, validationResult } = require('express-validator');
 const { Mongoose, default: mongoose } = require('mongoose');
-// const {cropImage} = require('../helpers/imageCrop');
+const { Buffer } = require('buffer');
+
 
 
 const productList = async (req, res) => {
@@ -28,7 +29,7 @@ const addProduct = async (req, res) => {
         const categories = await categoryModel.find();
         const brands = await brandModel.find();
 
-        res.render('admin/addProduct', {
+        res.render('admin/addingProduct', {
             categories,
             brands, editMode: false
         });
@@ -44,9 +45,10 @@ const addProductAction = async (req, res) => {
 
     try {
         if (!req.files || req.files.length !== 3) {
+            console.log('req.files1:', req.files)
             return res.status(400).json({ message: 'Please upload exactly 3 images.' });
         }
-        // Create a new Product instance
+
         const newProduct = new productModel({
             productName: req.body.productName,
             price: req.body.price,
@@ -63,24 +65,20 @@ const addProductAction = async (req, res) => {
             category: req.body.category
         });
 
-      
-            const images = req.files;
-            const imagePaths = [];
 
-            // Process each uploaded image
-            for (const image of images) {
-                const imagePath = `/images/product/${image.filename}`; 
-                imagePaths.push(imagePath);
-            }
+        const images = req.files;
+        const imagePaths = [];
 
-            // Set product images
-            newProduct.images = imagePaths;
-        
+        for (const image of images) {
+            const imagePath = `/images/product/${image.filename}`;
+            imagePaths.push(imagePath);
+        }
 
-        // Save the new product to the database
+        newProduct.images = imagePaths;
+
         await newProduct.save();
-
-        res.status(200).json({ message: 'Product updated successfully!' });
+        res.redirect('/admin/product/productList')
+        // res.status(200).json({ message: 'Product updated successfully!' });
     } catch (error) {
         console.error("Error saving product:", error.message);
         res.status(500).json({ message: 'An error occurred while adding the product.' });
@@ -145,7 +143,7 @@ const editPage = async (req, res) => {
             req.flash('error', 'product is not found.');
             res.redirect('/admin/product/productList');
         } else {
-            res.render('admin/addProduct', { product, editMode: true, categories, brands })
+            res.render('admin/editingProduct', { product, editMode: true, categories, brands })
         }
     } catch (error) {
         console.log('editpage:', error.message)
@@ -153,57 +151,93 @@ const editPage = async (req, res) => {
 
 }
 
-// updating the added product
+// updating the already existing image
 const updateProduct = async (req, res) => {
     try {
-        const id = req.params.id;
-        const imageIndexes = req.body.imageIndexes || []; 
-        const{productName,price,stock,warranty,rating,watchType,CaseMaterial,dialColour,strapMaterial,ModelNumber,features,brand,category}= req.body
-       
-        const updatedProduct  = await productModel.findById(id)
-        if (!updatedProduct) {
-            return res.status(404).json({ message: 'Product not found.' });
+        const { id } = req.params;
+        const { productName, price, stock, warranty, watchType, CaseMaterial, dialColour, strapMaterial, ModelNumber, features, brand, category } = req.body;
+        console.log('req.body:', req.body);
+     
+        const product = await productModel.findById(id);
+
+        if (!product) {
+            console.log('product not exist');
+            return res.status(404).json({ success: false, errors: ['Product not found'] });
         }
 
-        updatedProduct.productName = productName;
-        updatedProduct.price = price;
-        updatedProduct.stock = stock;
-        updatedProduct.warranty = warranty;
-        updatedProduct.rating = rating;
-        updatedProduct.watchType = watchType;
-        updatedProduct.CaseMaterial = CaseMaterial;
-        updatedProduct.dialColour = dialColour;
-        updatedProduct.strapMaterial = strapMaterial;
-        updatedProduct.ModelNumber = ModelNumber;
-        updatedProduct.features = features;
-        updatedProduct.brand = brand;
-        updatedProduct.category = category;
+        // Handle new images
+        let newImages = [];
+        if (req.files && req.files.length) {
+            console.log('new images found');
+            newImages = req.files.map(file => `/images/product/${file.filename}`); 
+            console.log('newimages:', newImages);
+        }
 
-        if (req.files && req.files.length > 0) {
-            const images = req.files;
-            const imagePaths = [];
-      
-            // Process each uploaded image
-            for (const image of images) {
-              const imagePath = `/images/product/${image.filename}`; 
-              imagePaths.push(imagePath);
-            }
      
-            imageIndexes.forEach((index, i) => {
-                updatedProduct.images[index] = imagePaths[i];
-            });
-          }
+        if (product.images.length + newImages.length > 3) {
+            return res.status(400).json({ success: false, errors: ['Cannot have more than 3 images'] });
+        }
+        if (product.images.length + newImages.length < 3) {
+            return res.status(400).json({ success: false, errors: ['At least 3 images are required'] });
+        }
+        
+        product.productName = productName;
+        product.price = price;
+        product.stock = stock;
+        product.warranty = warranty;
+        product.watchType = watchType;
+        product.CaseMaterial = CaseMaterial;
+        product.dialColour = dialColour;
+        product.strapMaterial = strapMaterial;
+        product.ModelNumber = ModelNumber;
+        product.features = features;
+        product.brand = brand;
+        product.category = category;
 
-          await updatedProduct.save();
-          
+        // Append new images to existing ones
+        product.images = [...product.images, ...newImages];
 
-        res.status(200).json({ message: 'Product updated successfully!' });
+      
+        await product.save();
+        res.json({ success: true }); 
     } catch (error) {
-        console.log('editing product:', error.message);
-        res.status(500).json({ message: 'An error occurred while editing the product.' });
+        console.error('Error updating product:', error);
+        res.status(500).json({ success: false, errors: ['Server error'] }); 
     }
+};
 
+
+// deleting the images in product editing
+const deleteImage = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { image } = req.body;
+
+        const product = await productModel.findById(id);
+
+        if (!product) {
+            console.log('product not found');
+            return res.status(404).send('Product not found');
+        }
+
+        const imageIndex = product.images.indexOf(image);
+        if (imageIndex === -1) {
+            console.log('image not found')
+            return res.status(400).send('Image not found');
+        }
+       
+        product.images.splice(imageIndex, 1);
+        await product.save();
+
+        res.status(200).send('Image deleted successfully');
+    } catch (error) {
+        console.log('error occured in deleting image:', error)
+        res.status(500).send('Server error');
+    }
 }
+
+
+
 module.exports = {
     addProduct,
     addProductAction,
@@ -211,5 +245,6 @@ module.exports = {
     blockProduct,
     unblockProduct,
     editPage,
-    updateProduct
+    updateProduct,
+    deleteImage
 }

@@ -3,6 +3,7 @@ const cartModel = require('../../models/cart')
 const orderModel = require('../../models/order');
 const productModel = require('../../models/product');
 const productReturn = require('../../models/returnProduct')
+const walletModel = require('../../models/wallet');
 const easyinvoice = require('easyinvoice');
 const mongoose = require('mongoose')
 const Razorpay = require('razorpay');
@@ -21,7 +22,7 @@ const placeOrder = async (req, res) => {
         // const userName = req.session.isUser;
         // console.log('username:',userName)
         const { mobileNumber, addressId, paymentMethod, totalAmount, cartItemID, userName, grandTotal, couponAmount } = req.body;
-        console.log('totalamount:', totalAmount, typeof (totalAmount), 'usernaem:', userName)
+        console.log('totalamount:', totalAmount, typeof (totalAmount), 'username:', userName)
         const userData = await userModel.findById(userId);
         if (!userData) {
             console.log('User not found');
@@ -76,6 +77,15 @@ const placeOrder = async (req, res) => {
                     console.log('sufficient balance in wallet')
                     userData.wallet -= totalAmount;
                     await userData.save();
+                     // Save wallet transaction
+                     const wallet = new walletModel({
+                        userId: userId,
+                        amount: totalAmount,
+                        type: 'debit',
+                        description: 'Order Payment'
+                    });
+                    await wallet.save();
+
                     paymentDetails = {
                         paymentMethod: 'Wallet',
                         paymentStatus: 'success',
@@ -128,9 +138,6 @@ const placeOrder = async (req, res) => {
             //  to clear the cart
             await cartModel.deleteOne({ _id: cartItemID });
             res.status(200).json({ success: 'Order placed successfully', walletPaymentStatus: paymentDetails.paymentStatus });
-
-
-
         }
 
     } catch (error) {
@@ -138,7 +145,6 @@ const placeOrder = async (req, res) => {
         res.status(400).json({ error: 'Some errors occurred while placing the order, try again' });
     }
 };
-
 // place order using razorpay
 const paymentOrder = async (req, res) => {
     try {
@@ -239,6 +245,54 @@ const orderList = async (req, res) => {
 }
 
 //api for cancel the products
+// const orderCancel = async (req, res) => {
+//     try {
+//         console.log('order cancel')
+//         const { orderId, productId } = req.params;
+//         const userId = req.session.userId;
+//         const order = await orderModel.findById(orderId);
+
+//         if (order) {
+//             const productUpdate = order.productItems.find(item => item.productId.toString() === productId);
+//             if (productUpdate) {
+//                 console.log('productupdate:', productUpdate.total)
+
+//                 const updatedProduct = await productModel.findByIdAndUpdate(
+//                     productId,
+//                     { $inc: { stock: productUpdate.quantity } },
+//                     { new: true }
+//                 )
+
+//                 // Update the status of the product in productItems array
+//                 productUpdate.status = 'Cancelled';
+//                 await order.save();
+
+
+//                 if (order.paymentMethod === 'Razorpay' ||order.paymentMethod === 'Wallet' ) {
+//                     const total = productUpdate.total;
+//                     const userData = await userModel.findById(userId);
+//                     userData.wallet += total;
+//                     await userData.save();
+                    
+//                 }
+
+//                 res.status(200).json({ message: 'Order and product updated successfully', order });
+//             } else {
+//                 console.log('products not found in order schema:')
+//                 return res.status(404).json({ message: 'product not found in the order.' })
+//             }
+//         } else {
+//             console.log('order is not found')
+//             return res.status(404).json({ message: 'order not found.' })
+
+//         }
+//     } catch (error) {
+//         console.log('error in cancel order:', error.message);
+//         res.status(400).json({ message: 'error occured while cancelling the order' })
+//     }
+// }
+
+//api for cancel the products
 const orderCancel = async (req, res) => {
     try {
         console.log('order cancel')
@@ -262,11 +316,31 @@ const orderCancel = async (req, res) => {
                 await order.save();
 
 
-                if (order.paymentMethod === 'Razorpay') {
+                if (order.paymentMethod === 'Razorpay' ||order.paymentMethod === 'Wallet' ) {
                     const total = productUpdate.total;
                     const userData = await userModel.findById(userId);
                     userData.wallet += total;
                     await userData.save();
+                    if(order.paymentMethod === 'Razorpay' ){
+                        // Save wallet transaction
+                     const wallet = new walletModel({
+                        userId: userId,
+                        amount: total,
+                        type: 'credit',
+                        description: 'Order Cancelled through Razorpay'
+                    });
+                    await wallet.save();
+                    }else if(order.paymentMethod === 'Wallet'){
+                           // Save wallet transaction
+                     const wallet = new walletModel({
+                        userId: userId,
+                        amount: total,
+                        type: 'credit',
+                        description: 'Order cancelled through wallet'
+                    });
+                    await wallet.save();
+                    }
+                     
                 }
 
                 res.status(200).json({ message: 'Order and product updated successfully', order });

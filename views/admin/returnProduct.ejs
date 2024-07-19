@@ -30,7 +30,7 @@
                     <% } else if (product.status === 'Cancelled') { %>
                         <h3>product Cancelled</h3>
                     <% } else if (product.status === 'product returned') { %>
-                        <h3 style="color: red;">product returned to the user</h3>
+                        <h3 style="color: green;">product returned successfully</h3>
                     <% }else{ %>
                         <button class="btn btn-success mr-2" onclick="acceptReturn('<%= orderId %>', '<%= productId %>')">Accept Return</button>
                         <button class="btn btn-danger" onclick="rejectReturn('<%= orderId %>', '<%= productId %>')">Reject Return</button>
