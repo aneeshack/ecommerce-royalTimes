@@ -2,6 +2,21 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<style>
+		.star-rating {
+    font-size: 1.5em; 
+    color: #ffd700; 
+}
+
+.star-rating .fa-star {
+    color: #ffd700;
+}
+
+.star-rating .fa-star-o {
+    color: #dcdcdc; 
+}
+
+	</style>
 	<!-- Start Banner Area -->
 	<section class="banner-area organic-breadcrumb">
 		<div class="container">
@@ -46,9 +61,7 @@
 							.single-prd-item {
 								position: relative;
 								width: 300px;
-								/* Adjust as needed */
 								height: 300px;
-								/* Adjust as needed */
 								overflow: hidden;
 							}
 
@@ -56,17 +69,16 @@
 								width: 100%;
 								height: auto;
 								transition: transform 0.3s ease;
-								/* Smooth transition for zoom effect */
+								
 							}
 
 							.zoomable-image.zoomed {
 								transform: scale(1.5);
-								/* Zoom factor (adjust as needed) */
+							
 							}
 
 							.heart-icon {
 								font-size: 40px;
-								/* Adjust the size as needed */
 							}
 						</style>
 						<div class="col-lg-5 offset-lg-1">
@@ -75,19 +87,19 @@
 									<%= products.productName %>
 								</h3>
 								<h5>
-									$<%= productOffer ? (products.price - (products.price * productOffer.discountPercentage / 100)).toFixed(2) :
+									₹<%= productOffer ? (products.price - (products.price * productOffer.discountPercentage / 100)).toFixed(2) :
 									(categoryOffer ? (products.price - (products.price * categoryOffer.discountPercentage / 100)).toFixed(2) : products.price.toFixed(2)) %>
 							   <% if (productOffer) { %>
 								&nbsp;
 								   <span style="text-decoration: line-through; color: red;">
-									  $<%= products.price.toFixed(2) %>
+									₹<%= products.price.toFixed(2) %>
 								   </span>
 								   <br>
 								   <span style="color: green;">  <%= productOffer.offerName %> of <%= productOffer.discountPercentage %>%</span>
 							   <% } else if (categoryOffer) { %>
 							
 								   <span style="text-decoration: line-through; color: red;">
-									   $<%= products.price.toFixed(2) %>
+									₹<%= products.price.toFixed(2) %>
 								   </span>
 								   <span style="color: green;"> Offer <%= categoryOffer.offerName %>%</span>
 							   <% } %>
@@ -109,14 +121,7 @@
 									cater to various tastes and preferences.
 						
 								</p>
-								<!-- <div class="product_count">
-							<label for="qty">Quantity:</label>
-							<input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-							 class="increase items-count" type="button"><i class="lnr lnr-chevron-up"></i></button>
-							<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-							 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
-						</div> -->
+								
 								<i class="fa fa-heart far wishlist-icon "
 									data-product-id="<%= products._id %>"></i>
 
@@ -127,17 +132,12 @@
 											data-stock="<%= products.stock %>">
 										<button class="primary-btn add-to-cart-btn" type="submit">Add to Cart</button>
 									</form>
-									<!-- <a class="primary-btn" href="/user/cart">Add to Cart</a> -->
-									<!-- <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a> -->
-
-									<!-- <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a> -->
+								
 								</div>
 
 
 								<br>
-								<!-- <div class="card_area d-flex align-items-center">
-									<a class="primary-btn" href="#">Buy</a>
-								</div> -->
+							
 							</div>
 						</div>
 					</div>
@@ -158,14 +158,10 @@
 							<a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
 								aria-controls="profile" aria-selected="false">Specification</a>
 						</li>
-						<!-- <li class="nav-item">
-							<a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
-								aria-controls="contact" aria-selected="false">Comments</a>
-						</li>
 						<li class="nav-item">
-							<a class="nav-link " id="review-tab" data-toggle="tab" href="#review" role="tab"
-								aria-controls="review" aria-selected="false">Reviews</a>
-						</li> -->
+							<a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a>
+						</li>
+						
 					</ul>
 					<div class="tab-content" id="myTabContent">
 						<div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -292,264 +288,37 @@
 								</table>
 							</div>
 						</div>
-						<!-- <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-							<div class="row">
-								<div class="col-lg-6">
-									<div class="comment_list">
-										<div class="review_item">
-											<div class="media">
-												<div class="d-flex">
-													<img src="/img/product/review-1.png" alt="">
-												</div>
-												<div class="media-body">
-													<h4>Blake Ruiz</h4>
-													<h5>12th Feb, 2018 at 05:56 pm</h5>
-													<a class="reply_btn" href="#">Reply</a>
-												</div>
-											</div>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-												tempor incididunt ut labore et
-												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-												ullamco laboris nisi ut aliquip ex ea
-												commodo</p>
-										</div>
-										<div class="review_item reply">
-											<div class="media">
-												<div class="d-flex">
-													<img src="/img/product/review-2.png" alt="">
-												</div>
-												<div class="media-body">
-													<h4>Blake Ruiz</h4>
-													<h5>12th Feb, 2018 at 05:56 pm</h5>
-													<a class="reply_btn" href="#">Reply</a>
-												</div>
-											</div>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-												tempor incididunt ut labore et
-												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-												ullamco laboris nisi ut aliquip ex ea
-												commodo</p>
-										</div>
-										<div class="review_item">
-											<div class="media">
-												<div class="d-flex">
-													<img src="/img/product/review-3.png" alt="">
-												</div>
-												<div class="media-body">
-													<h4>Blake Ruiz</h4>
-													<h5>12th Feb, 2018 at 05:56 pm</h5>
-													<a class="reply_btn" href="#">Reply</a>
-												</div>
-											</div>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-												tempor incididunt ut labore et
-												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-												ullamco laboris nisi ut aliquip ex ea
-												commodo</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-6">
-									<div class="review_box">
-										<h4>Post a comment</h4>
-										<form class="row contact_form" action="contact_process.php" method="post"
-											id="contactForm" novalidate="novalidate">
-											<div class="col-md-12">
-												<div class="form-group">
-													<input type="text" class="form-control" id="name" name="name"
-														placeholder="Your Full name">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<input type="email" class="form-control" id="email" name="email"
-														placeholder="Email Address">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<input type="text" class="form-control" id="number" name="number"
-														placeholder="Phone Number">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<textarea class="form-control" name="message" id="message" rows="1"
-														placeholder="Message"></textarea>
-												</div>
-											</div>
-											<div class="col-md-12 text-right">
-												<button type="submit" value="submit" class="btn primary-btn">Submit
-													Now</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div> -->
-						<!-- <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
-							<div class="row">
-								<div class="col-lg-6">
-									<div class="row total_rate">
-										<div class="col-6">
-											<div class="box_total">
-												<h5>Overall</h5>
-												<h4>
-													
-												</h4>
-												<h6>(03 Reviews)</h6>
-											</div>
-										</div>
-										<div class="col-6">
-											<div class="rating_list">
-												<h3>Based on 3 Reviews</h3>
-												<ul class="list">
-													<li><a href="#">5 Star <i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-													</li>
-													<li><a href="#">4 Star <i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-													</li>
-													<li><a href="#">3 Star <i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-													</li>
-													<li><a href="#">2 Star <i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-													</li>
-													<li><a href="#">1 Star <i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i><i
-																class="fa fa-star"></i><i class="fa fa-star"></i> 01</a>
-													</li>
-												</ul>
-											</div>
-										</div>
-									</div>
-									<div class="review_list">
-										<div class="review_item">
-											<div class="media">
-												<div class="d-flex">
-													<img src="/img/product/review-1.png" alt="">
-												</div>
-												<div class="media-body">
-													<h4>Blake Ruiz</h4>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-												</div>
-											</div>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-												tempor incididunt ut labore et
-												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-												ullamco laboris nisi ut aliquip ex ea
-												commodo</p>
-										</div>
-										<div class="review_item">
-											<div class="media">
-												<div class="d-flex">
-													<img src="/img/product/review-2.png" alt="">
-												</div>
-												<div class="media-body">
-													<h4>Blake Ruiz</h4>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-												</div>
-											</div>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-												tempor incididunt ut labore et
-												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-												ullamco laboris nisi ut aliquip ex ea
-												commodo</p>
-										</div>
-										<div class="review_item">
-											<div class="media">
-												<div class="d-flex">
-													<img src="/img/product/review-3.png" alt="">
-												</div>
-												<div class="media-body">
-													<h4>Blake Ruiz</h4>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-													<i class="fa fa-star"></i>
-												</div>
-											</div>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-												tempor incididunt ut labore et
-												dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-												ullamco laboris nisi ut aliquip ex ea
-												commodo</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-6">
-									<div class="review_box">
-										<h4>Add a Review</h4>
-										<p>Your Rating:</p>
-										<ul class="list">
-											<li><a href="#"><i class="fa fa-star"></i></a></li>
-											<li><a href="#"><i class="fa fa-star"></i></a></li>
-											<li><a href="#"><i class="fa fa-star"></i></a></li>
-											<li><a href="#"><i class="fa fa-star"></i></a></li>
-											<li><a href="#"><i class="fa fa-star"></i></a></li>
-										</ul>
-										<p>Outstanding</p>
-										<form class="row contact_form" action="contact_process.php" method="post"
-											id="contactForm" novalidate="novalidate">
-											<div class="col-md-12">
-												<div class="form-group">
-													<input type="text" class="form-control" id="name" name="name"
-														placeholder="Your Full name" onfocus="this.placeholder = ''"
-														onblur="this.placeholder = 'Your Full name'">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<input type="email" class="form-control" id="email" name="email"
-														placeholder="Email Address" onfocus="this.placeholder = ''"
-														onblur="this.placeholder = 'Email Address'">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<input type="text" class="form-control" id="number" name="number"
-														placeholder="Phone Number" onfocus="this.placeholder = ''"
-														onblur="this.placeholder = 'Phone Number'">
-												</div>
-											</div>
-											<div class="col-md-12">
-												<div class="form-group">
-													<textarea class="form-control" name="message" id="message" rows="1"
-														placeholder="Review" onfocus="this.placeholder = ''"
-														onblur="this.placeholder = 'Review'"></textarea></textarea>
-												</div>
-											</div>
-											<div class="col-md-12 text-right">
-												<button type="submit" value="submit" class="primary-btn">Submit
-													Now</button>
-											</div>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div> -->
+						<div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+							<!-- Reviews content goes here -->
+							 <!-- <p>review</p> -->
+							<% if (review && review.length > 0) { %>
+								<ul>
+									<% review.forEach(review => { %>
+										<li>
+										
+											<p class="star-rating">
+												<% for (let i = 0; i < 5; i++) { %>
+													<i class="fa <%=
+														i < review.rating ? 'fa-star' : 'fa-star-o'
+													%>"></i>
+												<% } %>
+											</p>
+											<p><%= review.review %></p>
+										</li>
+									<% }); %>
+								</ul>
+							<% } else { %>
+								<p>No reviews yet.</p>
+							<% } %>
+						</div>
 					</div>
 				</div>
+						
 			</section>
 			<% } else { %>
 				<p>No product details available.</p>
 				<% } %>
 
-					<!-- New -->
 					<!-- Related Products Section -->
 					<div class="container">
 						<% if (Array.isArray(relatedProducts) && relatedProducts.length> 0) { %>

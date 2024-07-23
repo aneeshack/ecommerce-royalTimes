@@ -37,7 +37,6 @@ const editBrandAction = async(req,res) =>{
 
         let brand = await brandModel.findById(id)
 
-        //update category fields
         brand.name = brandName;
         await brand.save();
 

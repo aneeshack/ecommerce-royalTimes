@@ -78,7 +78,6 @@ const addProductAction = async (req, res) => {
 
         await newProduct.save();
         res.redirect('/admin/product/productList')
-        // res.status(200).json({ message: 'Product updated successfully!' });
     } catch (error) {
         console.error("Error saving product:", error.message);
         res.status(500).json({ message: 'An error occurred while adding the product.' });
@@ -156,21 +155,17 @@ const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const { productName, price, stock, warranty, watchType, CaseMaterial, dialColour, strapMaterial, ModelNumber, features, brand, category } = req.body;
-        console.log('req.body:', req.body);
      
         const product = await productModel.findById(id);
 
         if (!product) {
-            console.log('product not exist');
             return res.status(404).json({ success: false, errors: ['Product not found'] });
         }
 
         // Handle new images
         let newImages = [];
         if (req.files && req.files.length) {
-            console.log('new images found');
             newImages = req.files.map(file => `/images/product/${file.filename}`); 
-            console.log('newimages:', newImages);
         }
 
      
@@ -181,6 +176,9 @@ const updateProduct = async (req, res) => {
             return res.status(400).json({ success: false, errors: ['At least 3 images are required'] });
         }
         
+        if(price<=0){
+            return res.status(400).json({ success: false, errors: ['Stock price must be greater than zero'] });
+        }
         product.productName = productName;
         product.price = price;
         product.stock = stock;
@@ -216,13 +214,11 @@ const deleteImage = async (req, res) => {
         const product = await productModel.findById(id);
 
         if (!product) {
-            console.log('product not found');
             return res.status(404).send('Product not found');
         }
 
         const imageIndex = product.images.indexOf(image);
         if (imageIndex === -1) {
-            console.log('image not found')
             return res.status(400).send('Image not found');
         }
        

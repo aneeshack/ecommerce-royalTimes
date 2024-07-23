@@ -2,8 +2,15 @@
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+   
     <div class="container mt-5">
         <h1 class="mb-4">Edit Category Offer</h1>
+        <% if(successMessage && successMessage.length >0) { %>
+            <div class="alert alert-success"><%= successMessage %></div>
+        <% } %>
+        <% if(errorMessage && errorMessage.length > 0) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
         <form id="categoryOfferEdit" action="/admin/categoryOffer/update/<%= categoryOffer._id %>" method="POST">
             <div class="form-group">
                 <label for="categoryId">Category</label>

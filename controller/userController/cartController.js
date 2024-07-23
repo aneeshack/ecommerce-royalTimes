@@ -5,101 +5,7 @@ const categoryOfferModel = require('../../models/categoryOffer');
 const productOfferModel = require('../../models/productOffer');
 const helpers = require('../userController/helper');
 
-// //adding products to the cart list
-// const addToCart = async (req, res) => {
-//     try {
-//         const { productId } = req.body;
-//         const userId = req.session.userId;
-      
-//         const productItem = await productModel.findById(productId);
-//         if (!productItem) {
-//             res.status(500).render('404error')
-//         } else {
-//           const productOffer = await productOfferModel.findOne().populate('products');
-//           const productPrice = productItem.price;
-//           let adjustedPrice = productItem.price;
-//           let appliedOffer = null;
-  
-//           // Check if the product offer exists and applies to the product
-//           if (productOffer  && productOffer.products._id.equals(productId)) {
-//                   adjustedPrice = productPrice*((100-productOffer.discountPercentage)/100) ; // Assuming `offerPrice` is the discounted price
-//                   console.log('product offer price:',adjustedPrice)
-//                   appliedOffer = 'product';           
-//           }
-  
-//           // If no product offer, check for category offer
-//           if (!appliedOffer) {
-//               const categoryOffer = await categoryOfferModel.findOne().populate('categories');
-//               if (categoryOffer && categoryOffer.categories._id.equals(productItem.category)) {
-//                   adjustedPrice = productPrice*((100-categoryOffer.discountPercentage)/100) ; // Assuming `offerPrice` is the discounted price
-//                   console.log('category offer is:',adjustedPrice)
-//                   appliedOffer = 'category';
-//               }
-//           }
-  
-//           console.log('Adjusted price:', adjustedPrice);
-       
-      
-//             //check if product exist in the cart already
-//             const productExists = await helpers.cartProductData(userId, productId)
-          
-//             console.log('product exist:',productExists)
-//             if (productExists) {
-//                 res.redirect('/user/cart');
-//             } else {
-
-//                 //check if user already exist in the cart
-//                 let cart = await cartModel.findOne({ userId });
-//                 if (cart) {
-//                     cart.products.push({ productId, quantity: 1, total: adjustedPrice, offerPrice:adjustedPrice });
-//                     const grandAmount = cart.grandTotal + adjustedPrice
-//                     cart.grandTotal = grandAmount
-//                     await cart.save();
-//                     res.redirect('/user/cart');
-//                 } else {
-//                     cart = new cartModel({
-//                         userId: userId,
-//                         products: [{ productId, quantity: 1, total: adjustedPrice, offerPrice: adjustedPrice }],
-//                         grandTotal: adjustedPrice
-//                     })
-//                     await cart.save();
-//                     res.redirect('/user/cart');
-//                 }
-//             }
-//         }
-//     } catch (error) {
-//         console.log('addtocart error:', error.message);
-//         res.status(500).render('404error', { message: 'Error in adding product to cart' })
-//     }
-// }
-
-// //showing cart page
-// const cartPage = async (req, res) => {
-//     try {
-//         if (req.session.isUser) {
-//             let userId = req.session.userId;
-//             if (userId) {
-//                 const cartItems = await cartModel.findOne({ userId }).populate('products.productId');
-//                 console.log('cartitems are:',cartItems)
-//                 if (cartItems) {
-//                     const grandTotalAmount = cartItems.grandTotal || 0;
-//                     res.render('user/cart', { cartItems, grandTotalAmount });
-//                 } else {
-//                     console.log('user have no cart')
-//                     res.render('user/cart', { cartItems: [], grandTotalAmount: 0 });
-//                 }
-//             } else {
-//                 res.redirect('/user/login', { message: "please login first to get cart page." });
-//             }
-//         } else {
-//             res.redirect('/user/login');
-//         }
-//     } catch (error) {
-//         console.log('Cart Page error:', error.message);
-//         res.redirect('back');
-//     }
-// }
-
+// showing cart page for perticular users
 const cartPage = async (req, res) => {
     try {
         if (req.session.isUser) {
@@ -123,7 +29,6 @@ const cartPage = async (req, res) => {
 
                     res.render('user/cart', { cartItems, grandTotalAmount });
                 } else {
-                    console.log('User has no cart');
                     res.render('user/cart', { cartItems: [], grandTotalAmount: 0 });
                 }
             } else {
@@ -137,6 +42,7 @@ const cartPage = async (req, res) => {
         res.redirect('back');
     }
 };
+
 
 const getAdjustedPrice = async (productId) => {
     let adjustedPrice;
@@ -180,7 +86,6 @@ const addToCart = async (req, res) => {
             if (productExists) {
                 res.redirect('/user/cart');
             } else {
-                // Check if the user already has a cart
                 let cart = await cartModel.findOne({ userId });
                 if (cart) {
                     cart.products.push({ productId, quantity: 1, total: adjustedPrice, offerPrice: adjustedPrice });
@@ -215,7 +120,6 @@ const updateQuantity = async (req, res) => {
             const product = cart.products.find(p => p.productId._id.toString() === productId);
             if (product) {
                 let productTotal = product.offerPrice * quantity
-                console.log('product total:',productTotal)
                 product.quantity = quantity;
                 product.total = productTotal;
 
@@ -230,7 +134,6 @@ const updateQuantity = async (req, res) => {
                 res.status(200).json({ message: 'Quantity updated successfully.', grandT, productTotal });
 
             } else {
-                console.log("product is not found in cart");
                 res.status(404).json({ error: 'product is not found in cart' });
             }
         } else {
@@ -241,6 +144,8 @@ const updateQuantity = async (req, res) => {
         res.status(500).json({ error: 'Error in updating quantity.' })
     }
 }
+
+
 // Deleting a product from the cart
 const deleteCart = async (req, res) => {
     try {
@@ -255,18 +160,15 @@ const deleteCart = async (req, res) => {
         ).populate('products.productId');
 
         if (!updatedCart) {
-            // Cart not found or empty after deletion, delete the entire cart
             await cartModel.deleteOne({ userId: userId });
             return res.status(200).json({ success: 'Cart is empty after deleting the product.' });
         }
 
-        // Calculate the new grand total based on the remaining products
         let grandTotal = 0;
         for (const item of updatedCart.products) {
             grandTotal += item.quantity * item.offerPrice;
         }
 
-        // Update the grand total in the cart
         updatedCart.grandTotal = grandTotal;
         await updatedCart.save();
 

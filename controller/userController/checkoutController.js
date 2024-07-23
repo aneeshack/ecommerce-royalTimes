@@ -68,7 +68,6 @@ const checkoutAddressAdd = async (req, res) => {
         if (userData) {
             if (userData.address.length > 3) {
                 res.status(400).json({ error: "Maximum of 3 address is allowed" })
-                console.log('address length is high')
             } else {
 
                 const newAddress = {
@@ -80,12 +79,10 @@ const checkoutAddressAdd = async (req, res) => {
                 };
                 userData.address.push(newAddress)
                 const userupdate = await userData.save();
-                // const address = userupdate.address
                 res.status(200).json({ message: ' Address added successfully', address :newAddress})
             }
 
         } else {
-            console.log('user not find in database');
             res.status(400).json({ message: 'User is not found in the user data' });
         }
     } catch (error) {

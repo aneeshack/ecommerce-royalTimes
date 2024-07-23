@@ -10,6 +10,12 @@
         <div class="col-md-6">
 
             <h2>Add Offer for <%= product?.productName %></h2>
+            <% if(successMessage && successMessage.length >0) { %>
+                <div class="alert alert-success"><%= successMessage %></div>
+            <% } %>
+            <% if(errorMessage && errorMessage.length > 0) { %>
+                <div class="alert alert-danger"><%= errorMessage %></div>
+            <% } %>
             <form action="/admin/product/saveOffer/<%= product._id  %>" method="POST">
                 
                 <div class="mb-3">

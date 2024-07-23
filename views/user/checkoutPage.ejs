@@ -131,20 +131,9 @@
                                 <button class="tp_btn" id="applyCouponBtn">Apply Coupon</button>
                                 <button class="tp_btn bg-danger btn-sm " id="removeCouponBtn">Remove Coupon</button>
                                 <p id="couponMessage" style="color: red;"></p>
-                                <!-- <p style="color: red;"> Note: Orders with an applied coupon cannot be canceled, modified, or returned.</p> -->
+                                <p style="color: red;"> Note: Orders with an applied coupon cannot be canceled, modified, or returned.</p>
                             </div>
-                            <!-- modal used for showing to add address -->
-                            <!-- <button id="openModalBtn" class="primary-btn mt-5">Add Shipping Address</button>
-
-                            <div class="col-md-12 form-group mt-3">
-                                <div class="creat_account">
-                                    <h3>Shipping Details</h3>
-                                    <input type="checkbox" id="f-option3" name="selector">
-                                    <label for="f-option3">Ship to a different address?</label>
-
-                                </div> -->
-                            <!-- <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea> -->
-                            <!-- </div> -->
+                           
 
             </div>
 
@@ -484,6 +473,7 @@
                         const newAddress = data.address; // Assuming your server response contains the new or updated address
                         if (addressIdField.value) {
                             // Edit existing address
+                            window.location.reload()
                             const addressIndex = editAddressBtns[0].getAttribute('data-index'); // Adjust as needed
                             const addressItem = document.querySelector(`li[data-index="${addressIndex}"]`);
                             addressItem.innerHTML = `
@@ -495,8 +485,10 @@
                             </p>
                             <button type="button" id="editAddress" class="btn btn-outline-secondary text-dark editAddressBtn" data-index="${addressIndex}" data-address='${JSON.stringify(newAddress)}'>Edit Address</button>
                         `;
+                        
                         } else {
                             // Add new address
+                            window.location.reload()
                             const newIndex = addressList.children.length;
                             const newAddressItem = document.createElement('li');
                             newAddressItem.className = 'list-group-item';

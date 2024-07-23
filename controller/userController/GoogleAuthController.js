@@ -87,7 +87,6 @@ const successGoogleLogin = async (req, res) => {
 
 const failureGoogleLogin = (req, res) => {
     res.redirect('/user/login');
-    // res.send('Error')
 }
 
 

@@ -96,7 +96,7 @@ userRouter.post('/checkout/failedPayment',orderController.failedPayment);
 userRouter.get('/confirmation',valid.isLogout,orderController.confirmation);
 
 // failed order management
-userRouter.get('/failed/payment',failedOrderController.failedPaymentPage);
+userRouter.get('/failed/payment',valid.isLogout,failedOrderController.failedPaymentPage);
 userRouter.post('/retryPayment',failedOrderController.retryPayment);
 userRouter.post('/repaymentSuccess',failedOrderController.repaymentSuccess);
 
@@ -107,7 +107,7 @@ userRouter.post('/order/return',orderController.returnProduct);
 userRouter.get('/order/downloadInvoice/:orderId/:productId',orderController.downloadInvoice);
 
 // reviewing a product
-userRouter.post('/review',reviewController.reviewProduct);
+userRouter.post('/review',valid.isLogout,reviewController.reviewProduct);
 
 // coupon management
 userRouter.get('/coupons',valid.isLogout,couponController.couponPage);
@@ -116,7 +116,7 @@ userRouter.post('/applyCoupon',couponController.applyCoupon);
 
 
 // wish list
-userRouter.get('/wishList',wishListController.wishList);
+userRouter.get('/wishList',valid.isLogout,wishListController.wishList);
 userRouter.post('/wish',wishListController.wishProduct);
 userRouter.delete('/wish/delete/:id',wishListController.deleteWish);
 

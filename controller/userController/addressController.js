@@ -22,7 +22,6 @@ const addressManage = async (req, res) => {
 const addAddress = async (req, res) => {
     try {
         const user = req.session.isUser;
-        console.log(user)
         const userData = await userModel.findOne({ name: user });
         if (userData) {
             const newAddress = {

@@ -27,8 +27,7 @@
                     <div class="card-body text-center">
                         <h3>Wallet Balance</h3>
                         <h2 class="text-success">₹<%= userData.wallet %>.00</h2>
-                        <!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addFundsModal">Add
-                            Funds</button> -->
+                       
                     </div>
                 </div>
             </div>
@@ -54,7 +53,7 @@
                             <tbody>
                                 <% if(wallet && wallet.length > 0) { %>
                                     <% 
-                                    let balance = 0; // Initialize running balance
+                                    let balance = 0; 
                                     wallet.forEach(item => {
                                         // Calculate the running balance
                                         if(item.type === 'credit') {

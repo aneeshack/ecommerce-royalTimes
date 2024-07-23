@@ -8,14 +8,12 @@ const categoryPage = async (req, res) => {
         const{page} = req.query;
         const currentPage =parseInt(page)
         const limit = 3;
-        console.log('page no is :',typeof(currentPage))
 
         const skip = (page-1) *limit
         const category = await categoryModel.find();
         const brands = await brandModel.find();
         const products = await productModel.find({ isActive: true }).populate('brand').skip(skip).limit(limit);
         const totalProducts = await productModel.countDocuments();
-        console.log('total products:',totalProducts)
         res.render('user/categoryPage', { 
             category, 
             brands, 
@@ -39,20 +37,16 @@ const productFilter = async (req, res) => {
 
         if (brand !== 'undefined') {
             filter.brand = brand
-            console.log('brand')
         }
         if (category !== 'undefined') {
             filter.category = category
-            console.log('category')
         }
         if (priceRange !== 'undefined') {
-            console.log('price')
             const [minPrice, maxPrice] = priceRange.split('-').map(Number);
             console.log(minPrice, maxPrice)
             filter.price = { $gte: minPrice, $lte: maxPrice };
         }
         const products = await productModel.find(filter).populate('brand category')
-        console.log('products according to filter :', products);
 
         res.status(200).json({ products })
 

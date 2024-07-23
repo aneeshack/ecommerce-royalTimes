@@ -41,10 +41,8 @@ const updateCoupon = async (req, res) => {
     try {
         const id = req.params.id;
         const { couponName, couponCode, startDate, expiryDate, discountPercentage, maxDiscount, maxAmount } = req.body;
-        console.log('details',req.body)
         if (isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 90) {
             req.flash('error', 'Discount percentage must be a number between 0 and 90.');
-            // return res.redirect('/admin/addcoupons');
             return res.redirect(`/admin/editCoupon/${id}`); 
         }
         //update category fields
@@ -76,7 +74,6 @@ const updateCoupon = async (req, res) => {
 // adding new coupon
 const createCoupon = async (req, res) => {
     const { couponName, couponCode, startDate, expiryDate, discountPercentage, maxDiscount,maxAmount } = req.body;
-    console.log('details',req.body)
     if (isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 90) {
         req.flash('error', 'Discount percentage must be a number between 0 and 90.');
         return res.redirect('/admin/addcoupons');
@@ -93,7 +90,6 @@ const createCoupon = async (req, res) => {
         });
 
         await newCoupon.save();
-        console.log('product added successfully')
         req.flash('success', 'coupon added successfully.')
         res.redirect('/admin/coupons'); 
     } catch (err) {
@@ -107,13 +103,10 @@ const createCoupon = async (req, res) => {
 // delete one coupon
 const deleteCoupon = async (req, res) => {
     try {
-        console.log('deleted coupon')
         const coupon = await couponModel.findByIdAndDelete(req.params.id)
         if (!coupon) {
-            console.log("delete coupon error:", error.message);
             res.status(400).json({error: 'coupon not find.'})
         }
-        console.log('deleted successfully')
         res.status(200).json({success: 'coupon deleted successfuly'})
     } catch (error) {
         console.log("delete coupon error:", error.message);

@@ -39,6 +39,7 @@ const forgotPasswordEmail = async (req, res) => {
            return res.status(400).json({message: 'please signup using google Sign-In or signup to continue'});
         }
         const existingOtp = await Otp.findOneAndDelete({ email: email });
+
         //otp generate 
         const g_otp = (await randomOtp()).toString();
         const hashedOtp = await bcrypt.hash(g_otp, 10)
@@ -65,7 +66,6 @@ const forgotPasswordEmail = async (req, res) => {
                 console.log('2 minutes error:', error.message);
             }
         }, 120000);
-        console.log('otp send successfully')
         res.status(200).json({message : 'successful email validation'})
        
     } catch (error) {
@@ -87,7 +87,6 @@ const verifyOtp = async (req, res) => {
         // Check if any OTP digit is missing or not a number
         const missingOrInvalidDigit = otpDigits.some(digit => !digit || isNaN(digit));
         if (missingOrInvalidDigit) {
-            console.log("Invalid OTP digits:", otpDigits);
             res.render('user/forgotOtp', { show: "Invalid otp.", isError: true })
             return;
         }
@@ -103,13 +102,11 @@ const verifyOtp = async (req, res) => {
                 const otpMatch = await bcrypt.compare(enteredOtp, userValue.otp);
                 console.log(otpMatch)
                 if (otpMatch) {
-                    console.log("otp is matching");
                     await Otp.findOneAndDelete({ otp: userValue.otp });
 
                    
                     res.render('user/forgetPassChange');
                 } else {
-                    console.log("otp not match");
                     res.render('user/forgotOtp', { show: "otp is not matching, please enter the correct otp.", isError: true })
                 }
             } else {
@@ -126,7 +123,8 @@ const verifyOtp = async (req, res) => {
 //resend otp 
 const resendOtp = async (req, res) => {
     try {
-            const email = req.session.email
+            const email = req.session.email;
+            
             //find and delete old otp data
             const existingOtp = await Otp.findOneAndDelete({ email: email });
 
@@ -144,7 +142,6 @@ const resendOtp = async (req, res) => {
             //send email containing otp
             mailer.sendMail(email, 'Otp Verification', message);
             res.render('user/forgotOtp', { show: "otp resend successfully.please check your email.", isError: false })
-            console.log('otp resend successful')
             // deleting the doc after 2 min
             setTimeout(async () => {
                 try {

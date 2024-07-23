@@ -4,6 +4,12 @@
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Edit Offer for <%= productOffer?.products?.productName %></h1>
+        <% if(successMessage && successMessage.length >0) { %>
+            <div class="alert alert-success"><%= successMessage %></div>
+        <% } %>
+        <% if(errorMessage && errorMessage.length > 0) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
         <form id="categoryOfferEdit" action="/admin/product/offer/update/<%= productOffer?._id %>" method="POST">
             <input type="hidden" name="productId" value="<%= productOffer?.products?._id %>">
             <div class="form-group">

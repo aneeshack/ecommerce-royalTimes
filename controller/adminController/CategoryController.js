@@ -98,7 +98,13 @@ const categoryOfferList = async(req, res)=> {
 const categoryOfferUpdatePage = async(req, res) => {
     try {
         const categories = await categoryModel.find()
-        res.render('admin/addCategoryOffer',{categories})
+        const usedCategoryOffers = await categoryOfferModel.distinct('categories');
+        
+        const usedCategoryIds = usedCategoryOffers.map(id => id.toString());
+        const filteredCategories = categories.filter(category => 
+            !usedCategoryIds.includes(category._id.toString())
+        );
+        res.render('admin/addCategoryOffer',{categories:filteredCategories})
     } catch (error) {
         console.log('error in rendering category offer page:',error.message);
     }
@@ -106,9 +112,11 @@ const categoryOfferUpdatePage = async(req, res) => {
 
 const addCategoryOffer = async (req, res) => {
     try {
-        console.log('adding category offer')
         const {categoryId, offerName, discountPercentage, startDate, endDate} = req.body;
-        console.log('value in cagerory offers are:',req.body);
+        
+        if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 90) {
+            return res.status(400).json({error:'Discount percentage must be a number between 1 and 90.'});
+        }
         const categoryOffer = new categoryOfferModel({
             categories:categoryId,
             offerName,
@@ -117,7 +125,6 @@ const addCategoryOffer = async (req, res) => {
             endDate
         })
         const savedOffer = await categoryOffer.save();
-        console.log('saved offer is:',savedOffer);
         res.status(200).json({success: 'category offer updated successfully'});
     } catch (error) {
         console.log('error in adding category offer:',error.message);
@@ -127,14 +134,10 @@ const addCategoryOffer = async (req, res) => {
 const deleteCategoryOffer = async(req, res) => {
     try {
         const categoryId = req.params.id;
-        console.log('cat',categoryId);
-        console.log('deleting category offer')
         const catOffer = await categoryOfferModel.findByIdAndDelete(categoryId);
         if(!catOffer){
-            console.log('catoffer is not found')
             return res.status(400).json({error:'No category offer found'});
         }
-        console.log('successfully deleted')
         res.status(200).json({success:'Your category is offer deleted.'});
     } catch (error) {
        console.log('error while deleting category offer:',error.message); 
@@ -144,9 +147,7 @@ const deleteCategoryOffer = async(req, res) => {
 
 const editCategoryOfferPage = async(req, res) => {
     try {
-        console.log('editing category')
         const categoryId = req.params.id;
-        console.log('cat id:',categoryId);
         const categoryOffer  = await categoryOfferModel.findById(categoryId);
         const categories = await categoryModel.find();
         if (!categories) {
@@ -161,9 +162,11 @@ const editCategoryOfferPage = async(req, res) => {
 const editCategoryOffer = async(req, res) => {
     try {
         const category = req.params.id;
-        console.log('category id is:',category);
         const {categoryId, offerName, discountPercentage, startDate, endDate} = req.body;
-        console.log('value in cagerory offers are:',req.body);
+        if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 90) {
+            req.flash('error', 'Discount percentage must be a number between 1 and 90.');
+            return res.redirect(`/admin/categoryOffer/edit/${category}`); 
+        }
         const updateOffer = await categoryOfferModel.findByIdAndUpdate(category,{
             categories:categoryId,
             offerName,
@@ -171,8 +174,7 @@ const editCategoryOffer = async(req, res) => {
             startDate,
             endDate
         },{ new: true })
-        console.log('saved offer is:',updateOffer);
-        console.log('edited successfully');
+
         req.flash('success',"offer edited successfully.");
         res.redirect('/admin/categoryOffer')
     } catch (error) {

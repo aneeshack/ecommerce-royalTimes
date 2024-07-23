@@ -128,8 +128,6 @@ const walletPage = async (req, res) => {
         const wallet = await walletModel.find({userId:userId})
         
         res.render('user/userWallet', { userData,wallet,currentWalletBalance: userData.wallet  })
-
-
     } catch (error) {
         console.log('error in showing wallet page:',error.message)
     }
@@ -142,7 +140,6 @@ const addFund = async (req, res) => {
         const amount = req.body.amount;
 
         if (!userId || !amount) {
-            console.log('not getting amount')
             return res.status(400).json({ error: 'User ID and amount are required' });
         }
 

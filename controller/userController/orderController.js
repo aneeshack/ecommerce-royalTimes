@@ -20,35 +20,27 @@ const razorpayInstance = new Razorpay({
 const placeOrder = async (req, res) => {
     try {
         const userId = req.session.userId;
-        // const userName = req.session.isUser;
-        // console.log('username:',userName)
         const { mobileNumber, addressId, paymentMethod, totalAmount, cartItemID, userName, grandTotal, couponAmount } = req.body;
-        console.log('totalamount:', totalAmount, typeof (totalAmount), 'username:', userName)
         const userData = await userModel.findById(userId);
         if (!userData) {
-            console.log('User not found');
             return res.status(400).json({ error: 'User not found' });
         }
 
         const selectedAddress = userData.address.find(addr => addr._id.toString() === addressId);
         if (!selectedAddress) {
-            console.log('Please select one address to continue');
             return res.status(400).json({ error: 'Please select one address to continue' });
         }
 
         if (!mobileNumber) {
-            console.log('Please enter mobile number to continue');
             return res.status(400).json({ error: 'Please enter mobile number to continue' });
         }
 
         if (!cartItemID) {
-            console.log('There are no cart items for ordering');
             return res.status(400).json({ error: 'There are no cart items for ordering' });
         }
 
         const cart = await cartModel.findById(cartItemID).populate('products.productId');
         if (!cart) {
-            console.log('Cart not found');
             return res.status(400).json({ error: 'Cart not found' });
         }
 
@@ -71,13 +63,11 @@ const placeOrder = async (req, res) => {
 
         } else if (paymentMethod === 'COD' || paymentMethod === 'Wallet') {
             if (paymentMethod === 'Wallet') {
-                console.log('inside wallet')
-                console.log('wallet amount:', userData.wallet, typeof (userData.wallet))
                 const walletBalance = userData.wallet || 0;
                 if (walletBalance >= totalAmount) {
-                    console.log('sufficient balance in wallet')
                     userData.wallet -= totalAmount;
                     await userData.save();
+
                      // Save wallet transaction
                      const wallet = new walletModel({
                         userId: userId,
@@ -92,7 +82,7 @@ const placeOrder = async (req, res) => {
                         paymentStatus: 'success',
 
                     };
-                    console.log('wallet amouont in paymentdetails is:', paymentDetails.paymentMethod)
+
                 } else {
                     console.log('wallet amount is not enough')
                     return res.status(400).json({ error: 'Insufficient wallet balance.' });
@@ -111,7 +101,7 @@ const placeOrder = async (req, res) => {
                 quantity: product.quantity,
                 total: product.total
             }));
-            console.log('details sin productitems:', productItems)
+
             // if cod save the data
             const newOrder = new orderModel({
                 userId: userId,
@@ -126,7 +116,6 @@ const placeOrder = async (req, res) => {
             });
 
             await newOrder.save();
-            console.log('new order created')
             for (const item of productItems) {
                 await productModel.findByIdAndUpdate(
                     item.productId,
@@ -156,7 +145,7 @@ const paymentOrder = async (req, res) => {
         const orderData = paymentData.orderData;
         const { mobileNumber, addressId, paymentMethod, cartItemID, totalAmount, userName, grandTotal, couponAmount } = orderData;
         const { orderId, paymentId, razorpayOrderId, amount } = paymentData;
-        console.log('order:', orderData)
+
         const userData = await userModel.findById(userId);
         const selectedAddress = userData.address.find(addr => addr._id.toString() === addressId);
         const cart = await cartModel.findById(cartItemID).populate('products.productId');
@@ -182,7 +171,7 @@ const paymentOrder = async (req, res) => {
         });
 
         const orderIs = await newOrder.save();
-        console.log('order:', orderIs)
+
         // Decrease the quantity of each product in the order
         for (const item of productItems) {
             await productModel.findByIdAndUpdate(
@@ -192,7 +181,7 @@ const paymentOrder = async (req, res) => {
             );
         }
         req.session.newOrder = newOrder._id.toString();
-        //  to clear the cart
+        
         await cartModel.deleteOne({ _id: cartItemID });
         res.status(200).json({ success: 'Order placed successfully with razorpay' });
 
@@ -206,14 +195,13 @@ const paymentOrder = async (req, res) => {
 // for failed payment through razorpay
 const failedPayment = async(req, res) => {
     try {
-        console.log('inside failed payment')
         const userId = req.session.userId;
 
         const paymentData = req.body;
         const orderData = paymentData.orderData;
         const { mobileNumber, addressId, paymentMethod, cartItemID, totalAmount, userName, grandTotal, couponAmount } = orderData;
         const { orderId, paymentId, razorpayOrderId, amount } = paymentData;
-        console.log('order:', orderData)
+
         const userData = await userModel.findById(userId);
         const selectedAddress = userData.address.find(addr => addr._id.toString() === addressId);
         const cart = await cartModel.findById(cartItemID).populate('products.productId');
@@ -239,16 +227,8 @@ const failedPayment = async(req, res) => {
         });
 
         const orderIs = await newOrder.save();
-        console.log('order:', orderIs)
-        // Decrease the quantity of each product in the order
-        // for (const item of productItems) {
-        //     await productModel.findByIdAndUpdate(
-        //         item.productId,
-        //         { $inc: { stock: -item.quantity } },
-        //         { new: true }
-        //     );
-        // }
         req.session.newOrder = newOrder._id.toString();
+        
         //  to clear the cart
         await cartModel.deleteOne({ _id: cartItemID });
         res.status(200).json({ success: ''  });
@@ -273,9 +253,6 @@ const confirmation = async (req, res) => {
 
         }
         res.render('user/confirmation', { order });
-        //delete cartmodel after place order
-        // await cartModel.deleteOne({userId})
-
         req.session.newOrder = null;
     } catch (error) {
         console.log('rendering confirmation page failed:', error.message);
@@ -291,9 +268,8 @@ const orderList = async (req, res) => {
         if (req.session.isUser) {
             const userId = req.session.userId;
             const userData = await userModel.findOne({ name: req.session.isUser });
-            const order = await orderModel.find({ userId }).populate('productItems.productId');
+            const order = await orderModel.find({ userId }).populate('productItems.productId').sort({dateOrdered:-1});
             const failedOrder = await failedOrderModel.find({userId}).populate('productItems.productId');
-            console.log('failed orders:',failedOrder)
             res.render('user/orderList', { order, userData ,failedOrder})
         } else {
             res.redirect('/user/login')
@@ -308,7 +284,6 @@ const orderList = async (req, res) => {
 //api for cancel the products
 const orderCancel = async (req, res) => {
     try {
-        console.log('order cancel')
         const { orderId, productId } = req.params;
         const userId = req.session.userId;
         const order = await orderModel.findById(orderId);
@@ -316,7 +291,6 @@ const orderCancel = async (req, res) => {
         if (order) {
             const productUpdate = order.productItems.find(item => item.productId.toString() === productId);
             if (productUpdate) {
-                console.log('productupdate:', productUpdate.total)
 
                 const updatedProduct = await productModel.findByIdAndUpdate(
                     productId,
@@ -375,13 +349,10 @@ const orderCancel = async (req, res) => {
 // product returning request
 const returnProduct = async (req, res) => {
     try {
-        console.log('return ing product')
         const { orderId, productId, returnReason } = req.body;
-        console.log('values are obtaining in body:', req.body);
 
         const order = await orderModel.findById(orderId);
         if (!order) {
-            console.log('order is not found')
             return res.status(404).json({ message: 'order not found.' })
         }
 
@@ -408,11 +379,9 @@ const returnProduct = async (req, res) => {
 const downloadInvoice = async (req, res) => {
     try {
         const { orderId, productId } = req.params;
-        console.log('orderid, productId:', orderId, productId);
         const order = await orderModel.findById(orderId).populate('productItems.productId');
 
         if (!order) {
-            console.log('no order found');
             return res.status(404).send('Order not found');
         }
 
@@ -466,10 +435,8 @@ const downloadInvoice = async (req, res) => {
 
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename="invoice_${orderId}.pdf"`);
-        // res.send(result.pdf);
+
         res.send(pdfBuffer);
-        console.log('completed it')
-        // res.status(200).json({success:'sucessfully downloaded'})
     } catch (error) {
         console.log('download invoice:', error.message);
         res.status(400).json({ error: 'some errors occured while creating invoice' })

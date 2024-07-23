@@ -6,7 +6,6 @@ const PDFDocument = require('pdfkit');
 const path = require('path');
 const fs = require('fs');
 const { getEnabledCategories } = require('trace_events');
-// const { default: products } = require('razorpay/dist/types/products');
 
 //dashboard
 const dashboard = async (req, res) => {
@@ -47,7 +46,6 @@ const dashboard = async (req, res) => {
                 }
             }
         ])
-        console.log('product details is:', topProducts)
 
         // aggregation for top 10 best-selling getEnabledCategories
         const topCategories = await orderModel.aggregate([
@@ -87,9 +85,7 @@ const dashboard = async (req, res) => {
                 }
             }
         ])
-        console.log('category items:', topCategories)
 
-        // Aggregation for top 10 best-selling brands
       // Aggregation for top 10 best-selling brands
       const topBrands = await orderModel.aggregate([
         { $unwind: "$productItems" },
@@ -113,10 +109,7 @@ const dashboard = async (req, res) => {
         { $project: { _id: 1, totalSales: 1, brandName: "$brandDetails.name" } }
     ]);
 
-        console.log('brand items:', topBrands)
 
-        console.log('today orders:', JSON.stringify(todayOrders))
-        console.log('Orders fetched for today:', JSON.stringify(todayOrders, null, 2));
         res.render('admin/dashboard', {
             orderData: JSON.stringify(todayOrders),
             topProducts,
@@ -175,11 +168,8 @@ const chartUpdate = async (req, res) => {
 // SALES REPORT BASED ON PDFKIT AND EXCEL
 const salesReport = async (req, res) => {
     try {
-        console.log('in the sales report');
         const { interval, reportType } = req.query;
         let startDate, endDate;
-
-        console.log('interval and report type:', interval, reportType);
 
         switch (interval) {
             case 'day':
@@ -208,8 +198,6 @@ const salesReport = async (req, res) => {
                 return res.status(400).json({ error: 'Invalid interval type' });
         }
 
-        console.log('start and end date:', startDate, endDate);
-
         const orders = await orderModel.find({
             dateOrdered: {
                 $gte: startDate,
@@ -218,7 +206,6 @@ const salesReport = async (req, res) => {
         }).populate('userId');
 
         if (!orders || orders.length === 0) {
-            console.log('no orders found');
             return res.status(404).json({ message: 'No purchase found in this interval' });
         }
 

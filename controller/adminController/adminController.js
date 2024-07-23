@@ -49,7 +49,6 @@ const loginAction = async (req, res) => {
 //Admin Logouot
 const logout = (req, res) => {
     req.session.destroy();
-    // res.render('/admin/adminLogin');
     res.redirect('/admin/login')
 }
 

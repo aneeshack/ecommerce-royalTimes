@@ -2,30 +2,12 @@ const productModel = require('../../models/product');
 const productOffer = require('../../models/productOffer');
 const productOfferModel = require('../../models/productOffer');
 
-// showing product list
-// const productOfferList = async(req, res) => {
-//     try {
-//         console.log('Fetching product offer list');
-//         const products = await productModel.find().populate('offer');
-//         // const productOffer = await offerModel.find();
-//         console.log('product are:',products)
-
-//         res.render('admin/productOfferList', { products: products });
-//     } catch (error) {
-//         console.error("Error in getting product list:", error);
-//         res.render("admin/productOfferList");
-//     }
-// }
 
 // showing product list
 const productOfferList = async(req, res) => {
     try {
-        console.log('Fetching product offer list');
         const products = await productModel.find().populate('offer');
         const productOff = await productOfferModel.find().populate('products');
-        // const productOffer = await offerModel.find();
-        console.log('product are:',products)
-
         res.render('admin/productOfferList', { products: products ,productOff});
     } catch (error) {
         console.error("Error in getting product list:", error);
@@ -36,9 +18,7 @@ const productOfferList = async(req, res) => {
 const addProductOfferPage = async(req, res) =>{
     try {
         const id = req.params.id;
-        console.log('idI is:',id)
         const product = await productModel.findById(id)
-        console.log('product is:',product)
         res.render('admin/addProductOffer',{product:product})
     } catch (error) {
         console.log('product offer adding page:',error.message);
@@ -49,10 +29,12 @@ const addProductOfferPage = async(req, res) =>{
 const addProductOffer = async(req, res) => {
     try {
         const productId= req.params.id;
-        console.log('idI is:',productId)
         const {offerName,discountPercentage,startDate,endDate } = req.body
-        console.log('datas:',req.body);
         const product = await productModel.findById(productId);
+        if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 90) {
+            req.flash('error', 'Discount percentage must be a number between 1 and 90.');
+            return res.redirect(`/admin/product/addOffer/${productId}`); 
+        }
         const productOffer = new productOfferModel({
             products:productId,
             offerName,
@@ -61,7 +43,6 @@ const addProductOffer = async(req, res) => {
             endDate
         })
         const savedOffer  = await productOffer.save();
-        console.log('offer is:,',savedOffer )
 
           // Update the product with the new offer reference
           const productSchemaUpdate = await productModel.findByIdAndUpdate(
@@ -77,20 +58,14 @@ const addProductOffer = async(req, res) => {
     }
 }
 
+// deleting a product offer
 const deleteProductOffer = async(req, res) => {
     try {
         const productId = req.params.id;
-        console.log('cat',productId);
-        console.log('deleting product offer')
         const ProductOffer = await productOfferModel.findByIdAndDelete(productId);
-        // const ProductOffer = await productOfferModel.products.find(productId);
-        // console.log('product offer :')
-        console.log('products are:',productOffer);
         if(!ProductOffer){
-            console.log('ProductOffer is not found')
             return res.status(400).json({error:'No product offer found'});
         }
-        console.log('successfully deleted')
         res.status(200).json({success:'Your product offer deleted.'});
     } catch (error) {
        console.log('error while deleting product offer:',error.message); 
@@ -98,14 +73,11 @@ const deleteProductOffer = async(req, res) => {
     }
 }
 
-
+// page rendering for edit product offer 
 const editProductOfferPage = async(req, res) => {
     try {
-        console.log('editing product offer')
         const productOfferId = req.params.id;
-        console.log('product id:',productOfferId);
         const productOffer  = await productOfferModel.findById(productOfferId).populate('products');
-        console.log("........",productOffer.products._id);
         const products = await productModel.find();
         if (!productOffer) {
             return res.status(404).send('product offer not found');
@@ -116,13 +88,16 @@ const editProductOfferPage = async(req, res) => {
     }
 }
 
+// editing product offer
 const editProductOffer = async(req, res) => {
     try {
         const productOfferId = req.params.id;
-        console.log('product id is:',productOfferId);
         const { offerName, discountPercentage, startDate, endDate,productId} = req.body;
         
-        console.log('value in product offers are:',req.body);
+        if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 90) {
+            req.flash('error', 'Discount percentage must be a number between 1 and 90.');
+            return res.redirect(`/admin/product/editOffer/${productOfferId}`); 
+        }
         const updateOffer = await productOfferModel.findByIdAndUpdate(productOfferId,{
             products:productId,
             offerName,
@@ -130,8 +105,6 @@ const editProductOffer = async(req, res) => {
             startDate,
             endDate
         },{ new: true })
-        console.log('saved offer is:',updateOffer);
-        console.log('edited successfully');
         req.flash('success',"offer edited successfully.");
         res.redirect('/admin/product/offerList')
     } catch (error) {

@@ -3,24 +3,6 @@ const wishlistModel = require('../../models/wishList');
 const productOfferModel = require('../../models/productOffer');
 const categoryOfferModel = require('../../models/categoryOffer');
 
-// //wishlist page showing
-// const wishList = async (req, res) => {
-//     try {
-//         const userId = req.session.userId;
-//         if (!userId) {
-//             return res.redirect('/user/login', { message: "Please log in to view your wishlist." });
-//         }
-//         const wishlist = await wishlistModel.findOne({ userId }).populate('products');
-
-//         if (!wishlist || wishlist.products.length === 0) {
-//             return res.render('user/wishList', { wishlists: [] });
-//         }
-
-//         res.render('user/wishList', { wishlists: [wishlist] });
-//     } catch (error) {
-//         console.log('error in wishlist page:', error.message)
-//     }
-// }
 
 // // product added to wishlist
 const wishProduct = async (req, res) => {
@@ -28,7 +10,6 @@ const wishProduct = async (req, res) => {
 
         const { productId } = req.body;
         const userId = req.session.userId;
-
 
         //find if the user already have wishlist
         let wishList = await wishlistModel.findOne({ userId })

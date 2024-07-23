@@ -13,10 +13,8 @@ const razorpay  = new Razorpay({
 // showing failed orders page
 const failedPaymentPage = async(req,res) => {
     try {
-        console.log('inside failed order page')
         const userId = req.session.userId;
         const failedOrder = await failedOrderModel.find({userId}).populate('productItems.productId').sort({ dateOrdered: -1 });;
-        console.log('failedorders:',failedOrder)
         res.render('user/failedOrder',{failedOrder})
     } catch (error) {
         console.log('failedOrderpage:',error);
@@ -26,15 +24,11 @@ const failedPaymentPage = async(req,res) => {
 
 const retryPayment = async(req, res) =>{
     try {
-        console.log('inside retry payment')
         const userId = req.session.userId;
         const {orderId} = req.body;
-        console.log('orderid:',orderId)
         const failedOrder = await failedOrderModel.findById(orderId).populate('productItems.productId');
       
-        // const failedOrder = await failedOrderModel.find({userId}).populate('productItems.productId')
         if(!failedOrder){
-            console.log('failedorder is not found')
             return res.status(400).json({error: 'This failed order is not exist'})
         }
        
@@ -60,10 +54,8 @@ const retryPayment = async(req, res) =>{
 const repaymentSuccess = async(req, res) => {
     try {
         const { orderId, paymentId, signature } = req.body;
-        console.log('order id:',orderId);
 
         const failedOrder = await failedOrderModel.findById(orderId).populate('productItems.productId');
-        console.log('failed order is:',failedOrder)
         if (!failedOrder) {
             return res.status(404).json({ success: false, message: 'Failed order not found' });
         }
@@ -80,7 +72,6 @@ const repaymentSuccess = async(req, res) => {
                 couponDiscount: failedOrder.couponDiscount
         })
         await newOrder.save();
-            console.log('new order created')
             for (const item of failedOrder.productItems) {
                 await productModel.findByIdAndUpdate(
                     item.productId,

@@ -26,5 +26,5 @@ const productOfferSchema = new mongoose.Schema({
 });
 
 // Create a TTL index on the `endDate` field
-productOfferSchema.index({ endDate: 1 }, { expireAfterSeconds: 1 });
+productOfferSchema.index({ endDate: 1 }, { expireAfterSeconds: 0 });
 module.exports = mongoose.model('ProductOffer', productOfferSchema);

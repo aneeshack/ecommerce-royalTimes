@@ -21,10 +21,11 @@ const categoryOfferSchema = new mongoose.Schema({
     },
     endDate: {
         type: Date,
-        default: Date.now,
+        // default: Date.now,
         required: true,
     }
 });
 
-categoryOfferSchema.index({ endDate: 1 }, { expireAfterSeconds: 1 });
+// Create a TTL index on the expiryDate field
+categoryOfferSchema.index({ endDate: 1 }, { expireAfterSeconds: 0 });
 module.exports = mongoose.model('CategoryOffer', categoryOfferSchema);

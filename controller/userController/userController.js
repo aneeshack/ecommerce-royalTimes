@@ -33,23 +33,17 @@ const homePage = async (req, res) => {
         if (user) {
             const usercheck = await userModel.findOne({ _id: userId, isActive: true });
             const wishList = await wishlistModel.find();
-             productOffers = await productOfferModel.find().populate('products');
-
-             categoryOffers = await categoryOfferModel.find().populate('categories');
-            console.log('category offer are:',categoryOffers,'product offers :',productOffers)
-            // const categoryOffers = await categoryOfferModel.find().populate('categories');
-            console.log('category offer are:', categoryOffers, 'product offers:', productOffers);
+            const currentDate = new Date(); 
+             productOffers = await productOfferModel.find({startDate: { $lte: currentDate }}).populate('products');
+             categoryOffers = await categoryOfferModel.find({startDate: { $lte: currentDate }}).populate('categories');
 
             if (usercheck) {
-              
-
                 res.render('user/homePage', { No_icons: false, products: products, user: user, wishList,categoryOffers,productOffers });
             } else {
                 res.render('user/homePage', { No_icons: true, products: products,categoryOffers,productOffers });
             }
 
         } else {
-            // count =0
             res.render('user/homePage', { No_icons: true, products: products ,categoryOffers, productOffers });
         }
     } catch (error) {
@@ -249,52 +243,6 @@ const verifyOtp = async (req, res) => {
         res.status(400).json({error:"error in verify otp." })
     }
 }
-
-
-//resend otp 
-// const resendOtp = async (req, res) => {
-//     try {
-//         //retrieve data from session
-//         console.log('resend otp')
-//         if (req.session.userDetails) {
-//             const { email, name } = req.session.userDetails;
-
-//             //find and delete old otp data
-//             const existingOtp = await Otp.findOneAndDelete({ email: email });
-
-//             //generate otp
-//             const g_otp = (await randomOtp()).toString();
-//             const hashedOtp = await bcrypt.hash(g_otp, 10);
-//             const message = '<p> Hi <b>' + name + '</b>, </br> <h4>' + g_otp + '</h4> </p>'
-
-//             //save otp in model
-//             const otpData = new Otp({
-//                 email: email,
-//                 otp: hashedOtp,
-//                 Date: new Date()
-//             })
-//             const userOtp = await otpData.save();
-//             //send email containing otp
-//             mailer.sendMail(email, 'Otp Verification', message);
-//             res.render('user/otpPage', { show: "otp resend successfully.please check your email.", isError: false })
-
-//             // deleting the doc after 2 min
-//             setTimeout(async () => {
-//                 try {
-//                     await Otp.findOneAndDelete({ otp: userOtp.otp });
-//                     //  res.render('user/otpPage',{show:"otp verifying timeout. resend otp.",isError:true}) 
-//                     console.log('otp deleted after 2 minutes');
-//                 } catch (error) {
-//                     console.log('2 minutes error:', error.message);
-//                 }
-//             }, 120000);
-//         } else {
-//             res.render('user/otpPage', { show: "invalid otp.", isError: true })
-//         }
-//     } catch (error) {
-//         console.log("resend error: ", error.message)
-//     }
-// }
 
 
 const MAX_RESEND_ATTEMPTS = 3; 
