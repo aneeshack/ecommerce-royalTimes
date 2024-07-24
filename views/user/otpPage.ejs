@@ -5,9 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700">
 </head>
+<style>
+    .hidden {
+    display: none;
+}
 
+</style>
 <body>
 
     <div class="relative font-inter antialiased">
@@ -29,8 +35,8 @@
                                 <% } %>
 
                         </header>
-                        <!-- <div id="error-message" class="hidden mb-4 bg-red-100 text-red-700 p-2 rounded"></div> -->
-                        <div id="error-message" class="hidden mb-4 p-2 rounded"></div>
+                        <div id="error-message" class="hidden mb-4 bg-red-100 text-red-700 p-2 rounded"></div>
+                        <!-- <div id="error-message" class="hidden mb-4 p-2 rounded"></div> -->
                         <!-- Error message div -->
 
                         <form id="otp-form" action="/user/verifyOtp" method="post">
@@ -111,7 +117,7 @@
         </div>
 
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -126,54 +132,78 @@
     </script>
 
     <!-- resend otp using fetch method -->
-    <script>
-        const handleResendOTP = async (event) => {
-            event.preventDefault();
-            try {
-                // Clear the OTP input fields
-                document.getElementById('otpDigit1').value = '';
-                document.getElementById('otpDigit2').value = '';
-                document.getElementById('otpDigit3').value = '';
-                document.getElementById('otpDigit4').value = '';
-                
-                const response = await fetch('/user/resendOtp', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    if (data.success) {
-                        console.log('Success:', data);
-                        window.location.href = '/user/signup';
-                    }
-                } else {
-
-                    console.log('Error:', data.error);
-                    const successMessageDiv = document.querySelector('.alert-dismissible');
+<script>
+    const handleResendOTP = async (event) => {
+    event.preventDefault();
+    try {
+        // Clear the OTP input fields
+        document.getElementById('otpDigit1').value = '';
+        document.getElementById('otpDigit2').value = '';
+        document.getElementById('otpDigit3').value = '';
+        document.getElementById('otpDigit4').value = '';
+        
+        const response = await fetch('/user/resendOtp', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        
+        if (response.ok) {
+            if (data.message) {
+                console.log('Success:', data);
+                window.location.href = '/user/signup';
+            } else if (data.success) {
+                console.log('Success:', data);
+                const errorMessageDiv = document.getElementById('error-message');
+                errorMessageDiv.classList.add('hidden');
+                const successMessageDiv = document.querySelector('.alert-dismissible');
                     if (successMessageDiv) {
                         successMessageDiv.remove();
                     }
-                    console.log('data error:', data)
-                    const errorMessageDiv = document.getElementById('error-message');
-                    errorMessageDiv.textContent = data.error || 'Verification failed';
-                    errorMessageDiv.classList.remove('hidden');
-                }
-            } catch (error) {
-                console.error('Error occurred:', error);
-                const successMessageDiv = document.querySelector('.alert-dismissible');
-
-                if (successMessageDiv) {
-                    successMessageDiv.remove();
-                }
-                const errorMessageDiv = document.getElementById('error-message');
-                errorMessageDiv.textContent = error.messsage;
-                errorMessageDiv.classList.remove('hidden');
+                // Show success message using Toastify
+                Toastify({
+                    text: data.success || 'OTP resend successful',
+                    duration: 3000, 
+                    gravity: 'top', 
+                    position: 'right', 
+                    backgroundColor: 'linear-gradient(to right, #00b09b, #96c93d)',
+                }).showToast();
             }
-        };
-    </script>
+        } else {
+            const successMessageDiv = document.querySelector('.alert-dismissible');
+                    if (successMessageDiv) {
+                        successMessageDiv.remove();
+                    }
+            console.log('Error:', data.error);
+            const errorMessageDiv = document.getElementById('error-message');
+            errorMessageDiv.classList.add('hidden');
+            // Show error message using Toastify
+            Toastify({
+                text: data.error || 'Verification failed',
+                duration: 3000,
+                gravity: 'top',
+                position: 'right',
+                backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc371)',
+            }).showToast();
+        }
+    } catch (error) {
+        console.error('Error occurred:', error);
+        const errorMessageDiv = document.getElementById('error-message');
+        errorMessageDiv.classList.add('hidden');
+        // Show error message using Toastify
+        Toastify({
+            text: error.message || 'An unexpected error occurred',
+            duration: 3000,
+            gravity: 'top',
+            position: 'right',
+            backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc371)',
+        }).showToast();
+    }
+};
 
+</script>
     <!-- timer used to show for 2 minutes -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {

@@ -53,7 +53,7 @@
                                         </td>
                                         <td>
                                           
-                                            <h5>$<%= item?.offerPrice %>.00 </h5>
+                                            <h5>₹<%= item?.offerPrice %>.00 </h5>
                                   
                                         </td>
                                         <td>
@@ -73,7 +73,7 @@
                                         </td>
                                         <td>
                                             <!-- chaging the total amount -->
-                                            <h5><strong id="totalAmount<%-item?.productId?._id%>">$<%= item?.total %>
+                                            <h5><strong id="totalAmount<%-item?.productId?._id%>">₹<%= item?.total %>
                                                 </strong></h5>
 
                                         </td>
@@ -121,7 +121,7 @@
                                                 </td>
                                                 <td>
                                                     <% if(grandTotalAmount &&grandTotalAmount>0) { %>
-                                                        <h5 id="grandTotal">$<%= grandTotalAmount %>.00</h5>
+                                                        <h5 id="grandTotal">₹<%= grandTotalAmount %>.00</h5>
                                                         <% }else{ %>
                                                             <h5>0.00</h5>
                                                             <% } %>
@@ -210,7 +210,7 @@
                             // Update the grand total element
                             const grandTotalElement = document.getElementById('grandTotal');
                             if (grandTotalElement) {
-                                grandTotalElement.textContent = `$${data.grandTotal.toFixed(2)}`;
+                                grandTotalElement.textContent = `₹${data.grandTotal.toFixed(2)}`;
                             }
                         }).catch(error => {
                             console.log('error while deleting the product', error);
@@ -267,8 +267,8 @@
                         console.log('response is :', response)
                         const result = await response.json();
                         //
-                        totalAmount.textContent = `$${result.productTotal}`
-                        grandTotal.textContent = `$${result.grandT}.00`
+                        totalAmount.textContent = `₹${result.productTotal}`
+                        grandTotal.textContent = `₹${result.grandT}.00`
                         console.log('result:', result)
                         Swal.fire({
                             icon: 'success',

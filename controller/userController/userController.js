@@ -264,7 +264,8 @@ const resendOtp = async (req, res) => {
                 const { count } = resendAttempts[email];
                 if (count >= MAX_RESEND_ATTEMPTS) {
                     console.log('time expired')
-                    res.status(200).json({ success: 'redirect to signup' });
+                    // res.status(200).json({ success: 'redirect to signup' });
+                   return res.status(200).json({ message: 'redirect to signup' });
                 } else {
                     resendAttempts[email].count++;
                 }
@@ -286,8 +287,8 @@ const resendOtp = async (req, res) => {
 
             // Send email containing OTP
             mailer.sendMail(email, 'OTP Verification', message);
-            res.render('user/otpPage', { show: "OTP resent successfully. Please check your email.", isError: false });
-
+            // res.render('user/otpPage', { show: "OTP resent successfully. Please check your email.", isError: false });
+            res.status(200).json({success:'resend otp successfully'})
             
             setTimeout(async () => {
                 try {

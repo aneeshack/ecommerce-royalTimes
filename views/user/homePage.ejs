@@ -184,13 +184,13 @@
                                 &nbsp;
                                 <% if (productOffer) { %>
                                     <span style="text-decoration: line-through; color: red;">
-                                        $<%= product.price.toFixed(2) %>
+                                        ₹<%= product.price.toFixed(2) %>
                                     </span>
                                     <br>
                                     <span style="color: green;"> <%= productOffer.offerName %> of <%= productOffer.discountPercentage %>%</span>
                                 <% } else if (categoryOffer) { %>
                                     <span style="text-decoration: line-through; color: red;">
-                                        $<%= product.price.toFixed(2) %>
+                                        ₹<%= product.price.toFixed(2) %>
                                     </span>
                                     <br>
                                     <span style="color: green;"> <%= categoryOffer.offerName %> of <%= categoryOffer.discountPercentage %>%</span>
@@ -310,7 +310,6 @@
 		   
 			this.classList.toggle('far');
 			this.classList.toggle('fas');
-			// this.classList.toggle('text-danger');
 
 		   
 			const productId = this.getAttribute('data-product-id');
@@ -389,14 +388,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		// Assuming you have a function to fetch product data from your backend
 function fetchProducts() {
     // Fetch products data from backend API
-    fetch('/user/home') // Assuming this is the correct API endpoint to fetch products
+    fetch('/user/home') 
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.json(); // Parse response as JSON
+            return response.json(); 
         })
-        .then(products => renderProducts(products)) // Pass products to renderProducts function
+        .then(products => renderProducts(products)) 
         .catch(error => console.log('Error fetching products:', error));
 }
 
@@ -419,7 +418,7 @@ function renderProducts(products) {
         productImage.alt = product.productName;
 
         const productPrice = document.createElement('p');
-        productPrice.textContent = `Price: $${product.price}`;
+        productPrice.textContent = `Price: ₹${product.price}`;
 
         // Append elements to productCard
         productCard.appendChild(productName);
@@ -443,7 +442,7 @@ function renderProducts(products) {
             }
         });
 
-        fetchProducts(); // Call fetchProducts to load products initially
+        fetchProducts();
     });
 
 	</script>

@@ -170,7 +170,7 @@
 									Product <%= products.productName %> is a awsome product in watch industry.
 
 								</li>
-								<li>The watch with wonder and low price as only $<%= products.price %>.00 is a
+								<li>The watch with wonder and low price as only ₹<%= products.price %>.00 is a
 										wonderfull gift.</li>
 								<li>It is madeup of <%= products.CaseMaterial %> that make it feel free to use.
 
@@ -347,7 +347,7 @@
 												<h5 class="card-title">
 													<%= relatedProduct.brand.name %>
 												</h5>
-												<p class="card-text">Price: $<%= relatedProduct.price %>
+												<p class="card-text">Price: ₹<%= relatedProduct.price %>
 												</p>
 
 											</div>
@@ -505,7 +505,7 @@
 								productImage.alt = product.productName;
 
 								const productPrice = document.createElement('p');
-								productPrice.textContent = `Price: $${product.price}`;
+								productPrice.textContent = `Price: ₹${product.price}`;
 
 								// Append elements to productCard
 								productCard.appendChild(productName);

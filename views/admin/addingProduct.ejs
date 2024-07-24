@@ -6,7 +6,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Cropper CSS for image cropping -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
-
+<style>
+  .img-thumbnail {
+  width: 200px; /* Adjust the width as needed */
+  height: auto; /* Maintain aspect ratio */
+}
+</style>
 </head>
 
 <body>
@@ -33,70 +38,70 @@
                 <label for="productName">Product Name</label>
                 <input type="text" class="form-control" id="productName" placeholder="Enter product name"
                     name="productName" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="productPrice">Product Price</label>
                 <input type="number" class="form-control" id="productPrice" placeholder="Enter product price"
                     name="price" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="productStock">Stock</label>
                 <input type="number" class="form-control" id="productStock" placeholder="Enter stock quantity"
                     name="stock" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="productWarranty">Warranty (year)</label>
                 <input type="number" class="form-control" id="productWarranty" placeholder="Enter warranty duration"
                     name="warranty" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="watchType">Watch Type</label>
                 <input type="text" class="form-control" id="watchType" placeholder="Enter product watchType"
                     name="watchType" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="CaseMaterial">Case Material</label>
                 <input type="text" class="form-control" id="CaseMaterial" placeholder="Enter product CaseMaterial"
                     name="CaseMaterial" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="dialColour">Dial Colour</label>
                 <input type="text" class="form-control" id="dialColour" placeholder="Enter product dialColour"
                     name="dialColour" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="strapMaterial">Strap Material</label>
                 <input type="text" class="form-control" id="strapMaterial" placeholder="Enter product strapMaterial"
                     name="strapMaterial" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="ModelNumber">Model Number</label>
                 <input type="number" class="form-control" id="ModelNumber" placeholder="Enter product ModelNumber"
                     name="ModelNumber" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+                
                 <span></span>
             </div>
             <div class="form-group">
                 <label for="features">Features</label>
                 <input type="text" class="form-control" id="features" placeholder="Enter product features"
                     name="features" value="" required>
-                <!-- <i class="fa fa-check-circle" aria-hidden="true"></i> -->
+           
                 <span></span>
             </div>
             <div class="form-group">
@@ -157,7 +162,7 @@
       cropContainer.classList.add("image-crop-container");
       cropContainer.innerHTML = `
         <div class="image-container">
-          <img id="image${i}" src="" alt="Select an image to crop">
+          <img id="image${i}" src="" alt="Select an image to crop" class="img-thumbnail">
         </div>
         <button class="crop-button" id="cropButton${i}">Crop Image ${i + 1}</button>
       `;
