@@ -260,10 +260,12 @@
                                                                                     <%}%>
                                                     </td>
                                                     <td>
-                                                        
-                                                                        <% if (product.status !== 'product returned') { %>
+                                                                        <%if( product.status === 'Cancelled'){%>
+
+                                                                        <% }else if (product.status !== 'product returned' ) { %>
                                                                         <button onclick="invoiceDownload('<%= orderItem._id %>','<%= product.productId._id %>')" class="btn btn-success btn-sm">Download Invoice</button>
-                                                                        <% } %>
+                                                                        <% }else if(product.status === 'Cancelled'){ %>
+                                                                            <% }%>
                                                                         </td>
                                                 </tr>
                                                 <% }); %>

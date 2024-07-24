@@ -3,18 +3,18 @@
 
 <body>
     <div class="container">
-        <h1 class="my-4">Manage Return</h1>
+        <h1 class="my-4"><%= product.status==='Cancelled' ? 'Cancelled Product': ' Manage Return' %></h1>
 
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Return Details</h5>
+                <h5 class="card-title"><%= product.status==='Cancelled' ? 'Cancelled Details' : 'Return Details'%> </h5>
                 <img src="<%= imageUrl %>" alt="Product Image" class="img-fluid mb-3" style="max-width: 200px;">
                 <p>Product Name: <%= product.productName %></p>
                 <p>Product quantity: <%= product.quantity %></p>
                 <p>Product price: <%= productDetails.price %></p>
-               
+               <% if(product.status !=='Cancelled' ){ %>
                 <p>reason for returning the product : <%= product.returnReason %></p>
-               
+               <% } %>
                 <h5 class="mt-4">Billing Address</h5>
                 <p>Street: <%= billingAddress.street %></p>
                 <p>City: <%= billingAddress.city %></p>

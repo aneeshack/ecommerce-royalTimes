@@ -58,6 +58,8 @@
                                             <a href="/admin/product/return/<%= orderItem._id %>/<%= product._id %>" class="text-danger">
                                                 <%= product.status %>
                                             </a>
+                                            <% }else if(product.status === 'Delivered'){ %>
+                                                <p>Delivered</p>
                                             <% }else{ %>
                                         <select name="status" data-order-id="<%= orderItem._id %>"
                                             data-product-id="<%= product._id %>" onchange="updateStatus(this)">
