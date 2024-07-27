@@ -1,5 +1,12 @@
 <%- include('../layouts/admin/header',{title:"product list"}) %>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+     <style>
+        .custom-button {
+    font-size: 14px; 
+    height: 36px;  
+    line-height: 1.5; 
+}
+     </style>
 </head>
 <body>
     <div class="container">
@@ -55,12 +62,12 @@
                         <%= row.isActive? 'Active':'Blocked' %>
                        </span></td>
                     <td>
-                        <a href="/admin/product/editProduct/<%= row._id %>" class="btn btn-info btn-sm">Edit</a>
+                        <a href="/admin/product/editProduct/<%= row._id %>" class="btn btn-info btn-sm custom-button" >EDIT</a>
                         <!-- <button type="button" class="btn btn-danger btn-sm">Delete</button> -->
                          <% if(row.isActive) { %>
-                        <a href="/admin/product/block/<%= row._id %>"><button class="btn btn-danger">BLOCK</button></a>
+                        <a href="/admin/product/block/<%= row._id %>"><button class="btn btn-danger custom-button" >BLOCK</button></a>
                         <% }else{ %>
-                        <a href="/admin/product/unblock/<%= row._id %>"><button class="btn btn-success">UNBLOCK</button></a>
+                        <a href="/admin/product/unblock/<%= row._id %>"><button class="btn btn-success custom-button">UNBLOCK</button></a>
                     <% } %>
                     </td>
                   

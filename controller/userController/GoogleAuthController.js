@@ -6,8 +6,9 @@ const Otp = require('../../models/otp')
 const session = require('express-session');
 const passport = require('passport')
 const nodemailer = require('nodemailer');
-
-
+const productOfferModel = require('../../models/productOffer');
+const categoryOfferModel = require('../../models/categoryOffer');
+const wishlistModel = require('../../models/wishList');
 
 //Sending Email
 const transporter = nodemailer.createTransport({
@@ -64,18 +65,60 @@ const successGoogleLogin = async (req, res) => {
                     googleId: googleUser.id,
                     isGoogleUser :true
                 })
-                const user = await newUser.save();
-                const products = await product.find({ isActive: true })
+                const users = await newUser.save();
                 req.session.isUser = name;
-                req.session.userId = user._id;
-                res.render('user/homePage', { No_icons: false, products: products, user: name })
+                req.session.userId = users._id;
+                const products = await product.find({ isActive: true }).populate('brand');
+
+                const user = req.session.isUser;
+                const userId = req.session.userId
+               
+                let categoryOffers = []; 
+                let productOffers = [];
+                if (user) {
+                    const usercheck = await userModel.findOne({ _id: userId, isActive: true });
+                    const wishList = await wishlistModel.find();
+                    const currentDate = new Date(); 
+                     productOffers = await productOfferModel.find({startDate: { $lte: currentDate }}).populate('products');
+                     categoryOffers = await categoryOfferModel.find({startDate: { $lte: currentDate }}).populate('categories');
+        
+                    if (usercheck) {
+                        res.render('user/homePage', { No_icons: false, products: products, user: user, wishList,categoryOffers,productOffers });
+                    } else {
+                        res.render('user/homePage', { No_icons: true, products: products,categoryOffers,productOffers });
+                    }
+        
+                } else {
+                    res.render('user/homePage', { No_icons: true, products: products ,categoryOffers, productOffers });
+                }
             } else {
                 // const userName = check.name;
                 req.session.isUser = check.name;
                 req.session.userId = check._id;
-                const products = await product.find({ isActive: true })
-                res.render('user/homePage', { No_icons: false, products: products,user :req.session.isUser })
-            }
+                const products = await product.find({ isActive: true }).populate('brand');
+
+                const user = req.session.isUser;
+                const userId = req.session.userId
+                
+                let categoryOffers = []; 
+                let productOffers = [];
+                if (user) {
+                    const usercheck = await userModel.findOne({ _id: userId, isActive: true });
+                    const wishList = await wishlistModel.find();
+                    const currentDate = new Date(); 
+                     productOffers = await productOfferModel.find({startDate: { $lte: currentDate }}).populate('products');
+                     categoryOffers = await categoryOfferModel.find({startDate: { $lte: currentDate }}).populate('categories');
+        
+                    if (usercheck) {
+                        res.render('user/homePage', { No_icons: false, products: products, user: user, wishList,categoryOffers,productOffers });
+                    } else {
+                        res.render('user/homePage', { No_icons: true, products: products,categoryOffers,productOffers });
+                    }
+        
+                } else {
+                    res.render('user/homePage', { No_icons: true, products: products ,categoryOffers, productOffers });
+                }
+            } 
 
         } else {
             res.redirect('/failure');
@@ -84,6 +127,7 @@ const successGoogleLogin = async (req, res) => {
         console.log("success Google:", error.message)
     }
 }
+
 
 const failureGoogleLogin = (req, res) => {
     res.redirect('/user/login');

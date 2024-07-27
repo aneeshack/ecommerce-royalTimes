@@ -27,7 +27,7 @@ const homePage = async (req, res) => {
 
         const user = req.session.isUser;
         const userId = req.session.userId
-
+       
         let categoryOffers = []; 
         let productOffers = [];
         if (user) {

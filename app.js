@@ -3,6 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const userRouter = require('./routes/userRouter');
 const adminRouter = require('./routes/adminRouter')
+const userController = require('./controller/userController/userController')
 const userProductRouter = require('./routes/userProductRouter');
 const adminProductRouter = require('./routes/adminProductRouter');
 const path = require('path');
@@ -73,6 +74,8 @@ app.use(express.static(path.join(__dirname,'public/adminHome')));
 app.use('/user',userRouter)
 app.use('/user/product',userProductRouter)
 
+app.get('/',userController.homePage);
+
 //admin
 app.use('/admin',adminRouter)
 app.use('/admin/product',adminProductRouter)
@@ -93,5 +96,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT||3000
 
 app.listen(PORT,()=>{
-    console.log(`server is running in the port http://localhost:${PORT}/user/home`)
+    console.log(`server is running in the port http://localhost:${PORT}`)
 })

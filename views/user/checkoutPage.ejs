@@ -129,9 +129,9 @@
                                 </div>
                                 <input type="text" id="couponCode" placeholder="Enter coupon code">
                                 <button class="tp_btn" id="applyCouponBtn">Apply Coupon</button>
-                                <button class="tp_btn bg-danger btn-sm " id="removeCouponBtn">Remove Coupon</button>
-                                <p id="couponMessage" style="color: red;"></p>
-                                <p style="color: red;"> Note: Orders with an applied coupon cannot be canceled, modified, or returned.</p>
+                                <button class="tp_btn bg-danger btn-sm" style="display: none;" id="removeCouponBtn">Remove Coupon</button>
+                                <p id="couponMessage" style="color: rgba(254, 121, 119, 0.852);"></p>
+                                <p style="color: rgb(218, 92, 92);"> Note: Orders with an applied coupon cannot be canceled, modified, or returned.</p>
                             </div>
                            
 
@@ -306,6 +306,8 @@
                     couponMessage.style.color = 'green';
                     couponAmount.textContent = `₹${data.discountAmount}`;
                     checkoutTotalElement.textContent = `₹${data.newTotal}`;
+                    document.getElementById('removeCouponBtn').style.display ='block'
+                    document.getElementById('applyCouponBtn').style.display ='none'
                     console.log('value is getting:', data)
                 } else {
                     console.log('response is not correct')
@@ -329,10 +331,8 @@
             let addNumberButton = document.getElementById('addNumber');
 
             if (mobileNumber) {
-                // If mobile number exists, hide the "Add Number" button
                 addNumberButton.style.display = 'none';
             } else {
-                // If mobile number doesn't exist, show the "Add Number" button
                 addNumberButton.style.display = 'block';
             }
 
@@ -470,11 +470,11 @@
                         addressFormContainer.style.display = 'none';
                         console.log('success data:', data);
 
-                        const newAddress = data.address; // Assuming your server response contains the new or updated address
+                        const newAddress = data.address; 
                         if (addressIdField.value) {
                             // Edit existing address
                             window.location.reload()
-                            const addressIndex = editAddressBtns[0].getAttribute('data-index'); // Adjust as needed
+                            const addressIndex = editAddressBtns[0].getAttribute('data-index'); 
                             const addressItem = document.querySelector(`li[data-index="${addressIndex}"]`);
                             addressItem.innerHTML = `
                             <input class="pixel-radio d-flex justify-content-between align-items-center" type="radio" id="addr_${addressIndex}" name="address" value="${newAddress._id}">

@@ -46,7 +46,9 @@ const addProductAction = async (req, res) => {
     try {
         if (!req.files || req.files.length !== 3) {
             console.log('req.files1:', req.files)
-            return res.status(400).json({ message: 'Please upload exactly 3 images.' });
+            // return res.status(400).json({ message: 'Please upload exactly 3 images.' });
+            req.flash('error','Please upload exactly 3 images.')
+           return res.redirect('/admin/product/addProduct')
         }
 
         const newProduct = new productModel({

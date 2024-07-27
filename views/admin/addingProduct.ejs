@@ -1,15 +1,12 @@
 <%- include('../layouts/admin/header', { title: 'Add Product' }) %>
 
-<!-- Bootstrap CSS -->
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!-- Cropper CSS for image cropping -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
 <style>
   .img-thumbnail {
-  width: 200px; /* Adjust the width as needed */
-  height: auto; /* Maintain aspect ratio */
+  width: 200px; 
+  height: auto; 
 }
 </style>
 </head>
@@ -17,22 +14,13 @@
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">Add Product</h1>
-        <% if (typeof successMessage !== 'undefined' && successMessage.length > 0) { %>
-        <div class="alert alert-success">
-            <%= successMessage %>
-        </div>
-        <% } %>
-
-        <% if (typeof errorMessage !== 'undefined' && errorMessage.length > 0) { %>
-        <div class="alert alert-danger">
-            <ul>
-                <% errorMessage.forEach(error => { %>
-                <li><%= error %></li>
-                <% }); %>
-            </ul>
-        </div>
-        <% } %>
-
+      
+        <% if(successMessage && successMessage.length >0) { %>
+          <div class="alert alert-success"><%= successMessage %></div>
+      <% } %>
+      <% if(errorMessage && errorMessage.length > 0) { %>
+          <div class="alert alert-danger"><%= errorMessage %></div>
+      <% } %>
         <form action="/admin/product/addProduct" method="post" id="upload-form" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="productName">Product Name</label>
