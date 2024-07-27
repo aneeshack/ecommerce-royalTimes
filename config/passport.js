@@ -7,11 +7,15 @@ passport.serializeUser((user,done)=>{
 passport.deserializeUser(function(user,done){
     done(null,user);
 })
-
+const callbackURL = process.env.NODE_ENV === 'production' 
+    ? 'https://royaltimes.site/user/auth/google/callback' 
+    : 'http://localhost:5000/user/auth/google/callback';
 passport.use(new GoogleStrategy({
     clientID:process.env.CLIENT_ID, // .env Credential in here
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL:"/user/auth/google/callback",
+    // callbackURL:"http://localhost:5000/user/auth/google/callback",
+    // callbackURL:"http://royaltimes.site/user/auth/google/callback",
+    callbackURL:callbackURL,
     passReqToCallback:true,
     passReqToCallback: true,
     accessType: 'offline',
@@ -37,4 +41,3 @@ passport.use(new GoogleStrategy({
 //     console.log('OAuth Error:', err);
 //     return new OAuth2Strategy.OAuthError(message, err);
 //   };
-  // callbackURL:"http://localhost:5000/user/auth/google/callback",

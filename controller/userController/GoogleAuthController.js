@@ -121,7 +121,7 @@ const successGoogleLogin = async (req, res) => {
             } 
 
         } else {
-            res.redirect('/user/failure');
+            res.redirect('/failure');
         }
     } catch (error) {
         console.log("success Google:", error.message)
