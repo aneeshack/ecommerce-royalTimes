@@ -11,7 +11,6 @@ passport.deserializeUser(function(user,done){
 passport.use(new GoogleStrategy({
     clientID:process.env.CLIENT_ID, // .env Credential in here
     clientSecret: process.env.CLIENT_SECRET,
-    // callbackURL:"http://localhost:5000/user/auth/google/callback",
     callbackURL:"/user/auth/google/callback",
     passReqToCallback:true,
     passReqToCallback: true,
@@ -38,3 +37,4 @@ passport.use(new GoogleStrategy({
 //     console.log('OAuth Error:', err);
 //     return new OAuth2Strategy.OAuthError(message, err);
 //   };
+  // callbackURL:"http://localhost:5000/user/auth/google/callback",
