@@ -14,7 +14,7 @@ passport.use(new GoogleStrategy({
     clientID:process.env.CLIENT_ID, // .env Credential in here
     clientSecret: process.env.CLIENT_SECRET,
     // callbackURL:"http://localhost:5000/user/auth/google/callback",
-    // callbackURL:"http://royaltimes.site/user/auth/google/callback",
+    // callbackURL:"https://royaltimes.site/user/auth/google/callback",
     callbackURL:callbackURL,
     passReqToCallback:true,
     passReqToCallback: true,
