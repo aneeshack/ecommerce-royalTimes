@@ -30,13 +30,14 @@ const homePage = async (req, res) => {
        
         let categoryOffers = []; 
         let productOffers = [];
+        const currentDate = new Date(); 
+        productOffers = await productOfferModel.find({startDate: { $lte: currentDate }}).populate('products');
+        categoryOffers = await categoryOfferModel.find({startDate: { $lte: currentDate }}).populate('categories');
+
         if (user) {
             const usercheck = await userModel.findOne({ _id: userId, isActive: true });
             const wishList = await wishlistModel.find();
-            const currentDate = new Date(); 
-             productOffers = await productOfferModel.find({startDate: { $lte: currentDate }}).populate('products');
-             categoryOffers = await categoryOfferModel.find({startDate: { $lte: currentDate }}).populate('categories');
-
+           
             if (usercheck) {
                 res.render('user/homePage', { No_icons: false, products: products, user: user, wishList,categoryOffers,productOffers });
             } else {
@@ -50,7 +51,6 @@ const homePage = async (req, res) => {
         console.log('homePage:', error.message)
     }
 }
-
 
 const login = (req, res) => {
     try {
