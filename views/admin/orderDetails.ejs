@@ -1,0 +1,47 @@
+<%- include('../layouts/admin/header',{title:"Order list"}) %>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="my-4">Order Details</h1>
+
+        <div class="card">
+            <div class="card-body">
+                <img src="<%= imageUrl %>" alt="Product Image" class="img-fluid mb-3" style="max-width: 200px;">
+                <p>Product Name: <%= product.productName %></p>
+                <p>Product quantity: <%= product.quantity %></p>
+                <p>Product price: <%= product.total %></p>
+              
+                <h5 class="mt-4" style="font-weight: bold;">Billing Address</h5>
+                <p style="color: green; font-weight: bold;"><%= order.userName.toUpperCase() %></p>
+                <p>Street: <%= billingAddress.street %></p>
+                <p>City: <%= billingAddress.city %></p>
+                <p>State: <%= billingAddress.state %></p>
+                <p>Pin Code: <%= billingAddress.pinCode %></p>
+                <p>Country: <%= billingAddress.country %></p>
+                
+                <h5 class="mt-4" style="font-weight: bold;">Other Ordered Products</h5>
+                <% if (allProducts && allProducts.length > 0) { %>
+                    <ul>
+                        <% allProducts.forEach(function(item) { %>
+                            <li>
+                                <img src="<%= item.imageUrl %>" alt="" style="width: 150px; height: auto; object-fit: cover;">
+                                <strong><%= item.productName %></strong> - 
+                                Quantity: <%= item.quantity %> - 
+                                Price: <%= item.price %>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No other products ordered.</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+   
+ 
+
+
+    <%- include('../layouts/admin/adminFooter') %>

@@ -26,6 +26,7 @@ productRouter.get('/unblock/:id',adminValid.isAdmin,adminProductController.unblo
 
 productRouter.get('/orderList',adminValid.isAdmin,adminOrderController.orderList);
 productRouter.post('/orderStatus',adminValid.isAdmin,adminOrderController.orderStatus);
+productRouter.get('/view/:orderId/:productId',adminValid.isAdmin,adminOrderController.viewOrder);
 productRouter.get('/return/:orderId/:productId',adminValid.isAdmin,adminOrderController.returnManagement);
 productRouter.post('/return/:orderId/:productId/accept',adminValid.isAdmin,adminOrderController.acceptReturn);
 productRouter.post('/return/:orderId/:productId/reject',adminValid.isAdmin,adminOrderController.rejectReturn);

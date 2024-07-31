@@ -33,6 +33,56 @@ const orderStatus = async (req, res) => {
     }
 }
 
+
+//product return management page
+const viewOrder = async (req, res) => {
+    try {
+
+        const orderId = req.params.orderId;
+        const productId = req.params.productId;
+        const order = await orderModel.findOne({
+            _id: orderId,
+            'productItems._id': productId
+        }).populate('productItems.productId');
+
+
+        if (!order) {
+            console.log('order not found');
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        
+        const product = order.productItems.find(item => item._id.toString() === productId)
+
+        if (!product) {
+            console.log('product not found');
+            return res.status(404).json({ message: 'Product not found in order' });
+        }
+        const productDetails = product.productId;
+        const allProducts = order.productItems
+            .filter(item => item._id.toString() !== productId)
+            .map(item => ({
+                product: item.productId,
+                productName: item.productId.productName,
+                quantity: item.quantity,
+                price: item.total,
+                imageUrl: item.productId.images[0]
+            }));
+        console.log('all products:',allProducts)
+        res.render('admin/orderDetails', {
+            order,
+            orderId: orderId,
+            productId: productId,
+            product: product,
+            productDetails,
+            allProducts,
+            imageUrl: productDetails.images[0],
+            billingAddress: order.billingAddress[0]
+        });
+    } catch (error) {
+        console.log('error in return management:', error.message);
+    }
+}
+
 //product return management page
 const returnManagement = async (req, res) => {
     try {
@@ -197,6 +247,7 @@ module.exports = {
     orderList,
     orderStatus,
     returnManagement,
+    viewOrder,
     acceptReturn,
     rejectReturn,
     productReturned
