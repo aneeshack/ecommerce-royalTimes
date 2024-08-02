@@ -9,7 +9,9 @@ const category = async(req,res) =>{
 
         const brands = await brandModel.find()
         const categories = await categoryModel.find()
+        console.log('brand ;annd jcategory',brands,categories)
         res.render('admin/categories',{brand:brands,category:categories})
+
     } catch (error) {
         console.log("error in category:",error.message)
     }
@@ -21,9 +23,16 @@ const category = async(req,res) =>{
 const categoryAdd = async(req,res) => {
     try {
         const {name} = req.body;
+        const lowerCaseName = name.toLowerCase(); 
+        const categoryDetails = await categoryModel.findOne({name:lowerCaseName})
+        if(categoryDetails){
+        req.flash('error',"Category name already exist.")
+        return res.redirect('/admin/category')
+        }
         const category = new categoryModel({
-            name
+            name:lowerCaseName
         })
+    
         await category.save()
 
         req.flash('success',"new category added successfully.")
@@ -52,9 +61,14 @@ const editCategoryAction =async(req,res) =>{
     try {
         const id=req.params.id;
         const {categoryName} =req.body;
-
+        const lowerCaseName = categoryName.toLowerCase(); 
+        const categoryDetails = await categoryModel.findOne({name:lowerCaseName})
+        if(categoryDetails){
+        req.flash('error',"Category name already exist.")
+        return res.redirect('/admin/category')
+        }
         let category = await categoryModel.findById(id)
-        category.name = categoryName;
+        category.name = lowerCaseName;
         await category.save();
 
         req.flash('success','successfully edited the category.')

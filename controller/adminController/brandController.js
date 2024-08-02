@@ -4,8 +4,14 @@ const brandModel = require('../../models/brand');
 const brandAdd = async(req,res) => {
     try {
         const {name} = req.body;
+        const lowerCaseName = name.toLowerCase(); 
+        const brandDetails = await brandModel.findOne({name:lowerCaseName})
+        if(brandDetails){
+        req.flash('error',"Brand name already exist.")
+        return res.redirect('/admin/category')
+        }
         const newBrand = new brandModel({
-            name
+            name :lowerCaseName
         })
         await newBrand.save()
 
@@ -34,10 +40,15 @@ const editBrandAction = async(req,res) =>{
     try {
         const id=req.params.id;
         const {brandName} =req.body;
-
+        const lowerCaseName = brandName.toLowerCase(); 
+        const brandDetails = await brandModel.findOne({name:lowerCaseName})
+        if(brandDetails){
+        req.flash('error',"Brand name already exist.")
+        return res.redirect('/admin/category')
+        }
         let brand = await brandModel.findById(id)
 
-        brand.name = brandName;
+        brand.name = lowerCaseName;
         await brand.save();
 
         req.flash('success','successfully edited the brand.')

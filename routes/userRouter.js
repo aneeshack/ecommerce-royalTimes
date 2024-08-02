@@ -55,8 +55,8 @@ userRouter.post('/forget/changePass',forgotPassController.changePassword);
 
 //product filtering
 userRouter.get('/category',categoryController.categoryPage);
-userRouter.get('/filter',valid.isLogout,categoryController.productFilter);
-userRouter.get('/search',valid.isLogout,categoryController.searchProduct);
+userRouter.get('/filter',categoryController.productFilter);
+userRouter.get('/search',categoryController.searchProduct);
 
 
 //user profile details
@@ -71,7 +71,7 @@ userRouter.post('/wallet/addFund',valid.isLogout,userProfileController.addFund);
 
 //address controller routes
 userRouter.get('/address',valid.isLogout,addressController.addressManage);
-userRouter.post('/address/:id',addressController.addAddress);
+userRouter.post('/address/:id',valid.isLogout,addressController.addAddress);
 userRouter.get('/address/edit/:id',valid.isLogout,addressController.addressEditpage);
 userRouter.post('/address/edit/:id',addressController.updateAddress);
 userRouter.get('/address/delete/:id',valid.isLogout,addressController.deleteAddress);
@@ -86,19 +86,19 @@ userRouter.post('/updateQuantity',cartController.updateQuantity);
 //chekout order and payment controller routes
 userRouter.get('/checkout',valid.isLogout,checkoutController.checkoutPage);
 userRouter.post('/checkout/mobile',checkoutController.checkoutPageMobile);
-userRouter.post('/checkout/address', uploadForm.none(),checkoutController.checkoutAddressAdd);
-userRouter.post('/checkout/address/edit', uploadForm.none(),checkoutController.checkoutAddressEdit);
+userRouter.post('/checkout/address', valid.isLogout,uploadForm.none(),checkoutController.checkoutAddressAdd);
+userRouter.post('/checkout/address/edit',valid.isLogout, uploadForm.none(),checkoutController.checkoutAddressEdit);
 
 // ordering product
-userRouter.post('/checkout/order',orderController.placeOrder);
-userRouter.post('/checkout/payment',orderController.paymentOrder);
-userRouter.post('/checkout/failedPayment',orderController.failedPayment);
+userRouter.post('/checkout/order',valid.isLogout,orderController.placeOrder);
+userRouter.post('/checkout/payment',valid.isLogout,orderController.paymentOrder);
+userRouter.post('/checkout/failedPayment',valid.isLogout,orderController.failedPayment);
 userRouter.get('/confirmation',valid.isLogout,orderController.confirmation);
 
 // failed order management
 userRouter.get('/failed/payment',valid.isLogout,failedOrderController.failedPaymentPage);
-userRouter.post('/retryPayment',failedOrderController.retryPayment);
-userRouter.post('/repaymentSuccess',failedOrderController.repaymentSuccess);
+userRouter.post('/retryPayment',valid.isLogout,failedOrderController.retryPayment);
+userRouter.post('/repaymentSuccess',valid.isLogout,failedOrderController.repaymentSuccess);
 
 //order management
 userRouter.get('/orders',valid.isLogout,orderController.orderList);
