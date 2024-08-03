@@ -40,6 +40,10 @@ const orderSchema = new mongoose.Schema({
         type : Number,
         required: false
     },
+    discountPercentage:{
+        type:Number,
+        required:false
+    },
     totalQuantity: {
         type :Number
     },
@@ -54,14 +58,7 @@ const orderSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true
-    },
-   
-    // status: {
-    //     type: String,
-    //     required: true,
-    //     default: 'Pending'
-    // },
-    
+    }, 
     paymentMethod: {
         type: String,
         required: true,

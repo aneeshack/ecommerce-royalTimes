@@ -217,15 +217,21 @@ const productReturned = async (req, res) => {
             console.log('product not found');
             return res.status(404).json({ message: 'Product not found in order' });
         }
-
         const total = product.total;
+        let amount= total
+        if(order.couponDiscount>0 ){
+        const discountPercentage = Math.round((order.couponDiscount *100)/order.originalPrice)
+        console.log('discouont percentage:',discountPercentage)
+        amount = Math.round(total *(100-discountPercentage)/100)
+        }
+        console.log('amount:',amount)
         const userData = await userModel.findById(order.userId);
-        userData.wallet += total;
+        userData.wallet += amount;
         await userData.save();
         // Save wallet transaction
         const wallet = new walletModel({
             userId: order.userId,
-            amount: total,
+            amount: amount,
             type: 'credit',
             description: 'Product returned'
         });

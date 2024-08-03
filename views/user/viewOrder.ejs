@@ -1,8 +1,32 @@
-<%- include('../layouts/admin/header',{title:"Order list"}) %>
-</head>
+<%- include('../layouts/user/header',{title:"user-orders"}) %>
 
+    <style>
+        .order-summary {
+            margin-top: 30px;
+        }
+        .order-item img {
+            max-width: 100px;
+        }
+    </style>
+</head>
 <body>
-   
+     <!-- Start Banner Area -->
+     <section class="banner-area organic-breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+                <div class="col-first">
+                    <h1>User Profile</h1>
+                    <nav class="d-flex align-items-center">
+                        <a href="/">Home<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="#">User<span class="lnr lnr-arrow-right"></span></a>
+                        <a href="profile.html">Profile</a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Banner Area -->
+
     <div class="container order-summary">
         <h2 class="text-center">Order Summary</h2>
 
@@ -10,8 +34,8 @@
             <div class="col-md-8">
                 <!-- Order Details -->
                 <div class="card">
-                    <div class="card-header bg-secondary">
-                        <h4 class="card-title" style="color: white;">Order Details</h4>
+                    <div class="card-header">
+                        <h4 class="card-title">Order Details</h4>
                     </div>
                     <div class="card-body">
                         <p><strong>Order ID:</strong> <%= order._id %></p>
@@ -22,8 +46,8 @@
 
                 <!-- Order Items -->
                 <div class="card mt-3">
-                    <div class="card-header bg-secondary">
-                        <h4 class="card-title" style="color: white;">Order Items</h4>
+                    <div class="card-header">
+                        <h4 class="card-title">Order Items</h4>
                     </div>
                     <div class="card-body">
                         <div class="list-group">
@@ -50,8 +74,8 @@
             <div class="col-md-4">
                 <!-- Order Summary -->
                 <div class="card">
-                    <div class="card-header bg-secondary">
-                        <h4 class="card-title" style="color: white;">Order Summary</h4>
+                    <div class="card-header">
+                        <h4 class="card-title">Order Summary</h4>
                     </div>
                     <div class="card-body">
                         <p><strong>Subtotal:</strong> <%= order.originalPrice %></p>
@@ -64,8 +88,8 @@
 
                 <!-- Payment Information -->
                 <div class="card mt-3 mb-5">
-                    <div class="card-header bg-secondary">
-                        <h4 class="card-title" style="color: white;">Payment Information</h4>
+                    <div class="card-header">
+                        <h4 class="card-title">Payment Information</h4>
                     </div>
                     <div class="card-body">
                         <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
@@ -75,9 +99,10 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-   
- 
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <%- include('../layouts/user/footer') %>
 
-    <%- include('../layouts/admin/adminFooter') %>

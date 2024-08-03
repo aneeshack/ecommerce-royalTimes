@@ -102,6 +102,7 @@ userRouter.post('/repaymentSuccess',valid.isLogout,failedOrderController.repayme
 
 //order management
 userRouter.get('/orders',valid.isLogout,orderController.orderList);
+userRouter.get('/orders/:orderId',valid.isLogout,orderController.orderDetails);
 userRouter.get('/order/cancel/:orderId/:productId',valid.isLogout,orderController.orderCancel);
 userRouter.post('/order/return',orderController.returnProduct);
 userRouter.get('/order/downloadInvoice/:orderId/:productId',orderController.downloadInvoice);

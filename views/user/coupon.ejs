@@ -29,7 +29,7 @@
                                 <tr>
                                     <th>Coupon Name</th>
                                     <th>Coupon Code</th>
-                                    <!-- <th>Maximum Discount</th> -->
+                                    <th>Maximum Amount for coupon getting</th>
                                     <th>Discount percentage</th>
                                     <th>Expiration Date</th>
                                     <!-- <th>Apply</th> -->
@@ -45,7 +45,9 @@
                                             <td>
                                                 <%= coupon.couponCode %>
                                             </td>
-                                           
+                                           <td>
+                                            <%= coupon.maxAmount  %>
+                                           </td>
                                             <td>
                                                 <%= coupon.discountPercentage %> %
                                             </td>

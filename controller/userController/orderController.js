@@ -112,7 +112,7 @@ const placeOrder = async (req, res) => {
                 totalPrice: totalAmount,
                 userName: userName,
                 originalPrice: grandTotal,
-                couponDiscount: couponAmount
+                couponDiscount: couponAmount,
             });
 
             await newOrder.save();
@@ -280,7 +280,6 @@ const orderList = async (req, res) => {
 
 }
 
-
 //api for cancel the products
 const orderCancel = async (req, res) => {
     try {
@@ -305,14 +304,20 @@ const orderCancel = async (req, res) => {
 
                 if (order.paymentMethod === 'Razorpay' ||order.paymentMethod === 'Wallet' ) {
                     const total = productUpdate.total;
+                    let amount= total
+                    if(order.couponDiscount>0 ){
+                    const discountPercentage = Math.round((order.couponDiscount *100)/order.originalPrice)
+                    amount = Math.round(total *(100-discountPercentage)/100)
+                    }
+
                     const userData = await userModel.findById(userId);
-                    userData.wallet += total;
+                    userData.wallet += amount;
                     await userData.save();
                     if(order.paymentMethod === 'Razorpay' ){
                         // Save wallet transaction
                      const wallet = new walletModel({
                         userId: userId,
-                        amount: total,
+                        amount: amount,
                         type: 'credit',
                         description: 'Order Cancelled through Razorpay'
                     });
@@ -321,7 +326,7 @@ const orderCancel = async (req, res) => {
                            // Save wallet transaction
                      const wallet = new walletModel({
                         userId: userId,
-                        amount: total,
+                        amount: amount,
                         type: 'credit',
                         description: 'Order cancelled through wallet'
                     });
@@ -379,6 +384,7 @@ const returnProduct = async (req, res) => {
 const downloadInvoice = async (req, res) => {
     try {
         const { orderId, productId } = req.params;
+        console.log('order id:',orderId)
         const order = await orderModel.findById(orderId).populate('productItems.productId');
 
         if (!order) {
@@ -443,6 +449,24 @@ const downloadInvoice = async (req, res) => {
     }
 }
 
+// order details showing page
+const orderDetails = async(req, res) =>{
+    try {
+        if (req.session.isUser) {
+            const userId = req.session.userId;
+            const orderId = req.params.orderId;
+            const userData = await userModel.findOne({ name: req.session.isUser });
+            const order = await orderModel.findOne({ userId ,_id:orderId}).populate('productItems.productId');
+            console.log('order is:',order)
+            res.render('user/viewOrder', { order, userData})
+        } else {
+            res.redirect('/user/login');
+        }
+    } catch (error) {
+        console.log('error in order details:',error)
+        res.status(500).json({error: 'Error in showing order details'})
+    }
+}
 
 module.exports = {
     placeOrder,
@@ -452,5 +476,6 @@ module.exports = {
     returnProduct,
     paymentOrder,
     downloadInvoice,
-    failedPayment
+    failedPayment,
+    orderDetails
 }

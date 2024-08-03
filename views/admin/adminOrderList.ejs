@@ -74,12 +74,12 @@
                                     </td>
                                     <td>
                                         <% if (['Return Requested', 'return request accepted', 'return request rejected','Cancelled','product returned'].includes(product.status)) { %>
-                                            <button class="btn btn-success "><a href="/admin/product/return/<%= orderItem._id %>/<%= product._id %>" class="text-danger">
+                                            <button class="btn btn-primary "><a href="/admin/product/return/<%= orderItem._id %>/<%= product._id %>" class="text-light">
                                                 view</button>
                                             </a>
                                         
                                         <% }else {%>
-                                        <button class="btn btn-success "><a href="/admin/product/view/<%= orderItem._id %>/<%= product._id %>" style="color: aliceblue;"
+                                        <button class="btn btn-primary "><a href="/admin/product/view/<%= orderItem._id %>/<%= product._id %>" style="color: aliceblue;"
                                             >view</a></button>
                                             <% } %>
                                     </td>
