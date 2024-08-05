@@ -387,20 +387,22 @@
 			const sortForm = document.getElementById('sortForm');
 			const searchInput = document.getElementById('searchInput');
 			const filteredProducts = document.getElementById('filteredProducts');
+			const paginationContainer = document.querySelector('.pagination')
 
 			// Event listener for filter forms
 			const val = applyFiltersBtn.addEventListener('click', () => applyFilters());
 
 			// apply filter function and fetch products from backend
-			async function applyFilters() {
+			async function applyFilters(page=1) {
 
 				const brand = brandFilterForm.querySelector('input[name="brand"]:checked')?.value;
 				const category = categoryFilterForm.querySelector('input[name="category"]:checked')?.value;
 				const priceRange = priceFilterForm.querySelector('input[name="price"]:checked')?.value;
 				const sort = sortForm.querySelector('input[name="sort"]:checked')?.value;
 				const searchTerm = searchInput.value.trim();
+				
 				try {
-					const response = await fetch(`/user/filter?brand=${brand}&category=${category}&priceRange=${priceRange}&sort=${sort}&search=${encodeURIComponent(searchTerm)}`);
+					const response = await fetch(`/user/filter?brand=${brand}&category=${category}&priceRange=${priceRange}&sort=${sort}&search=${encodeURIComponent(searchTerm)}&page=${page}`);
 					if (!response.ok) {
 						console.log('response is not ok')
 						throw new Error('Network response was not ok');
@@ -409,6 +411,7 @@
 					console.log('data is:', data)
 
 					displayProducts(data.products);
+					updatePagination(data.currentPage, data.totalPages)
 				} catch (error) {
 					console.error('Error applying filters:', error);
 					displayProducts([]);
@@ -459,7 +462,32 @@
 
 		})
 
+		function updatePagination(currentPage, totalPages) {
+        paginationContainer.innerHTML = '';
 
+        if (currentPage > 1) {
+            paginationContainer.innerHTML += `<a href="?page=${currentPage - 1}" class="prev-arrow"><i class="fa fa-long-arrow-left" aria-hidden="true"></i></a>`;
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === currentPage) {
+                paginationContainer.innerHTML += `<a href="?page=${i}" class="active">${i}</a>`;
+            } else {
+                paginationContainer.innerHTML += `<a href="?page=${i}">${i}</a>`;
+            }
+        }
+
+        if (currentPage < totalPages) {
+            paginationContainer.innerHTML += `<a href="?page=${currentPage + 1}" class="next-arrow"><i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>`;
+        }
+    }
+
+
+			document.getElementById('searchInput').addEventListener('input', function () {
+				applyFilters(1);
+			});
+
+			applyFilters(page);
 
 			function displayProducts(products) {
 				filteredProducts.innerHTML = '';

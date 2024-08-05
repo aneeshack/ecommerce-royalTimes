@@ -29,37 +29,15 @@ const categoryPage = async (req, res) => {
 }
 
 
-//filter products based on category price and brand
-// const productFilter = async (req, res) => {
-//     try {
-//         const { brand, category, priceRange } = req.query;
-//         let filter = {};
-
-//         if (brand !== 'undefined') {
-//             filter.brand = brand
-//         }
-//         if (category !== 'undefined') {
-//             filter.category = category
-//         }
-//         if (priceRange !== 'undefined') {
-//             const [minPrice, maxPrice] = priceRange.split('-').map(Number);
-//             console.log(minPrice, maxPrice)
-//             filter.price = { $gte: minPrice, $lte: maxPrice };
-//         }
-//         const products = await productModel.find(filter).populate('brand category')
-
-//         res.status(200).json({ products })
-
-//     } catch (error) {
-//         console.log('error in filtering:', error.message);
-//         res.status(500).send('Server error');
-//     }
-// }
-
-
 const productFilter = async (req, res) => {
     try {
-        const { brand, category, priceRange, sort, search } = req.query;
+        const { brand, category, priceRange, sort, search ,page} = req.query;
+        console.log('sort":',sort)
+        console.log('page',page)
+        const currentPage =parseInt(page) || 1
+        const limit = 6;
+        const skip = (page-1)*limit;
+
         let filter = {};
         let sortOptions ={};
 
@@ -84,7 +62,7 @@ const productFilter = async (req, res) => {
                     sortOptions.price = -1;
                     break;
                 case 'name-asc':
-                    sortOptions.productName =1;
+                    sortOptions.productName = 1;
                     break;
                 case 'name-desc':
                     sortOptions.productName =-1;
@@ -98,9 +76,12 @@ const productFilter = async (req, res) => {
             filter.productName = { $regex: '.*' + search +'.*', $options: 'i' };
         }
 
-        const products = await productModel.find(filter).populate('brand category').sort(sortOptions)
+        const totalProducts = await productModel.countDocuments(filter);
+        const totalPages = Math.ceil(totalProducts / limit);
 
-        res.status(200).json({ products })
+        const products = await productModel.find(filter).populate('brand category').sort(sortOptions).skip(skip).limit(limit)
+
+        res.status(200).json({ products ,currentPage, totalPages})
 
     } catch (error) {
         console.log('error in filtering:', error.message);
@@ -157,7 +138,6 @@ const searchProduct = async (req, res) => {
 
         
         const products = await productModel.find(filter).sort(sortOptions)
-        // const products = await productModel.find({ productName: { $regex: '.*' + search + '.*', $options: 'i' }, isActive: true});
         res.status(200).json({ products });
 
     } catch (error) {
@@ -166,22 +146,6 @@ const searchProduct = async (req, res) => {
     }
 }
 
-
-// const searchProduct = async (req, res) => {
-//     try {
-//         const searchQuery = req.query.query;
-//         if (!searchQuery) {
-//             return res.json({ products: [] })
-//         }
-        
-//         const products = await productModel.find({ productName: { $regex: '^' + searchQuery, $options: 'i' }, isActive: true});
-//         res.status(200).json({ products });
-
-//     } catch (error) {
-//         console.log('searching product error:', error.message);
-//         res.status(400).json({ error: 'Internal server Error' })
-//     }
-// }
 
 module.exports = {
     categoryPage,
