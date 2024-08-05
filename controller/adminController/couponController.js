@@ -45,6 +45,12 @@ const updateCoupon = async (req, res) => {
             req.flash('error', 'Discount percentage must be a number between 0 and 90.');
             return res.redirect(`/admin/editCoupon/${id}`); 
         }
+        const expiryDateObj = new Date(expiryDate);
+        console.log('expriry date:',expiryDateObj)
+        if(expiryDateObj<Date.now()){
+        req.flash('error', 'expiry date should be more than today.');
+        return res.redirect('/admin/addcoupons');
+    }
         //update category fields
         const updatedCoupon = await couponModel.findByIdAndUpdate(id, {
             couponName,
@@ -76,6 +82,12 @@ const createCoupon = async (req, res) => {
     const { couponName, couponCode, startDate, expiryDate, discountPercentage, maxDiscount,maxAmount } = req.body;
     if (isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 90) {
         req.flash('error', 'Discount percentage must be a number between 0 and 90.');
+        return res.redirect('/admin/addcoupons');
+    }
+    const expiryDateObj = new Date(expiryDate);
+    console.log('expriry date:',expiryDateObj)
+    if(expiryDateObj<Date.now()){
+        req.flash('error', 'expiry date should be more than today.');
         return res.redirect('/admin/addcoupons');
     }
     try {

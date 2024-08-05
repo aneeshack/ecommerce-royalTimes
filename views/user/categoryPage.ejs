@@ -61,8 +61,9 @@
 	<div class="container_fluid">
 		<div class="row">
 			<div class="col-xl-3 col-lg-4 col-md-5">
-				<div class="sidebar-filter mt-50">
+				<div class="sidebar-filter mt-50 mb-5">
 					<div class="top-filter-head">Product Filters</div>
+					<button id="clearFilter" class="btn btn-secondary mt-3 ml-3" type="button">Clear All</button>
 					<div class="common-filter">
 						<div class="head">Brands</div>
 						<form id="brandFilterForm">
@@ -120,10 +121,34 @@
 							</ul>
 						</form>
 					</div>
+					<div class="common-filter">
+						<div class="head">Sort By</div>
+						<form id="sortForm">
+							<ul>
+								<li class="filter-list">
+									<input class="pixel-radio" type="radio" name="sort" value="price-asc">
+									<label>Price: Low to High</label>
+								</li>
+								<li class="filter-list">
+									<input class="pixel-radio" type="radio" name="sort" value="price-desc">
+									<label>Price: High to Low</label>
+								</li>
+								<li class="filter-list">
+									<input class="pixel-radio" type="radio" name="sort" value="name-asc">
+									<label>product name: A to Z</label>
+								</li>
+								<li class="filter-list">
+									<input class="pixel-radio" type="radio" name="sort"  value="name-desc">
+									<label>product name: Z to A</label>
+								</li>
+							</ul>
+						</form>
+					</div>
 					<button id="applyFiltersBtn" class="btn btn-primary mt-3 ml-3" type="button">Apply Filters</button>
-					
+		
 
 				</div>
+				
 			</div>
 			<div class="col-xl-9 col-lg-8 col-md-7">
 
@@ -162,10 +187,8 @@
 				</div>
 				<!-- End Filter Bar -->
 				<br>
-				<!-- Start Best Seller -->
 				<section class="lattest-product-area pb-40 category-list">
 					<div class="row">
-						<!-- Start Best Seller -->
 						<section class="lattest-product-area pb-40 category-list">
 							<div class="row">
 								<!-- single product -->
@@ -228,6 +251,8 @@
 		</div>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+	
 	<!-- when outof stock it prevent add to cart -->
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
@@ -359,6 +384,122 @@
 			const categoryFilterForm = document.getElementById('categoryFilterForm');
 			const priceFilterForm = document.getElementById('priceFilterForm');
 			const applyFiltersBtn = document.getElementById('applyFiltersBtn');
+			const sortForm = document.getElementById('sortForm');
+			const searchInput = document.getElementById('searchInput');
+			const filteredProducts = document.getElementById('filteredProducts');
+
+			// Event listener for filter forms
+			const val = applyFiltersBtn.addEventListener('click', () => applyFilters());
+
+			// apply filter function and fetch products from backend
+			async function applyFilters() {
+
+				const brand = brandFilterForm.querySelector('input[name="brand"]:checked')?.value;
+				const category = categoryFilterForm.querySelector('input[name="category"]:checked')?.value;
+				const priceRange = priceFilterForm.querySelector('input[name="price"]:checked')?.value;
+				const sort = sortForm.querySelector('input[name="sort"]:checked')?.value;
+				const searchTerm = searchInput.value.trim();
+				try {
+					const response = await fetch(`/user/filter?brand=${brand}&category=${category}&priceRange=${priceRange}&sort=${sort}&search=${encodeURIComponent(searchTerm)}`);
+					if (!response.ok) {
+						console.log('response is not ok')
+						throw new Error('Network response was not ok');
+					}
+					const data = await response.json();
+					console.log('data is:', data)
+
+					displayProducts(data.products);
+				} catch (error) {
+					console.error('Error applying filters:', error);
+					displayProducts([]);
+				}
+			}
+			document.getElementById('searchInput').addEventListener('input', function () {
+			const query = this.value;
+			const brand = brandFilterForm.querySelector('input[name="brand"]:checked')?.value;
+			const category = categoryFilterForm.querySelector('input[name="category"]:checked')?.value;
+			const priceRange = priceFilterForm.querySelector('input[name="price"]:checked')?.value;
+			const sort = sortForm.querySelector('input[name="sort"]:checked')?.value;
+			const searchTerm = searchInput.value.trim();
+			
+			// const response = fetch(`/user/search?query=${query}`)
+			const response = fetch(`/user/search?brand=${brand}&category=${category}&priceRange=${priceRange}&sort=${sort}&search=${encodeURIComponent(searchTerm)}`)
+				.then(response => response.json())
+				.then(data => {
+					const productContainer = document.getElementById('filteredProducts');
+					productContainer.innerHTML = '';
+
+					if (data.products.length > 0) {
+						data.products.forEach(product => {
+							const productHTML = `
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100 product-card">
+                                <a href="/user/product/${product._id}">
+                                    <img src="${product.images[0].replace('/public', '')}" class="card-img-top" alt="${product.productName}">
+                                </a>
+                                <div class="card-body">
+                                    <h5 class="card-title">${product.productName}</h5>
+                                    <h5 class="card-title">${product.brand.name}</h5>
+                                    <p class="card-text">Price: $${product.price}</p>
+                                    <form action="/user/cart" method="POST">
+                                        <input type="hidden" name="productId" value="${product._id}">
+                                        <button class="primary-btn" type="submit">Add to Cart</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+							productContainer.innerHTML += productHTML;
+						});
+					} else {
+						productContainer.innerHTML = '<p>No products found.</p>';
+					}
+				})
+				.catch(error => console.error('Error fetching search results:', error));
+
+		})
+
+
+
+			function displayProducts(products) {
+				filteredProducts.innerHTML = '';
+
+				if (products.length > 0) {
+					products.forEach(product => {
+						const productCard = document.createElement('div');
+						productCard.classList.add('col-md-4', 'mb-4');
+						productCard.innerHTML = `
+                    <div class="card h-100 product-card">
+                        <a href="/user/product/${product._id}">
+                            <img src="${product.images[0].replace('/public', '')}" class="card-img-top" alt="${product.productName}" data-product-id="${product._id}">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">${product.productName}</h5>
+                            <h6 class="card-text">${product.brand.name}</h6>
+                            <p class="card-text">Price: $${product.price}</p>
+                            <form action="/user/cart" method="POST">
+                                <input type="hidden" name="productId" value="${product._id}">
+                                <button class="primary-btn" type="submit">Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+						filteredProducts.appendChild(productCard);
+					});
+				} else {
+					// Display message when no products are found
+					filteredProducts.innerHTML = `<div class="text-center "><h1 style="color: blue;">No products found.</h1></div>`;
+				}
+			}
+		})
+	</script>
+
+	<!-- <script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const brandFilterForm = document.getElementById('brandFilterForm');
+			const categoryFilterForm = document.getElementById('categoryFilterForm');
+			const priceFilterForm = document.getElementById('priceFilterForm');
+			const applyFiltersBtn = document.getElementById('applyFiltersBtn');
 			const filteredProducts = document.getElementById('filteredProducts');
 
 			// Event listener for filter forms
@@ -419,6 +560,15 @@
 				}
 			}
 		})
-	</script>
+	</script> -->
 
+	<!-- clear all the filters -->
+	 <script>
+		document.getElementById('clearFilter').addEventListener('click',()=>{
+			window.location.reload()
+		})
+	 </script>
 	<%- include('../layouts/user/footer') %>
+
+
+

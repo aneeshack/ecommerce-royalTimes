@@ -31,7 +31,7 @@
                     <% categoryOffer.forEach(category => {%>
                 <tr>
                    
-                    <td><%= category.categories.name %></td>
+                    <td><%= category?.categories?.name %></td>
                     <td><%= category.offerName %></td>
                     <td><%= category.discountPercentage %></td>
                     <td><%= new Date(category.startDate).toLocaleDateString() %></td>

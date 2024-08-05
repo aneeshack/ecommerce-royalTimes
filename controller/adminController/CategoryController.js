@@ -131,6 +131,11 @@ const addCategoryOffer = async (req, res) => {
         if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 90) {
             return res.status(400).json({error:'Discount percentage must be a number between 1 and 90.'});
         }
+        const expiryDateObj = new Date(endDate);
+        console.log('expriry date:',expiryDateObj)
+        if(expiryDateObj<Date.now()){
+            return res.status(400).json({error:'Expiry date must be after todays date.'});
+        }
         const categoryOffer = new categoryOfferModel({
             categories:categoryId,
             offerName,
@@ -179,6 +184,12 @@ const editCategoryOffer = async(req, res) => {
         const {categoryId, offerName, discountPercentage, startDate, endDate} = req.body;
         if (isNaN(discountPercentage) || discountPercentage < 1 || discountPercentage > 90) {
             req.flash('error', 'Discount percentage must be a number between 1 and 90.');
+            return res.redirect(`/admin/categoryOffer/edit/${category}`); 
+        }
+        const expiryDateObj = new Date(endDate);
+        console.log('expriry date:',expiryDateObj)
+        if(expiryDateObj<Date.now()){
+            req.flash('error', 'expiry date should be more than today.');
             return res.redirect(`/admin/categoryOffer/edit/${category}`); 
         }
         const updateOffer = await categoryOfferModel.findByIdAndUpdate(category,{

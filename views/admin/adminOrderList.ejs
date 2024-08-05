@@ -1,5 +1,6 @@
 <%- include('../layouts/admin/header',{title:"Order list"}) %>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+     
     </head>
 
     <body>
@@ -74,13 +75,13 @@
                                     </td>
                                     <td>
                                         <% if (['Return Requested', 'return request accepted', 'return request rejected','Cancelled','product returned'].includes(product.status)) { %>
-                                            <button class="btn btn-primary "><a href="/admin/product/return/<%= orderItem._id %>/<%= product._id %>" class="text-light">
-                                                view</button>
+                                            <a href="/admin/product/return/<%= orderItem._id %>/<%= product._id %>" class="text-light">
+                                                <button class="btn btn-primary "> view</button>
                                             </a>
                                         
                                         <% }else {%>
-                                        <button class="btn btn-primary "><a href="/admin/product/view/<%= orderItem._id %>/<%= product._id %>" style="color: aliceblue;"
-                                            >view</a></button>
+                                        <a href="/admin/product/view/<%= orderItem._id %>/<%= product._id %>" style="color: aliceblue;"
+                                            ><button class="btn btn-primary ">view</button></a>
                                             <% } %>
                                     </td>
                                 </tr>

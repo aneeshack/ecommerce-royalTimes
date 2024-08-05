@@ -22,7 +22,7 @@ const dashboard = async (req, res) => {
                 $lte: endOfDay
             }
         });
-
+        
         // aggregation for top 10 best-selling products
         const topProducts = await orderModel.aggregate([
             { $unwind: "$productItems" },
@@ -85,7 +85,7 @@ const dashboard = async (req, res) => {
                 }
             }
         ])
-
+       
       // Aggregation for top 10 best-selling brands
       const topBrands = await orderModel.aggregate([
         { $unwind: "$productItems" },
@@ -109,18 +109,58 @@ const dashboard = async (req, res) => {
         { $project: { _id: 1, totalSales: 1, brandName: "$brandDetails.name" } }
     ]);
 
+    const categories = await orderModel.aggregate([
+        { $unwind: '$productItems' },
+        { $match : {dateOrdered: {$gte: startOfDay, $lte:endOfDay}}},
+        {
+            $lookup: {
+                from: 'products',
+                localField: 'productItems.productId',
+                foreignField: '_id',
+                as: 'productDetails'
+            }
+        },
+        { $unwind: '$productDetails' },
+        
+        {
+            $group: {
+                _id: '$productDetails.category',
+                totalSales: { $sum: '$productItems.quantity' }
+            }
+        },
+        { $sort: { totalSales: -1 } },
+        {
+            $lookup: {
+                from: 'categories',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'categoryDetails'
+            }
+        },
+        { $unwind: '$categoryDetails' },
+        {
+            $project: {
+                _id: 1,
+                totalSales: 1,
+                categoryName: '$categoryDetails.name'
+            }
+        }
+    ])
 
+    const categoryLabels = categories.map(category => category.categoryName);
+    const categorySales = categories.map(category => category.totalSales);
         res.render('admin/dashboard', {
             orderData: JSON.stringify(todayOrders),
             topProducts,
             topCategories,
-            topBrands
+            topBrands,
+            categoryLabels : JSON.stringify(categoryLabels),
+            categorySales : JSON.stringify(categorySales),
         });
     } catch (error) {
         console.error('error while loading dashboard:', error);
         res.status(500).send('Server error');
     }
-
 }
 
 // updating chart based on the date selected
@@ -158,7 +198,48 @@ const chartUpdate = async (req, res) => {
             return res.status(400).json({ message: 'Invalid query parameters' });
         }
 
-        res.json(orders);
+        const categories = await orderModel.aggregate([
+            { $unwind: '$productItems' },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'productItems.productId',
+                    foreignField: '_id',
+                    as: 'productDetails'
+                }
+            },
+            { $unwind: '$productDetails' },
+            
+            {
+                $group: {
+                    _id: '$productDetails.category',
+                    totalSales: { $sum: '$productItems.quantity' }
+                }
+            },
+            { $sort: { totalSales: -1 } },
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'categoryDetails'
+                }
+            },
+            { $unwind: '$categoryDetails' },
+            {
+                $project: {
+                    _id: 1,
+                    totalSales: 1,
+                    categoryName: '$categoryDetails.name'
+                }
+            }
+        ])
+    
+        const categoryLabels = categories.map(category => category.categoryName);
+        const categorySales = categories.map(category => category.totalSales);
+
+        res.json({orders,categoryLabels,categorySales});
+        // res.json(orders);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching orders', error });
     }
