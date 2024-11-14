@@ -5,6 +5,7 @@ passport.serializeUser((user,done)=>{
 })
 
 passport.deserializeUser(function(user,done){
+    console.log('inside passport')
     done(null,user);
 })
 const callbackURL = process.env.NODE_ENV === 'production' 
@@ -22,6 +23,7 @@ passport.use(new GoogleStrategy({
     prompt: 'consent'
 
 },function(request,accessToken, refreshToken, profile, done) {
+    console.log('passport')
     if (!profile) {
         return done(new Error('No profile returned from Google'), null);
     }
